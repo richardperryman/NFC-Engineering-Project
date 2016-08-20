@@ -1,5 +1,16 @@
 \documentclass{article}
 
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{darkgreen}{rgb}{0,0.6,0}
+
+\lstset{
+	commentstyle=\color{darkgreen},
+	keywordstyle=\color{blue},
+	tabsize=4
+}
+
 \title{Fourth Year Project Proposal}
 \author{
 	Craig Shorrocks \\
@@ -8,23 +19,53 @@
 	Jessica Morris \\
 	1001234567
 	\and
-	Richard Perryman\\
+	Richard Perryman \\
 	100887250
 }
-\date{August 19th 2016}
+\date{August 19, 2016}
 
 \begin{document}
 
 \maketitle
 
-Blah
-
-\section{Foo}
+\pagebreak
 
 Blah
 
-\section{Bar}
+\section{Java}
 
-Blah
+Some Java words.
+
+\lstset{language=Java}
+
+\begin{lstlisting}
+// HelloWorld.java
+public static class HelloWorld {
+	public static void main() {
+		System.out.println("Hello, World!");
+	}
+}
+\end{lstlisting}
+
+\section{C}
+
+Some C words, etc.\ Blah.
+
+\lstset{
+	language=C,
+	showstringspaces=false
+}
+
+\begin{lstlisting}
+// HelloWorld.c
+#include <stdio.h>
+
+int main(void) {
+	printf("Hello, World!\n");
+	return 0;
+}
+\end{lstlisting}
+
+Foobarbaz.
 
 \end{document}
