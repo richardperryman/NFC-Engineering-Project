@@ -1,0 +1,24 @@
+Everybody! Objectives of the Project
+Security - Often the slower option, inconvenient, may not necessarily be available, single-step, render seurity more convenient, modernizing (rigorous/multi-step/self-contained)
+
+Jess! Background of te Projet
+- NFC to navigate malls, using coupons
+- Walmart pay and pickup system
+- Pharmacy pickup system
+- Generic lockers
+- Enhancing lockers 
+
+Description of WAT DO
+- UML diagram of actor flow chart thingie (Richard)
+- Block diagram of hardware (Jess)
+- UML diagram of software (Craig)
+- Access control device! Modular framework, access "modules" expand capabilities of the device
+
+Methods
+Leave for later...
+
+Tiemtable
+
+
+Special Components
+What is special? (Ask Majumdar)
