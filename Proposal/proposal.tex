@@ -3,6 +3,12 @@
 \usepackage[backend=bibtex,style=numeric]{biblatex}
 \usepackage{lipsum}
 
+% Temporary bugfix for BibTeX
+% Found at http://tex.stackexchange.com/a/311428
+\makeatletter
+\def\blx@maxline{77}
+\makeatother
+
 \bibliography{proposal}
 
 \title{Fourth Year Project Proposal}
@@ -56,6 +62,7 @@ Because of the close range required for an exchange, NFC has inherent protection
 \section{Methods}
 
 Buzzwords FRAMEWORK buzzwords
+
 \lipsum[1]
 
 \section{Time Table}
