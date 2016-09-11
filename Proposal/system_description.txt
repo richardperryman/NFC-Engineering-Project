@@ -1,0 +1,13 @@
+Lock and Key (Identity?) System.
+A system where customers can set up an identity of keys and administrators can set up sufficient identities for locked objects.
+
+Administrators will set up locked objects to accept certain kinds of identities.
+
+Customers will set up identities to be made up of one or more authentication methods, or keys.
+The system will store these identities (with the associated authentications).
+The system also stores locked objects and their allowable identities.
+The system stores contact information for both the customer and the locked object.
+
+Customers can register with the system to use a locked object with a certain identity.
+
+Registrations can send reminders and warnings to the associated contact information for the customer and/or the locked object.
