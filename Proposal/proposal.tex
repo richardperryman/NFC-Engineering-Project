@@ -43,14 +43,19 @@ This proposal outlines a system that will expand upon such a concept to further 
 
 \section{Background}
 
-\lipsum[1]
+NFC is a form of short-range, low-power communication used by devices such as smartphones, and tablets. NFC is a fast and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. One device, the active device, uses magnetic induction to induce a current in the information-holding "passive device". The passive device responds by modulating the EM field coming from the active device, and the active device converts the modulations into useful data \cite{NFCORG}. This scenario is a NFC communication in passive mode. Two smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure, also known as communication in active mode.
 
-\section{Procedure} %This title feels bad (?)
+NFC is being increasingly used to "smarten up" passive information delivery systems such as business cards, and posters. Information such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart tag \cite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction must be approved by the device's user before the device sends payment information \cite{NFCPAYMENT}.
+
+Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange can only be reliably eavesdropped from a distance of approximately 10 m or less if the interaction is between two active devices, dropping to 1 m if the interaction is a passive communication; and a man-in-the-middle attack is nearly impossible to accomplish in a real-world scenario \cite{NFCSECURITY}. These attacks may be protected against by establishing a secure channel, by using symmetric-key encryption or other secret-sharing method. For these reasons, NFC is a reliable method to pair a smart device with an electronic lock.
+
+\section{Procedure}
 
 \lipsum[1]
 
 \section{Methods}
 
+Buzzwords FRAMEWORK buzzwords
 \lipsum[1]
 
 \section{Time Table}
@@ -59,7 +64,14 @@ This proposal outlines a system that will expand upon such a concept to further 
 
 \section{Components}
 
-\lipsum[1]
+\begin{itemize}
+\item Raspberry Pi 3 Model B with 5V power supply and microSD card
+\item Rasperry Pi Camera NoIR Board Add-on
+\item Adafruit Feather 32u4 FONA with prototyping board
+\item Starter Pack for Arduino (with Arduino Uno R3)
+\item Adafruit PN532 NFC shield
+\item Soldering tools in ME4135
+\end{itemize}
 
 \pagebreak
 
