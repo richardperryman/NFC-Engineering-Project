@@ -4,14 +4,16 @@
 
 \documentclass{article}
 
+\usepackage[toc,page]{appendix}
 \usepackage[
 	backend=bibtex,
 	natbib=true,
 	style=numeric,
 	sorting=none
 ]{biblatex}
-\usepackage{pgfgantt}
+\usepackage{graphicx}
 \usepackage{lipsum}
+\usepackage{pgfgantt}
 
 % Temporary bugfix for BibTeX
 % Found at http://tex.stackexchange.com/a/311428
@@ -35,7 +37,10 @@
 
 % Might be better to use the last date we edit this on,
 % but for now I was too lazy to keep updating this
-\date{\today} 
+\date{\today}
+
+\appendixtitleon
+\appendixtitletocon
 
 \begin{document}
 
@@ -46,6 +51,12 @@
 % add that other professor (?)
 Supervisor: Shikharesh Majumdar 
 \end{center}
+
+\pagebreak
+
+\tableofcontents
+
+\listoffigures
 
 \pagebreak
 
@@ -105,6 +116,22 @@ Because of the close range required for an exchange, NFC has inherent protection
 \item Soldering tools in ME4135
 \item Amazon Web Services - Amazon API Gateway, Amazon RDS
 \end{itemize}
+
+\pagebreak
+
+\begin{appendices}
+
+\section{UML}
+
+\begin{figure}[!ht]
+
+\includegraphics[width=\textwidth]{UML/lock_and_key}
+\caption{Use case diagram}
+\label{fig:use_case}
+
+\end{figure}
+
+\end{appendices}
 
 \pagebreak
 
