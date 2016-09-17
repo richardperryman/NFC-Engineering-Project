@@ -82,16 +82,16 @@ security.
 NFC is a form of short-range, low-power communication used by devices such as smartphones, and tablets. NFC is a fast
 and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. One
 device, the active device, uses magnetic induction to induce a current in the information-holding "passive device". The
-passive device responds by modulating the EM field coming from the active device, and the active device converts the
-modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two smartphones
-may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure, also
-known as communication in active mode.
+passive device responds by modulating the EM field coming from the active device, which the active device then reads and
+converts the modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two
+smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
+also known as communication in active mode.
 
 NFC is being increasingly used to "smarten up" passive information delivery systems such as business cards, and posters.
 Information such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
 tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
 replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
-each point in the transaction requires the device and the reader to exchange an encrypted password, and the transactio
+each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
  must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
@@ -99,7 +99,7 @@ can only be reliably eavesdropped from a distance of approximately 10 m or less 
 devices, dropping to 1 m if the interaction is a passive communication; and a man-in-the-middle attack is nearly
 impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These attacks may be protected against by
 establishing a secure channel, by using symmetric-key encryption or other secret-sharing method. For these reasons,
-NFC is a reliable method to pair a smart device with an electronic lock.
+NFC is a reliable method to pair a smart device with an electronic lock system.
 
 \section{Methods}
 
@@ -117,22 +117,47 @@ along with the physical components of the locks, these subsystems will power the
 
 % TBD - Better system name
 
-% TBD - Hardware system description (Jess?)
+At the hardware level, the system will consist of several components. A Raspberry Pi will provide the main point of 
+communication between the software applications (user app, administration) and the hardware, such as sensor modules for 
+access. It will verify tokens provided by the sensor modules against values stored in a secure database, and send 
+"open" or "close" signals to an electronic strike lock when necessary. An Arduino microcontroller, connected to the Pi 
+via I2C, will act as an operator for the sensor modules (to avoid collisions) and perform message-passing between the 
+modules and the Pi. Various types of sensor modules, powered by any small microcontroller, send identity tokens to the 
+Arduino.
 
-% Needs better title - also may not need to be subsections?
+% Needs better title - also may not need to be subsections? (J: This title has grown on me lol)
 % Jess
 \subsection{Online Order Secure Pickup}
 
-With online shopping becoming more popular~\autocite{CUSTORA} the hassle of shopping in physical stores can be
-eliminated.
+With online shopping becoming more popular~\autocite{CUSTORA}, the hassle of being physically present to shop in stores 
+can be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
+using a (SYSTEMNAME)-secured storage container. After a customer's order has been confirmed by the store to be packed 
+and ready for pick-up, the store's (SYSTEMNAME) administrator sends one or several one-time-use authentication tokens 
+to the customer's (SYSTEMNAME) app on their smartphone. When the customer arrives at the store to pick up their items, 
+they can gain access to the storage container assigned to them by using the authentication token(s) they had previously 
+received. When the tokens have been used and the customer has retrieved their order, the storage container is assigned 
+new tokens so that it may be used for another order, without wrongfully granting re-access to the previous customer.
+% Possible ramifications for this system - might be of interest for the final report, not sure about the proposal: 
+% - Parking lots will be less congested as people spend less time in stores
+% - System will make it easier for customers with mobility impairments to obtain everything they need
 
 % Craig
 \subsection{Central Mail Package Pickup}
 
-Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only operate during standard work hours, while many people that need to accept the delivery will not be home. In these cases where it cannot be stored in a mail box, and cannot be accepted by the recipient, these packages often go to an office of the delivery service, where the recipient must then go to pick up their package. This can seem counter productive, as the customer has paid for delivery, and now they are forced to go out of their way to get their item, which has not really been delivered.
+Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only 
+operate during standard work hours, while many people that need to accept the delivery will not be home. In these cases 
+where it cannot be stored in a mail box, and cannot be accepted by the recipient, these packages often go to an office 
+of the delivery service, where the recipient must then go to pick up their package. This can seem counter productive, 
+as the customer has paid for delivery, and now they are forced to go out of their way to get their item, which has not 
+really been delivered.
 
 %TODO get source and find out proper name of Canada Post parcel box things
-This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit the parcel. These boxes could be set up in an area where they are close to many customers, allowing them to quickly pick up their parcel without going all the way to the local office. The delivery person would grant access to the customer, then place the parcel in the box. Then the customer could be notified through the application that there is a parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel box, and receive their package.
+This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit 
+the parcel. These boxes could be set up in an area where they are close to many customers, allowing them to quickly 
+pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
+customer, then place the parcel in the box. Then the customer could be notified through the application that there is a 
+parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
+box, and receive their package.
 
 % Richard
 \subsection{Long Term Storage}
@@ -153,20 +178,74 @@ to expose additional features. An example feature would be a live video stream o
 This would allow the customer to verify that the contents of the space had been correctly stored, for example after
 requesting that the company switch their locker.
 
+\newpage % Just to make the formatting nicer
 \section{Time Table}
+% Review on Monday
 
-% Should timeline start from week of Sept 9?
-% Prepare Proposal
-% Preliminary design
-% Preliminary testing
-% Integrate soft/hardware
-% Integration testing
-% December 9th 2016 - Progress Report
-% January 23rd 2017 - Saturday, January 28th 2017 - Oral Presentations
-% March 20th 2017 - Poster Fair
-% April 7th 2017 - Final Report due
-
-\lipsum[1]
+% Gantt chart documentation available at http://ctan.mirror.rafal.ca/graphics/pgf/contrib/pgfgantt/pgfgantt.pdf
+\begin{center}
+\begin{ganttchart}[
+	x unit=0.85cm,
+	hgrid, vgrid,
+	bar label font=\footnotesize,
+	group label font=\footnotesize,
+	title label font=\footnotesize
+]{1}{15}
+	\gantttitle{Fall Term}{15} \\
+	\gantttitle{09/11}{1}
+	\gantttitle{09/18}{1}
+	\gantttitle{09/25}{1}
+	\gantttitle{10/02}{1}
+	\gantttitle{10/09}{1}
+	\gantttitle{10/16}{1}
+	\gantttitle{10/23}{1}
+	\gantttitle{10/30}{1}
+	\gantttitle{11/06}{1}
+	\gantttitle{11/13}{1}
+	\gantttitle{11/20}{1}
+	\gantttitle{11/27}{1}
+	\gantttitle{12/04}{1}
+	\gantttitle{12/11}{1}
+	\gantttitle{12/18}{1} \\
+	\ganttbar{Draft proposal}{1}{2} \\
+	\ganttbar{Final proposal}{2}{4} \\
+	\ganttbar{Preliminary design}{3}{8} \\
+	\ganttbar{Preliminary testing}{8}{11} \\
+	\ganttbar{Preliminary integration}{12}{15} \\
+	\ganttbar{Progress report}{12}{13}
+\end{ganttchart}
+% J: Not sure if I should include figure numbers for the Gantt charts?
+\begin{ganttchart}[
+	x unit=0.85cm,
+	hgrid, vgrid,
+	bar label font=\footnotesize,
+	group label font=\footnotesize,
+	title label font=\footnotesize
+]{1}{14}
+	\gantttitle{Winter Term}{14} \\
+	\gantttitle{01/01}{1}
+	\gantttitle{01/08}{1}
+	\gantttitle{01/15}{1}
+	\gantttitle{01/22}{1}
+	\gantttitle{01/29}{1}
+	\gantttitle{02/05}{1}
+	\gantttitle{02/12}{1}
+	\gantttitle{02/19}{1}
+	\gantttitle{02/26}{1}
+	\gantttitle{03/05}{1}
+	\gantttitle{03/12}{1}
+	\gantttitle{03/19}{1}
+	\gantttitle{03/26}{1}
+	\gantttitle{04/02}{1} \\
+	\ganttbar{Integration testing}{1}{2} \\
+	\ganttbar{Design refinement}{2}{6} \\
+	\ganttbar{System testing}{6}{9} \\
+	\ganttbar{Oral presentation}{4}{4} \\
+	\ganttbar{Poster fair}{11}{12} \\
+	\ganttbar{Draft final report}{9}{12} \\
+	\ganttbar{Write final Report}{13}{14}
+\end{ganttchart}
+\end{center}
 
 \section{Components}
 
