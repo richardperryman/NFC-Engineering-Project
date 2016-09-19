@@ -56,8 +56,8 @@ Supervisors: Shikharesh Majumdar and Chung-Horng Lung
 \section{Objective}
 
 As technology becomes more and more prevalent in our lives, our identities become more and more intertwined with the
-technologies that we use daily. This melding has become extremely prevalent in some areas. Some such areas are
-professional networking with LinkedIn, or banking with the advent of online account management. Over half of all
+technologies that we use daily. This melding has become extremely prevalent in some areas. Some example areas are
+professional networking with LinkedIn, and banking with the advent of online account management. Over half of all
 smartphone users have used mobile banking~\autocite{MOBILEBANKING}. This popularity may be derived
 from how convenient and secure handling money online is. However, certain aspects of our day to day lives haven't yet
 been graced by the benefits of electronic security and automation.
@@ -79,14 +79,15 @@ security.
 
 \section{Background}
 
-NFC is a form of short-range, low-power communication used by devices such as smartphones, and tablets. NFC is a fast
-and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. One
-device, the active device, uses magnetic induction to induce a current in the information-holding "passive device". The
-passive device responds by modulating the EM field coming from the active device, which the active device then reads and
+NFC is a form of short-range, low-power communication used by devices such as smartphones and tablets. NFC is a fast
+and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. The active
+device uses magnetic induction to create a current in the information-holding passive device. The
+passive device responds by modulating the EM field coming from the active device. The active device then reads and
 converts the modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two
 smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
 also known as communication in active mode.
 
+% Not sure how but I think we should remove "nonliteral quotes" here (and everywhere)
 NFC is being increasingly used to "smarten up" passive information delivery systems such as business cards, and posters.
 Information such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
 tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
@@ -95,11 +96,11 @@ each point in the transaction requires the device and the reader to exchange an 
  must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
-can only be reliably eavesdropped from a distance of approximately 10 m or less if the interaction is between two active
-devices, dropping to 1 m if the interaction is a passive communication; and a man-in-the-middle attack is nearly
-impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These attacks may be protected against by
-establishing a secure channel, by using symmetric-key encryption or other secret-sharing method. For these reasons,
-NFC is a reliable method to pair a smart device with an electronic lock system.
+can only be reliably eavesdropped from a distance of approximately 10 meters or less if the interaction is between two active
+devices, dropping to 1 metre if the interaction is a passive communication. This, along with some other facts, makes a
+man-in-the-middle attack nearly impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These attacks
+may be protected against by establishing a secure channel, by using symmetric-key encryption or other secret-sharing
+method. For these reasons, NFC is a reliable method to pair a smart device with an electronic lock system.
 
 \section{Methods}
 
