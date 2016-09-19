@@ -23,7 +23,7 @@
 
 \bibliography{proposal}
 
-\title{Fourth Year Project Proposal}
+\title{Sensor Based Access Control System}
 \author{
 	Craig Shorrocks \\
 	100887781
@@ -115,8 +115,6 @@ interface~(API) running on a server will expose the the interactions between cus
 physical components. A database will store relevant information to be accessed by various other components. Together,
 along with the physical components of the locks, these subsystems will power the lock and identity system.
 
-% TBD - Better system name
-
 At the hardware level, the system will consist of several components. A Raspberry Pi will provide the main point of 
 communication between the software applications (user app, administration) and the hardware, such as sensor modules for 
 access. It will verify tokens provided by the sensor modules against values stored in a secure database, and send 
@@ -125,8 +123,6 @@ via I2C, will act as an operator for the sensor modules (to avoid collisions) an
 modules and the Pi. Various types of sensor modules, powered by any small microcontroller, send identity tokens to the 
 Arduino.
 
-% Needs better title - also may not need to be subsections? (J: This title has grown on me lol)
-% Jess
 \subsection{Online Order Secure Pickup}
 
 With online shopping becoming more popular~\autocite{CUSTORA}, the hassle of being physically present to shop in stores 
@@ -142,7 +138,6 @@ new tokens so that it may be used for another order, without wrongfully granting
 % - System will make it easier for customers with mobility impairments to obtain everything they need
 %	- The system could also help with vision impaired customers
 
-% Craig
 \subsection{Central Mail Package Pickup}
 
 Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only 
@@ -160,7 +155,6 @@ customer, then place the parcel in the box. Then the customer could be notified 
 parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
 box, and receive their package.
 
-% Tentative addition of tracking stuff - maybe should be more in previous section, then just fleshed out a bit here?
 % TBD add how this could be used for expiry?
 Throughout this process, the system could make use of the registrations that have been set up for the central mail
 box. The user set up as the deliverer would be able to send updates to the system on the status of the package, allowing
@@ -170,10 +164,8 @@ dropped off. This information could also be exposed to the people who manage the
 determine the status of their boxes, informing them of potential problems, such as a package that has been languishing
 for too long in the same box.
 
-% Richard
 \subsection{Long Term Storage}
 
-% All the added stuff
 The lock and identity system also has applications for long term storage companies, such as Dymon. For these companies
 the system could be viewed as an overall manager of customer storage. The system's registrations can be used to provide
 additional services for specific storage spaces. The system will also expose much of the administrative tasks that the
@@ -189,7 +181,6 @@ to expose additional features. An example feature would be a live video stream o
 This would allow the customer to verify that the contents of the space had been correctly stored, for example after
 requesting that the company switch their locker.
 
-% Maybe this should be moved to Central Mail?
 The system would also provide the ability to dynamically give certain users access to the storage room. This would allow
 a storage room to be communally owned by the members of a conglomerate, for example a company. This would ease the
 process by which multiple people may access the storage space while also ensuring that control of the storage was held
@@ -202,6 +193,7 @@ reliable paper trail.
 % Review on Monday
 
 % Gantt chart documentation available at http://ctan.mirror.rafal.ca/graphics/pgf/contrib/pgfgantt/pgfgantt.pdf
+% TBD for Jess shrink bars
 \begin{figure}[!ht]
 \centering
 \begin{ganttchart}[
@@ -229,13 +221,15 @@ reliable paper trail.
 	\gantttitle{12/18}{1} \\
 	\ganttbar{Draft proposal}{1}{2} \\
 	\ganttbar{Final proposal}{2}{4} \\
-	\ganttbar{Preliminary design}{3}{8} \\
+	\ganttbar{Preliminary design}{3}{6} \\
+	\ganttbar{Hardware Prototype}{5}{9} \\
+	\ganttbar{Software Prototype}{5}{9} \\
 	\ganttbar{Preliminary testing}{8}{11} \\
-	\ganttbar{Preliminary integration}{12}{15} \\
-	\ganttbar{Progress report}{12}{13}
+	\ganttbar{Preliminary integration}{8}{15} \\
+	\ganttbar{Integration Testing}{12}{15} \\
+	\ganttbar{Progress report}{10}{13}
 \end{ganttchart}
 \end{figure}
-% J: Not sure if I should include figure numbers for the Gantt charts?
 
 \begin{figure}[!ht]
 \centering
@@ -263,11 +257,11 @@ reliable paper trail.
 	\gantttitle{04/02}{1} \\
 	\ganttbar{Integration testing}{1}{2} \\
 	\ganttbar{Design refinement}{2}{6} \\
-	\ganttbar{System testing}{6}{9} \\
-	\ganttbar{Oral presentation}{4}{4} \\
+	\ganttbar{System testing}{4}{8} \\
+	\ganttbar{Oral presentation}{1}{4} \\
 	\ganttbar{Poster fair}{11}{12} \\
-	\ganttbar{Draft final report}{9}{12} \\
-	\ganttbar{Write final Report}{13}{14}
+	\ganttbar{Draft final report}{5}{12} \\
+	\ganttbar{Write final report}{13}{14}
 \end{ganttchart}
 \end{figure}
 
