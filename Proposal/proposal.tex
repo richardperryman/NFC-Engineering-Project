@@ -71,11 +71,11 @@ Grab-and-Go~\autocite{WALMART}. Such a system greatly reduces the work involved 
 PIN instead of a physical key or combination) to the customer and increases the security of the lockers by reducing the number
 of points of failure.
 
-This proposal outlines a system that will expand upon such a concept to further tie security and identity to the
-electronics we use most: our phones. Using technologies like near-field communication~(NFC) sensors and quick response~(QR)
-codes, the identity associated with a phone can be used as identification for anything. This represents a huge
-advantage with respect to convenience, and it would even further lower the number of possible failure points in
-security.
+This proposal outlines a Sensor Based Access Control System~(SBACS) that will expand upon such a concept to further tie
+ security and identity to the electronics we use most: our phones. Using technologies like near-field communication~(NFC)
+sensors and quick response~(QR) codes, the identity associated with a phone can be used as identification for anything.
+This represents a huge advantage with respect to convenience, and it would even further lower the number of possible
+failure points in security.
 
 \section{Background}
 
@@ -110,11 +110,11 @@ method. For these reasons, NFC is a reliable method to pair a smart device with 
 % Refer to use case diagram in appendix
 % Refer to block diagram
 
-To realise this system, several separate components will need to communicate with each other. An application for the
-mobile devices will enable the device to communicate with the rest of the system. An application programming
+To realise this Access Control System, several separate components will need to communicate with each other. An
+application for the mobile devices will enable the device to communicate with the rest of the system. An application programming
 interface~(API) running on a server will expose the the interactions between customers, administrators and the
 physical components. A database will store relevant information to be accessed by various other components. Together,
-along with the physical components of the locks, these subsystems will power the lock and identity system.
+along with the physical components of the locks, these subsystems will power the Sensor Based Access Control System.
 
 At the hardware level, the system will consist of several components. A Raspberry Pi will provide the main point of 
 communication between the software applications (user app, administration) and the hardware, such as sensor modules for 
@@ -128,9 +128,9 @@ Arduino.
 
 With online shopping becoming more popular~\autocite{CUSTORA}, the hassle of being physically present to shop in stores 
 can be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
-using a (SYSTEMNAME)-secured storage container. After a customer's order has been confirmed by the store to be packed 
-and ready for pick-up, the store's (SYSTEMNAME) administrator sends one or several one-time-use authentication tokens 
-to the customer's (SYSTEMNAME) app on their smartphone. When the customer arrives at the store to pick up their items, 
+using a SBACS secured storage container. After a customer's order has been confirmed by the store to be packed 
+and ready for pick-up, the store's system administrator sends one or several one-time-use authentication tokens 
+to the customer's SBACS app on their smartphone. When the customer arrives at the store to pick up their items, 
 they can gain access to the storage container assigned to them by using the authentication token(s) they had previously 
 received. When the tokens have been used and the customer has retrieved their order, the storage container is assigned 
 new tokens so that it may be used for another order, without wrongfully granting re-access to the previous customer.
