@@ -23,7 +23,7 @@
 
 \bibliography{proposal}
 
-\title{Sensor Based Access Control System}
+\title{SYSC4907 Project Proposal: \\ Sensor-Based Access Control System}
 \author{
 	Craig Shorrocks \\
 	100887781
@@ -55,9 +55,9 @@ Supervisors: Shikharesh Majumdar and Chung-Horng Lung
 
 \section{Objective}
 
-As technology becomes more and more prevalent in our lives, our identities become more and more intertwined with the
+As technology becomes more and more prevalent in our lives, our identities become increasingly intertwined with the
 technologies that we use daily. This melding has become extremely prevalent in some areas. Some example areas are
-professional networking with LinkedIn, and banking with the advent of online account management. Over half of all
+professional networking with LinkedIn, and banking, with the advent of online account management. Over half of all
 smartphone users have used mobile banking~\autocite{MOBILEBANKING}. This popularity may be derived
 from how convenient and secure handling money online is. However, certain aspects of our day to day lives haven't yet
 been graced by the benefits of electronic security and automation.
@@ -65,17 +65,17 @@ been graced by the benefits of electronic security and automation.
 Physical locks and keys are still widely used for several tasks where electronic locks could be used instead. House
 locks, bicycle locks, and locker locks are frequently physical locks. Changing to electronic locks could help streamline
 all of these locks, reducing the number of keys to remember and improving security by reducing the likelihood that the
-key could be faked by an attacker. Some applications for this have already been found: for example, Walmart has a
-system where customers can order products to be placed in lockers with electronic keys called
-Grab-and-Go~\autocite{WALMART}. Such a system greatly reduces the work involved in getting a key (in this case, a
-PIN instead of a physical key or combination) to the customer and increases the security of the lockers by reducing the number
-of points of failure.
+key could be faked by an attacker. This would also reduce the risk of misplacing keys, as a digital key can be backed 
+up for use on another device. Some applications for this have already been found: for example, Walmart has a system 
+where customers can order products to be placed in lockers with electronic keys calledGrab-and-Go~\autocite{WALMART}. 
+Such a system greatly reduces the work involved in getting a key (in this case, aPIN instead of a physical key or 
+combination) to the customer and increases the security of the lockers by reducing the number of points of failure.
 
-This proposal outlines a Sensor Based Access Control System~(SBACS) that will expand upon such a concept to further tie
- security and identity to the electronics we use most: our phones. Using technologies like near-field communication~(NFC)
-sensors and quick response~(QR) codes, the identity associated with a phone can be used as identification for anything.
-This represents a huge advantage with respect to convenience, and it would even further lower the number of possible
-failure points in security.
+This proposal outlines a system, a Sensor-Based Access Control System~(SBACS), that will expand upon such a concept to 
+further tie security and identity to the electronics we use most: our phones. Using technologies like near-field 
+communication~(NFC) sensors and quick response~(QR) codes, the identity associated with a phone can be used as 
+identification for anything. This represents a huge advantage with respect to convenience, and it would even further 
+lower the number of possible failure points in security.
 
 \section{Background}
 
@@ -88,19 +88,20 @@ smartphones may both act as passive and active devices, allowing them to exchang
 also known as communication in active mode.
 
 % Not sure how but I think we should remove "nonliteral quotes" here (and everywhere)
-NFC is being increasingly used to "smarten up" passive information delivery systems such as business cards, and posters.
-Information such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
+NFC is being increasingly used to smarten up passive information delivery systems such as business cards, and posters.
+Brief data such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
 tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
 replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
 each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
  must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
-can only be reliably eavesdropped from a distance of approximately 10 meters or less if the interaction is between two active
-devices, dropping to 1 metre if the interaction is a passive communication. This, along with some other facts, makes a
-man-in-the-middle attack nearly impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These attacks
-may be protected against by establishing a secure channel, by using symmetric-key encryption or other secret-sharing
-method. For these reasons, NFC is a reliable method to pair a smart device with an electronic lock system.
+can only be reliably eavesdropped from a distance of approximately 10 meters or less if the interaction is between two 
+active devices, dropping to 1 meter if the interaction is a passive communication. This, along with some other facts, 
+makes a man-in-the-middle attack nearly impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These 
+attacks may be protected against by establishing a secure channel, by using symmetric-key encryption or other 
+secret-sharing method. For these reasons, NFC is a reliable method to pair a smart device with an electronic lock 
+system.
 
 \section{Methods}
 
@@ -118,35 +119,40 @@ along with the physical components of the locks, these subsystems will power the
 
 At the hardware level, the system will consist of several components. A Raspberry Pi will provide the main point of 
 communication between the software applications (user app, administration) and the hardware, such as sensor modules for 
-access. It will verify tokens provided by the sensor modules against values stored in a secure database, and send 
-"open" or "close" signals to an electronic strike lock when necessary. An Arduino microcontroller, connected to the Pi 
-via I2C, will act as an operator for the sensor modules (to avoid collisions) and perform message-passing between the 
+access. It will verify tokens provided by the sensor modules against the values stored in the database, and send "open" 
+or "close" signals to an electronic strike lock when necessary. An Arduino microcontroller, connected to the Pi via 
+USB, will act as an operator for the sensor modules (to avoid collisions) and perform message-passing between the 
 modules and the Pi. Various types of sensor modules, powered by any small microcontroller, send identity tokens to the 
-Arduino.
+Arduino. The primary access module provided with the system will be a NFC module, whose prototype will be powered by a 
+Adafruit Feather board with a Adafruit PN532 NFC shield.
 
 \subsection{Online Order Secure Pickup}
 
 With online shopping becoming more popular~\autocite{CUSTORA}, the hassle of being physically present to shop in stores 
 can be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
-using a SBACS secured storage container. After a customer's order has been confirmed by the store to be packed 
+using a SBACS-secured storage container. After a customer's order has been confirmed by the store to be packed 
 and ready for pick-up, the store's system administrator sends one or several one-time-use authentication tokens 
 to the customer's SBACS app on their smartphone. When the customer arrives at the store to pick up their items, 
 they can gain access to the storage container assigned to them by using the authentication token(s) they had previously 
-received. When the tokens have been used and the customer has retrieved their order, the storage container is assigned 
-new tokens so that it may be used for another order, without wrongfully granting re-access to the previous customer.
-% Possible ramifications for this system - might be of interest for the final report, not sure about the proposal: 
-% - Parking lots will be less congested as people spend less time in stores
-% - System will make it easier for customers with mobility impairments to obtain everything they need
-%	- The system could also help with vision impaired customers
+received, such as a hand-shaking code to use with the NFC module of the system. When the tokens have been used and the 
+customer has retrieved their order, the storage container is assigned new tokens so that it may be used for another 
+order, without wrongfully granting re-access to the previous customer.
+
+A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
+fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
+break via brute force than a 6-digit PIN~\autocite{WALMART}. In addition, with the entire process of shopping being 
+expedited, customers will spend less time in stores and parking lots, leading to less congestion due to vehicle 
+traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
+they will be able to retrieve their goods with less aid from store employees than traditional shopping allows.
 
 \subsection{Central Mail Package Pickup}
 
 Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only 
 operate during standard work hours, while many people that need to accept the delivery will not be home. In these cases 
-where it cannot be stored in a mail box, and cannot be accepted by the recipient, these packages often go to an office 
-of the delivery service, where the recipient must then go to pick up their package. This can seem counter productive, 
-as the customer has paid for delivery, and now they are forced to go out of their way to get their item, which has not 
-really been delivered.
+where packages cannot be stored in a mail box, and cannot be accepted by the recipient, these packages often go to an office 
+of the delivery service. The recipient must then go to pick up their package at the office. This is counter-productive, 
+as the customer has paid for the delivery, and now they are forced to go out of their way to get their item, which has not 
+been delivered to their desired location.
 
 %TODO get source and find out proper name of Canada Post parcel box things
 This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit 
@@ -167,14 +173,14 @@ for too long in the same box.
 
 \subsection{Long Term Storage}
 
-The lock and identity system also has applications for long term storage companies, such as Dymon. For these companies
-the system could be viewed as an overall manager of customer storage. The system's registrations can be used to provide
-additional services for specific storage spaces. The system will also expose much of the administrative tasks that the
-company will need to provide.
+The Sensor-Based Access Control System also has applications for long term storage companies, such as Dymon. For these 
+companies, the system could be viewed as an overall manager of customer storage. The system's registrations can be used 
+to provide additional services for specific storage spaces. The system will also expose much of the administrative 
+tasks that the company will need to provide.
 
-The system, using it's multiple step authentication, would allow the company to advertise greater security. Along with
-similar methods to those described in the above use cases, they system could be configured to require biometrics, such
-as fingerprints or facial recognition, as a form of authentication. By combining these metrics the system would greatly
+The system, using its multiple step authentication, would allow the company to advertise greater security. Along with
+similar methods to those described in the above use cases, the system could be configured to require biometrics, such
+as fingerprints or facial recognition, as a form of authentication. By combining these metrics, the system would greatly
 reduce the potential for attack by strengthening the potential failure points of the identification process.
 
 Once a customer has a storage space reserved and has set up their identification, the registration could be configured
@@ -191,14 +197,13 @@ reliable paper trail.
 
 \newpage % Just to make the formatting nicer
 \section{Time Table}
-% Review on Monday
 
 % Gantt chart documentation available at http://ctan.mirror.rafal.ca/graphics/pgf/contrib/pgfgantt/pgfgantt.pdf
-% TBD for Jess shrink bars
 \begin{figure}[!ht]
 \centering
 \begin{ganttchart}[
 	x unit=0.85cm,
+	y unit chart=0.75cm,
 	hgrid, vgrid,
 	bar label font=\footnotesize,
 	group label font=\footnotesize,
@@ -223,8 +228,8 @@ reliable paper trail.
 	\ganttbar{Draft proposal}{1}{2} \\
 	\ganttbar{Final proposal}{2}{4} \\
 	\ganttbar{Preliminary design}{3}{6} \\
-	\ganttbar{Hardware Prototype}{5}{9} \\
-	\ganttbar{Software Prototype}{5}{9} \\
+	\ganttbar{Hardware prototype}{5}{9} \\
+	\ganttbar{Software prototype}{5}{9} \\
 	\ganttbar{Preliminary testing}{8}{11} \\
 	\ganttbar{Preliminary integration}{8}{15} \\
 	\ganttbar{Integration Testing}{12}{15} \\
@@ -236,6 +241,7 @@ reliable paper trail.
 \centering
 \begin{ganttchart}[
 	x unit=0.85cm,
+	y unit chart=0.75cm,
 	hgrid, vgrid,
 	bar label font=\footnotesize,
 	group label font=\footnotesize,
@@ -270,15 +276,17 @@ reliable paper trail.
 
 \section{Components}
 
-\begin{itemize}
-	\item Raspberry Pi 3 Model B with 5V power supply and microSD card
-	\item Rasperry Pi Camera NoIR Board Add-on
-	\item Adafruit Feather 32u4 FONA with prototyping board
-	\item Starter Pack for Arduino (with Arduino Uno R3)
-	\item Adafruit PN532 NFC shield
-	\item Soldering tools in ME4135
-	\item Amazon Web Services - Amazon API Gateway, Amazon RDS
-\end{itemize}
+% J - I'm going to comment out this section because I outline all this stuff in Method
+% Plus I'm pretty sure that Fall Info presentation didn't have "Components" in its section list
+%\begin{itemize}
+%	\item Raspberry Pi 3 Model B with 5V power supply and microSD card
+%	\item Rasperry Pi Camera NoIR Board Add-on
+%	\item Adafruit Feather 32u4 FONA with prototyping board
+%	\item Starter Pack for Arduino (with Arduino Uno R3)
+%	\item Adafruit PN532 NFC shield
+%	\item Soldering tools in ME4135
+%	\item Amazon Web Services - Amazon API Gateway, Amazon RDS
+%\end{itemize}
 
 \pagebreak
 
@@ -299,4 +307,3 @@ reliable paper trail.
 \printbibliography
 
 \end{document}
-\grid
