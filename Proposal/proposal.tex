@@ -59,8 +59,8 @@ As technology becomes more and more prevalent in our lives, our identities becom
 technologies that we use daily. This melding has become extremely prevalent in some areas. Some example areas are
 professional networking with LinkedIn, and banking, with the advent of online account management. Over half of all
 smartphone users have used mobile banking~\autocite{MOBILEBANKING}. This popularity may be derived
-from how convenient and secure handling money online is. However, certain aspects of our day to day lives haven't yet
-been graced by the benefits of electronic security and automation.
+from how convenient and secure the online handling money of is. However, certain aspects of our day to day lives
+haven't yet been graced by the benefits of electronic security and automation.
 
 Physical locks and keys are still widely used for several tasks where electronic locks could be used instead. House
 locks, bicycle locks, and locker locks are frequently physical locks. Changing to electronic locks could help streamline
@@ -71,6 +71,7 @@ where customers can order products to be placed in lockers with electronic keys 
 Such a system greatly reduces the work involved in getting a key (in this case, aPIN instead of a physical key or 
 combination) to the customer and increases the security of the lockers by reducing the number of points of failure.
 
+% Add comment about recovery after losing phone
 This proposal outlines a system, a Sensor-Based Access Control System~(SBACS), that will expand upon such a concept to 
 further tie security and identity to the electronics we use most: our phones. Using technologies like near-field 
 communication~(NFC) sensors and quick response~(QR) codes, the identity associated with a phone can be used as 
@@ -94,6 +95,7 @@ replace credit cards in contactless exchanges. In fact, NFC payments may be more
 each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
  must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
+% Citation needed for the 1 metre thing (also should we be using british or US spellings?
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
 can only be reliably eavesdropped from a distance of approximately 10 meters or less if the interaction is between two 
 active devices, dropping to 1 meter if the interaction is a passive communication. This, along with some other facts, 
@@ -104,11 +106,11 @@ system.
 
 \section{Methods}
 
+% Actually add these!
+
 % Buzzwords FRAMEWORK buzzwords
 % Authentication token established at access
 % OAuth - restful services
-% Refer to use case diagram in appendix
-% Refer to block diagram
 
 To realise this Access Control System, several separate components will need to communicate with each other. An
 application for the mobile devices will enable the device to communicate with the rest of the system. An application programming
@@ -137,6 +139,7 @@ received, such as a hand-shaking code to use with the NFC module of the system. 
 customer has retrieved their order, the storage container is assigned new tokens so that it may be used for another 
 order, without wrongfully granting re-access to the previous customer.
 
+% Explain impaired customer case better
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
 fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
 break via brute force than a 6-digit PIN~\autocite{WALMART}. In addition, with the entire process of shopping being 
@@ -156,6 +159,7 @@ as the customer has paid for the delivery, and now they are forced to go out of 
 been delivered to their desired location.
 
 %TODO get source and find out proper name of Canada Post parcel box things
+% Also todo: explain possible already existing central holding places
 This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit 
 the parcel. These boxes could be set up in an area where they are close to many customers, allowing them to quickly 
 pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
@@ -195,6 +199,12 @@ process by which multiple people may access the storage space while also ensurin
 centrally. More privileged users would be able to allow temporary access to less privileged users for a given time
 period. All of the attemped authentications would also be logged and made available to certain users, creating a
 reliable paper trail.
+
+% Add logging of items?
+
+\subsection{Service Provider}
+
+Lorem ipsum.
 
 \newpage % Just to make the formatting nicer
 \section{Time Table}
