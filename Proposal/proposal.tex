@@ -71,18 +71,18 @@ where customers can order products to be placed in lockers with electronic keys 
 Such a system greatly reduces the work involved in getting a key (in this case, aPIN instead of a physical key or 
 combination) to the customer and increases the security of the lockers by reducing the number of points of failure.
 
-% Add comment about recovery after losing phone
 This proposal outlines a system, a Sensor-Based Access Control System~(SBACS), that will expand upon such a concept to 
 further tie security and identity to the electronics we use most: our phones. Using technologies like near-field 
 communication~(NFC) sensors and quick response~(QR) codes, the identity associated with a phone can be used as 
 identification for anything. This represents a huge advantage with respect to convenience, and it would even further 
-lower the number of possible failure points in security.
+lower the number of possible failure points in security. In addition, with modern mobile devices being automatically 
+backed up over-the-air, recovering an identity when a device is lost or stolen can be accomplished easily and securely.
 
 \section{Background}
 
 NFC is a form of short-range, low-power communication used by devices such as smartphones and tablets. NFC is a fast
-and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. The active
-device uses magnetic induction to create a current in the information-holding passive device. The
+and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. The 
+active device uses magnetic induction to create a current in the information-holding passive device. The
 passive device responds by modulating the EM field coming from the active device. The active device then reads and
 converts the modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two
 smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
@@ -95,22 +95,27 @@ replace credit cards in contactless exchanges. In fact, NFC payments may be more
 each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
  must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
-% Citation needed for the 1 metre thing (also should we be using british or US spellings)?
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
-can only be reliably eavesdropped from a distance of approximately 10 meters or less if the interaction is between two 
-active devices, dropping to 1 meter if the interaction is a passive communication. This, along with some other facts, 
-makes a man-in-the-middle attack nearly impossible to accomplish in a real-world scenario~\autocite{NFCSECURITY}. These 
-attacks may be protected against by establishing a secure channel, by using symmetric-key encryption or other 
-secret-sharing method. For these reasons, NFC is a reliable method to pair a smart device with an electronic lock 
-system.
+can only be reliably eavesdropped from a distance of approximately 10 metres or less if the interaction is between two 
+active devices, dropping to 1 metre if the interaction is a passive communication ~\autocite{NFCSECURITY}. This, along 
+with some other facts, makes a man-in-the-middle attack nearly impossible to accomplish in a real-world 
+scenario~\autocite{NFCSECURITY}. These attacks may be protected against by establishing a secure channel, by using 
+symmetric-key encryption or other secret-sharing method. For these reasons, NFC is a reliable method to pair a smart 
+device with an electronic lock system.
 
 \section{Methods}
 
+% Actually add these!
+
+% Buzzwords FRAMEWORK buzzwords
+% Authentication token established at access
+% OAuth - restful services
+
 To realise this Access Control System, several separate components will need to communicate with each other. An
-application for the mobile devices will enable the device to communicate with the rest of the system. An application programming
-interface~(API) running on a server will expose the the interactions between customers, administrators and the
-physical components. This API will be structured as a framework, allowing for easy access by developers seeking to make
-similar applications. A unit of authentication in the system will be represented by an expiring token that contains
+application for the mobile devices will enable the device to communicate with the rest of the system. An application
+programming interface~(API) running on a server will expose the the interactions between customers, administrators and
+the physical components. This API will be structured as a framework, allowing for easy access by developers seeking to
+make similar applications. A unit of authentication in the system will be represented by an expiring token that contains
 validation along with the associtated user. A database will store relevant information to be accessed by the other
 components. Together, along with the physical components of the locks, these subsystems will power the Sensor Based
 Access Control System.
@@ -136,13 +141,16 @@ received, such as a hand-shaking code to use with the NFC module of the system. 
 customer has retrieved their order, the storage container is assigned new tokens so that it may be used for another 
 order, without wrongfully granting re-access to the previous customer.
 
-% Explain impaired customer case better
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
 fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
 break via brute force than a 6-digit PIN~\autocite{WALMART}. In addition, with the entire process of shopping being 
 expedited, customers will spend less time in stores and parking lots, leading to less congestion due to vehicle 
 traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
-they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. \hfill \break
+they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. Customers
+with impairments can perform their shopping online using their accessibility software, such as text-to-speech, instead 
+of calling the store to request that an employee retrieve their goods. When the customer arrives at the store, they can
+access their assigned SBACS-secured locker to obtain their purchase. \hfill \break
+% J - I don't like that last sentence too much, will probably update again later today
 
 \noindent A visualisation of some of the functionality of the system is available in Appendix A - UML.
 
@@ -213,7 +221,7 @@ passwords and generally have fewer physical keys.
 
 Customers purchasing the services for the SBACS would save any technical work associated with installing the system.
 The service provider would be able to manage the databases, servers and any customer complaints or feedback. Providers
-would also take care of sharing end user identities which would even further increase how much time end users could save.
+would also take care of sharing end user identities which would even further increase how much time end users could save
 This incentivises companies to make use of a service provider, as it makes the resulting system more attractive to
 potential customers as well as reducing the overall cost of setting up the system.
 
