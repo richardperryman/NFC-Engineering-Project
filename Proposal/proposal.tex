@@ -157,8 +157,16 @@ of the delivery service. The recipient must then go to pick up their package at 
 as the customer has paid for the delivery, and now they are forced to go out of their way to get their item, which has not 
 been delivered to their desired location.
 
-%TODO get source and find out proper name of Canada Post parcel box things
-% Also todo: explain possible already existing central holding places
+% Mention already existing central holding places (community mailboxes)
+In some places, Canada Post already has community mailboxes, which have a box for larger parcels. The problem with this
+is that it is only usable for parcels that are being delivered with Canada Post, but there are other parcel delivery
+services as well that are unable to make use of this. This community mailbox also uses a physical key to open this box,
+where they leave the key in the customer's normal mailbox, then they use that key to open the parcel box, then they must 
+return the key by dropping it in a mail delivery slot. This involves the need for the physical keys, and requires staff to
+physically find the keys for the parcel box among the other mail that is in the delivery slot. The Sensor-Based Access 
+Control System would eliminate the need for these physical keys, and would allow more delivery services to make use of
+the same boxes, ensuring that it is most convenient for the customers.
+
 This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit 
 the parcel. These boxes could be set up in an area where they are close to many customers, allowing them to quickly 
 pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
@@ -166,14 +174,16 @@ customer, then place the parcel in the box. Then the customer could be notified 
 parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
 box, and receive their package.
 
-% TBD add how this could be used for expiry?
+% C - Added a bit about expiry, is that enough?
 Throughout this process, the system could make use of the registrations that have been set up for the central mail
 box. The user set up as the deliverer would be able to send updates to the system on the status of the package, allowing
 the recipient user to better know when their package would arrive. Further, the system could be configured such that the
 system would notify the user when the package had not been picked up after a certain time had elapsed since it was
 dropped off. This information could also be exposed to the people who manage the central mail box, allowing them to
 determine the status of their boxes, informing them of potential problems, such as a package that has been languishing
-for too long in the same box.
+for too long in the same box. If the package is not picked up after a given amount of time, the system would notify the
+customer that the package will no longer be available to be picked up, and alternate options will be given. This would
+also lead to an expiry of the customer's registration to the box, so they will no longer be able to open the box.
 
 \subsection{Long Term Storage}
 
