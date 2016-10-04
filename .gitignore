@@ -9,7 +9,6 @@
 **/*.synctex.gz
 **/*.toc
 **/*.run.xml
-**/*.pdf
 
 # Exclude unwanted violet files
 
