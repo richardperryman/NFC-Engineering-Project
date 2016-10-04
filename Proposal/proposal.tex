@@ -67,16 +67,17 @@ locks, bicycle locks, and locker locks are frequently physical locks. Changing t
 all of these locks, reducing the number of keys to remember and improving security by reducing the likelihood that the
 key could be faked by an attacker. This would also reduce the risk of misplacing keys, as a digital key can be backed 
 up for use on another device. Some applications for this have already been found: for example, Walmart has a system 
-where customers can order products to be placed in lockers with electronic keys calledGrab-and-Go~\autocite{WALMART}. 
-Such a system greatly reduces the work involved in getting a key (in this case, aPIN instead of a physical key or 
-combination) to the customer and increases the security of the lockers by reducing the number of points of failure.
+where customers can order products to be placed in lockers with electronic keys called Grab-and-Go~\autocite{WALMART}. 
+Such a system greatly reduces the work involved in getting a key to the customer, as a PIN can be sent and received 
+electronically. It also increases the security of the lockers by reducing the number of points of failure.
 
 This proposal outlines a system, a Sensor-Based Access Control System~(SBACS), that will expand upon such a concept to 
 further tie security and identity to the electronics we use most: our phones. Using technologies like near-field 
 communication~(NFC) sensors and quick response~(QR) codes, the identity associated with a phone can be used as 
-identification for anything. This represents a huge advantage with respect to convenience, and it would even further 
-lower the number of possible failure points in security. In addition, with modern mobile devices being automatically 
-backed up over-the-air, recovering an identity when a device is lost or stolen can be accomplished easily and securely.
+identification for anything requiring access control. This represents a huge advantage with respect to convenience, and 
+it would even further lower the number of possible failure points in security. In addition, with modern mobile devices 
+being automatically backed up over-the-air, recovering an identity when a device is lost or stolen can be accomplished 
+easily and securely.
 
 \section{Background}
 
@@ -110,7 +111,7 @@ application for the mobile devices will enable the device to communicate with th
 programming interface~(API) running on a server will expose the the interactions between customers, administrators and
 the physical components. This API will be structured as a framework, allowing for easy access by developers seeking to
 make similar applications. A unit of authentication in the system will be represented by an expiring token that contains
-validation along with the associtated user. A database will store relevant information to be accessed by the other
+validation along with the associated user. A database will store relevant information to be accessed by the other
 components. Together, along with the physical components of the locks, these subsystems will power the Sensor Based
 Access Control System.
 
@@ -118,10 +119,10 @@ At the hardware level, the system will consist of several components. A Raspberr
 communication between the software applications (user app, administration) and the hardware, such as sensor modules for 
 access. It will verify tokens provided by the sensor modules against the values stored in the database, and send "open" 
 or "close" signals to an electronic strike lock when necessary. An Arduino microcontroller, connected to the Pi via 
-USB, will act as an operator for the sensor modules (to avoid collisions) and perform message-passing between the 
-modules and the Pi. Various types of sensor modules, powered by any small microcontroller, send identity tokens to the 
-Arduino. The primary access module provided with the system will be a NFC module, whose prototype will be powered by a 
-Adafruit Feather board with a Adafruit PN532 NFC shield.
+USB, will act as an operator for the sensor modules, performing message-passing between the modules and the Pi. Various 
+types of sensor modules, powered by any small microcontroller, send identity tokens to the Arduino. The primary access 
+module provided with the system will be a NFC module, whose prototype will be powered by a Adafruit Feather board with 
+a Adafruit PN532 NFC shield.
 
 \subsection{Online Order Secure Pickup}
 
@@ -142,9 +143,10 @@ expedited, customers will spend less time in stores and parking lots, leading to
 traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
 they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. Customers
 with impairments can perform their shopping online using their accessibility software, such as text-to-speech, instead 
-of calling the store to request that an employee retrieve their goods. When the customer arrives at the store, they can
-access their assigned SBACS-secured locker to obtain their purchase. \hfill \break
-% J - I don't like that last sentence too much, will probably update again later today
+of calling the store to request that an employee retrieve their goods. When the customer receives confirmation of their 
+order and authentication tokens, they can access their assigned SBACS-secured locker in the store themselves, using 
+their usual aids instead of occupying a store employee.
+\hfill \break
 
 \noindent A visualisation of some of the functionality of the system is available in Appendix A - UML.
 
