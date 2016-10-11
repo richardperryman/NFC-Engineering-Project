@@ -1,3 +1,7 @@
+# Exclude common unwanted files
+
+**/*.zip
+
 # Exclude unwanted TeX files
 
 **/*.aux
