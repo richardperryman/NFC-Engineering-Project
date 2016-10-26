@@ -37,7 +37,7 @@ function getDbResponse(pool, callback){
 	// Get a connection to DB from the pool
 	pool.getConnection(function(err,connection){
 		// Make a query with that connection
-		connection.query('SELECT * FROM innodb.Users', function(err,rows,fields){
+		connection.query('SELECT * FROM sbacsDb.Users', function(err,rows,fields){
 			// As soon as we have results, we can release the connection back to pool
 			connection.release();
 			if(!err){

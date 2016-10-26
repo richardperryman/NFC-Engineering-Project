@@ -407,12 +407,17 @@ paths:
         - name: name
           in: query
           description: Name of the lock
-          required: false
+          required: true
           type: string
         - name: belongsTo
           in: query
           description: Who owns the lock
-          required: false
+          required: true
+          type: string
+        - name: encryptedKey
+          in: query
+          description: An encrypted key that is used to open the lock
+          required: true
           type: string
       tags:
         - Locks
@@ -470,7 +475,7 @@ paths:
         - Access
       responses:
         200:
-          description: An encrypted message with unlock signal
+          description: The encrypted key from the lock (see encryptedKey parameter in locks PUT)
           schema:
             type: string
         401:
