@@ -1,0 +1,611 @@
+swagger: '2.0'
+info:
+  title: SBACS API
+  description: Reference of requests for SBACS
+  version: "1.0.0"
+# the domain of the service
+host: 127.0.0.1
+# array of all schemes that your API supports
+schemes:
+  - http
+
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      summary: Get Users
+      description: |
+        The Users endpoint returns a list of all users in the db, matching the given parameters. No paramters, return all users, otherwise, match to all given parameters.
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          description: Name of the user
+          required: false
+          type: string
+        - name: rights
+          in: query
+          description: Rights level of the user (Customer/Admin)
+          required: false
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: An array of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Modify Users
+      description: |
+        Allows for modification of Users. User with User_Id will be updated so that its Name or Rights fields are updated, with given values. If no values given for a field, it will not be changed.
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user
+          required: true
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          description: Name of the user
+          required: false
+          type: string
+        - name: rights
+          in: query
+          description: Rights level of the user (Customer/Admin)
+          required: false
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: An message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Add User
+      description: |
+        Allows for addition of a User, User_Id will be generated automatically
+      parameters:
+        - name: name
+          in: query
+          description: Name of the user
+          required: true
+          type: string
+        - name: rights
+          in: query
+          description: Rights level of the user (Customer/Admin)
+          required: true
+          type: string
+      tags:
+        - Users
+      responses:
+        200:
+          description: The User_Id of the newly created User
+          schema:
+            type: integer
+            format: int32
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete User
+      description: |
+        Allows for deletion of a User, based on given User_Id
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Users
+      responses:
+        200:
+          description: An message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+  /identities:
+    get:
+      summary: Get Identities
+      description: |
+        The Identities endpoint returns a list of all identities belonging to a user (if user_id specified), or all identities matching the identity_id (if specified). Otherwise returns all identities.
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user who owns the identity
+          required: false
+          type: integer
+          format: int32
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - Identities
+      responses:
+        200:
+          description: An array of identities
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Identity'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Add Identity
+      description: |
+        Add an identity for a user, identity_id will be generated and returned
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user that this is being created for
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Identities
+      responses:
+        200:
+          description: The Identity_Id of the created Identity
+          schema:
+            type: integer
+            format: int32
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete Identity
+      description: |
+        Deletes a given identity and all of its authenticators
+      parameters:
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Identities
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /authenticators:
+    get:
+      summary: Get Authenticators
+      description: |
+        The Authenticators endpoint returns a list of all authenticators belonging to a user (if user_id specified), or all authenticators matching the identity_id (if specified), or the authenticator with auth_id. Otherwise returns all authenticators.
+      parameters:
+        - name: user_id
+          in: query
+          description: User_Id of the user who owns the authenticators
+          required: false
+          type: integer
+          format: int32
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity owning the authenticators
+          required: false
+          type: integer
+          format: int32
+        - name: auth_id
+          in: query
+          description: Auth_Id of the authenticator
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - Authenticators
+      responses:
+        200:
+          description: An array of authenticators
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Authenticator'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Modify Authenticator
+      description: |
+        Modify an existing Authenticator, with new values for AuthValue
+      parameters:
+        - name: auth_id
+          in: query
+          description: Auth_Id of the authenticator
+          required: true
+          type: integer
+          format: int32
+        - name: authType
+          in: query
+          description: AuthType of the authenticator
+          required: true
+          type: string
+        - name: authValue
+          in: query
+          description: AuthValue of the authenticator
+          required: true
+          type: string
+      tags:
+        - Authenticators
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Add Authenticator
+      description: |
+        Add a new Authenticator, return is the new Auth_Id
+      parameters:
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity owning the authenticator
+          required: true
+          type: integer
+          format: int32
+        - name: authType
+          in: query
+          description: AuthType of the authenticator
+          required: true
+          type: string
+        - name: authValue
+          in: query
+          description: AuthValue of the authenticator
+          required: true
+          type: string
+      tags:
+        - Authenticators
+      responses:
+        200:
+          description: The Auth_Id of the created Authenticator
+          schema:
+            type: integer
+            format: int32
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete Authenticator
+      description: |
+        Delete an existing Authenticator
+      parameters:
+        - name: auth_id
+          in: query
+          description: Auth_Id of the authenticator to delete
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Authenticators
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /locks:
+    get:
+      summary: Get Locks
+      description: |
+        The Locks endpoint returns a list of all locks in the db, matching the given parameters. No paramters, return all locks, otherwise, match to all given parameters.
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: false
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          description: Name of the lock
+          required: false
+          type: string
+        - name: belongsTo
+          in: query
+          description: Who owns the lock
+          required: false
+          type: string
+      tags:
+        - Locks
+      responses:
+        200:
+          description: An array of locks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Lock'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Modify Lock
+      description: |
+        Modify existing lock, given by lock_id. Changes will only be made where new values are given. 
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: true
+          type: integer
+          format: int32
+        - name: name
+          in: query
+          description: Name of the lock
+          required: false
+          type: string
+        - name: belongsTo
+          in: query
+          description: Who owns the lock
+          required: false
+          type: string
+      tags:
+        - Locks
+      responses:
+        200:
+          description: The Lock_Id of the newly created lock
+          schema:
+            type: integer
+            format: int32
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Add Lock
+      description: |
+        Adds a new lock, lock_id is generated and returned
+      parameters:
+        - name: name
+          in: query
+          description: Name of the lock
+          required: false
+          type: string
+        - name: belongsTo
+          in: query
+          description: Who owns the lock
+          required: false
+          type: string
+      tags:
+        - Locks
+      responses:
+        200:
+          description: The Lock_Id of the newly created lock
+          schema:
+            type: integer
+            format: int32
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete Lock
+      description: |
+        Deletes the given lock
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Locks
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /access:
+    get:
+      summary: Access Lock
+      description: |
+        The Access endpoint provides either an open signal, or an access forbidden, depending on the rights of the user that attempts to open the lock.
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: true
+          type: integer
+          format: int32
+        - name: auth
+          in: query
+          description: Authenticators to open the lock
+          required: true
+          type: string
+      tags:
+        - Access
+      responses:
+        200:
+          description: An encrypted message with unlock signal
+          schema:
+            type: string
+        401:
+          description: Access denied error
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /access/management:
+    put:
+      summary: Add Identity to Lock
+      description: |
+        Adds an existing Identity to an existing Lock, to allow access by that identity.
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: true
+          type: integer
+          format: int32
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity owning the authenticators
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Access Management
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Remove Identity from Lock
+      description: |
+        Removes an existing Identity from an existing Lock, to remove access by that identity.
+      parameters:
+        - name: lock_id
+          in: query
+          description: Lock_Id of the lock
+          required: true
+          type: integer
+          format: int32
+        - name: identity_id
+          in: query
+          description: Identity_Id of the identity owning the authenticators
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - Access Management
+      responses:
+        200:
+          description: A message indicating success
+          schema:
+            type: string
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  
+definitions:
+  User:
+    type: object
+    properties:
+      user_id:
+        type: integer
+        format: int32
+        description: Unique identifier for User
+      name:
+        type: string
+        description: Name of user
+      rights:
+        type: string
+        description: Rights level of user
+        
+  Identity:
+    type: object
+    properties:
+      identity_id:
+        type: integer
+        format: int32
+        description: Unique identifier for Identity
+      user_id:
+        type: integer
+        format: int32
+        description: id of user that this belongs to
+      name:
+        type: string
+        description: Name for this identity
+  
+  Authenticator:
+    type: object
+    properties:
+      auth_id:
+        type: integer
+        format: int32
+        description: Unique identifier for Authenticator
+      identity_id:
+        type: integer
+        format: int32
+        description: id of identity that this belongs to
+      auth_type:
+        type: string
+        description: Type of authenticator (password, NFC, etc.)
+      auth_key:
+        type: string
+        description: Value of authenticator (actual password, NFC value, etc.)
+  
+  Lock:
+    type: object
+    properties:
+      lock_id:
+        type: integer
+        format: int32
+        description: Unique identifier for Lock
+      name:
+        type: string
+        description: name of the lock
+      belongsTo:
+        type: string
+        description: Who owns the lock
+  
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
