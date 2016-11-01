@@ -105,10 +105,10 @@ int GPIOPin::getValue(string &value)
 	}
 	
 	getvalgpio >> value;
-	if (value != "0")
-		value = "1";
+	if (value != GPIO_LOW)
+		value = GPIO_HIGH;
 	else
-		value = "0";
+		value = GPIO_LOW;
 	
 	getvalgpio.close();
 	return 0;

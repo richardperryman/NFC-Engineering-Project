@@ -27,21 +27,28 @@ int main()
 	
 	cout << "Turning on LEDs!" << endl;
 	
-	green->setValue("1");
-	sleep(3);
-	green->setValue("0");
-	blue->setValue("1");
-	sleep(3);
-	blue->setValue("0");
-	red->setValue("1");
-	sleep(3);
-	red->setValue("0");
+	green->setValue(GPIO_HIGH);
+	sleep(1);
+	green->setValue(GPIO_LOW);
+	blue->setValue(GPIO_HIGH);
+	sleep(1);
+	blue->setValue(GPIO_LOW);
+	red->setValue(GPIO_HIGH);
+	sleep(1);
+	red->setValue(GPIO_LOW);
 	
 	cout << "Done" << endl;
 	
 	green->unexportPin();
 	blue->unexportPin();
 	red->unexportPin();
+    
+    Serial* usb = new Serial("/dev/ttyACM0");
+    usb->openPort(SERIAL_BAUD_NFC);
+    
+    cout << usb->readChar();
+    
+    usb->closePort();
 	
 	return 0;
 }

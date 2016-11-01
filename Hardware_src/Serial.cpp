@@ -2,89 +2,166 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
+#include <string.h>
+#include <sys/ioctl.h>
 #include <Debug.h>
 #include <Serial.h>
 
 using namespace std;
 
-Serial::Serial()
-{
-	this->portName = "ACM0";
-	this->serialPort = -1;
-}
-
 Serial::Serial(string portName)
 {
-	this->portName = portName;
-	this->serialPort = -1;
+    this->portName = portName;
+    this->serialPort = -1;
 }
 
-int Serial::openPort()
+int Serial::openPort(int baudRate)
 {
-	serialPort = open(this->portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
-
-	if (serialPort == -1)
-	{
-		DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port " + this->portName + ".");
-		return -1;
-	}
+    struct termios portOptions;
+    speed_t baud;
+    int status;
     
-	struct termios portOptions;
+    switch(baudRate)
+    {
+        case 50: baud = B50;     break;
+        case 75: baud = B75 ;    break;
+        case 110: baud = B110;    break;
+        case 134: baud = B134;    break;
+        case 150: baud = B150;    break;
+        case 200: baud = B200;    break;
+        case 300: baud = B300;    break;
+        case 600: baud = B600;    break;
+        case 1200: baud = B1200;   break;
+        case 1800: baud = B1800;   break;
+        case 2400: baud = B2400;   break;
+        case 4800: baud = B4800;   break;
+        case 9600: baud = B9600;   break;
+        case 19200: baud = B19200;  break;
+        case 38400: baud = B38400;  break;
+        case 57600: baud = B57600;  break;
+        case SERIAL_BAUD_NFC: baud = B115200; break;
+        case 230400: baud = B230400; break;
+   
+        default:
+            DEBUG_LOG(ERROR, __FUNCTION__, "Invalid baud rate passed");
+            return -1;
+    }
+    
+    // Flags:
+    // O_RDWR = open for reading and writing
+    // O_NOCTTY = this process "own" the port
+    // O_NDELAY = use non-blocking I/O
+    // open returns a file descriptor which will be stored as an int
+    serialPort = open(this->portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
 
-	fcntl(serialPort, F_SETFL, FNDELAY);
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port " + this->portName + ".");
+        return -1;
+    }
+    
+    // Set file status (read/write) of the port
+    fcntl(serialPort, F_SETFL, O_RDWR);
 
-	// Fetch the current port settings
-	tcgetattr(serialPort, &portOptions);
+    // Fetch the current port settings
+    tcgetattr(serialPort, &portOptions);
 
-	// Flush the port's buffers
-	tcflush(serialPort, TCIOFLUSH);
+    // Set the input and output baud rates
+    cfsetispeed(&portOptions, baud);
+    cfsetospeed(&portOptions, baud);
 
-	// Set the input and output baud rates
-	// This will be 115,200 to match the NFC module's.
-	cfsetispeed(&portOptions, B115200);
-	cfsetospeed(&portOptions, B115200);
+    // Ignore CD signal (modem control) and enable this port as receiver
+    portOptions.c_cflag |= (CLOCAL | CREAD);
+    
+    // Set up the frame information.
+    portOptions.c_cflag &= ~PARENB; // No parity checking
+    portOptions.c_cflag &= ~CSTOPB; // ?
+    portOptions.c_cflag &= ~CSIZE; // Clear current char size mask
+    portOptions.c_cflag |= CS8; // Force 8-bit input
+    portOptions.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); // Non-canonical mode, echo off, ?, signal chars off
+    portOptions.c_oflag &= ~OPOST; // No local output processing
+    
+    portOptions.c_cc[VMIN] = 0; // Minimum number of bytes to return from read() is 0
+    portOptions.c_cc[VTIME] = 100; // Wait up to 10 seconds for a character
 
-	// c_cflag contains a few important things- CLOCAL and CREAD, to prevent
-	// this program from "owning" the port and to enable receipt of data.
-	// Also, it holds the settings for number of data bits, parity, stop bits,
-	// and hardware flow control. 
-	portOptions.c_cflag |= CLOCAL;
-	portOptions.c_cflag |= CREAD;
-	// Set up the frame information.
-	portOptions.c_cflag &= ~PARENB;
-	portOptions.c_cflag &= ~CSTOPB;
-	portOptions.c_cflag &= ~CSIZE;
-	portOptions.c_cflag |= CS8;
-
-	// Push options to port
-	tcsetattr(serialPort, TCSANOW, &portOptions);
-
-	// Flush the buffer one more time.
-	tcflush(serialPort, TCIOFLUSH);
-	
-	return 0;
+    // Flush and push options to port
+    tcsetattr(serialPort, TCSANOW | TCSAFLUSH, &portOptions);
+    
+    // Get current port status
+    ioctl(serialPort, TIOCMGET, &status);
+    
+    // Data Terminal Ready, Request To Send
+    status |= (TIOCM_DTR | TIOCM_RTS);
+    
+    // Send the new port status
+    ioctl(serialPort, TIOCMSET, &status);
+    
+    usleep(10000);
+    
+    return 0;
 }
 
-string Serial::readData()
+void Serial::closePort()
 {
-	if (serialPort == -1)
-	{
-		DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
-		return "";
-	}
-	
-    char buffer[1];
-    int bytesRead = 0;
-    string returnString;
+    close(serialPort);
+    serialPort = -1;
+}
 
-    do
+void Serial::flush()
+{
+    if (serialPort == -1)
     {
-        bytesRead = read(this->serialPort, buffer, sizeof(buffer));
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        return;
+    }
+    
+    tcflush(serialPort, TCIOFLUSH);
+}
 
-        if(bytesRead > 0)
-            returnString.append(buffer, bytesRead);
+int Serial::dataAvailable()
+{
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        return -1;
+    }
+    
+    int result;
+    
+    if (ioctl(serialPort, FIONREAD, &result) == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in " + this->portName + " failed.");
+        result = -1;
+    }
+    
+    return result;
+}
 
-    } while (bytesRead == sizeof(buffer));
+char Serial::readChar()
+{
+    char result;
+    
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        return -1;
+    }
+    
+    if (read(serialPort, &result, 1) != 1)
+    {
+        return -1;
+    }
+    
+    return result;
+}
 
-    return returnString;
+void Serial::writeData(string data)
+{
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        return;
+    }
+    
+    write(serialPort, data.c_str(), strlen(data.c_str()));
 }
