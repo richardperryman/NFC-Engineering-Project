@@ -20,6 +20,7 @@ CREATE TABLE Authenticators(
 	Identity_Id int,
 	AuthType varchar(255) NOT NULL,
 	AuthKey varchar(255) NOT NULL,
+	AuthSalt varchar(255) NOT NULL,
 	PRIMARY KEY (Auth_Id),
 	FOREIGN KEY (Identity_Id) REFERENCES Identities(Identity_Id)
 );
