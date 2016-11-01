@@ -171,6 +171,11 @@ paths:
           required: true
           type: integer
           format: int32
+        - name: name
+          in: query
+          description: Name of the Identity
+          required: true
+          type: string
       tags:
         - Identities
       responses:
