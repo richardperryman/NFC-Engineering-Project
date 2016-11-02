@@ -6,7 +6,7 @@ const hashAlgorithm = 'sha256';
 
 module.exports = {
 
-encryptedAuth = function(secret, salt) {
+encryptedAuth : function(secret, salt) {
 	if (typeof salt === 'undefined') {
 		salt = generateSalt();
 	}
@@ -20,3 +20,9 @@ function generateSalt() {
 	var buffer = crypto.randomBytes(salt_length);
 	return buffer.toString();
 }
+
+
+// HOW TO USE THIS
+	// var cryptoHelper = require('./extensions/crypto_helper.js');
+	// var auth = new cryptoHelper.encryptedAuth('Hello');
+	// console.log('Salt: ' + auth.salt + ' Secret: ' + auth.secret);
