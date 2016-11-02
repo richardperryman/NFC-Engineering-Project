@@ -1,7 +1,7 @@
 #ifndef GPIOPIN_H
 #define GPIOPIN_H
  
-#include <string>
+#include <Types.h>
 #include <Debug.h>
 using namespace std;
 

@@ -23,13 +23,13 @@ $(EXECUTABLE) : $(OBJECTS)
 	$(RM)
 
 # Intermediate object files
-main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/Serial.h
+main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/Serial.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) main.cpp
 
-GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h
+GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) GPIOPin.cpp
 
-Serial.o : $(INCLUDE)/Serial.h $(INCLUDE)/Debug.h
+Serial.o : $(INCLUDE)/Serial.h $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) Serial.cpp
 
 Debug.o : $(INCLUDE)/Debug.h Debug.cpp

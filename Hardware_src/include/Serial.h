@@ -1,7 +1,7 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#include <string>
+#include <Types.h>
 using namespace std;
 
 /**

@@ -6,7 +6,7 @@
 using namespace std;
 
 #ifdef DEBUG
-static string levelToString(int level)
+static string levelToString(debug_level_t level)
 {
 	switch(level)
 	{
@@ -24,7 +24,7 @@ static string levelToString(int level)
 }
 #endif
 
-void DEBUG_LOG(int level, string function, string msg)
+void DEBUG_LOG(debug_level_t level, string function, string msg)
 {
 	#ifdef DEBUG
 	cout << levelToString(level) << " - " << function << ": " << msg << endl;

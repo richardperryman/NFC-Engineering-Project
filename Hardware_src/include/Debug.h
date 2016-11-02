@@ -1,7 +1,7 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <string>
+#include <Types.h>
 using namespace std;
 
 /**
@@ -19,12 +19,6 @@ using namespace std;
  * @param[in] msg The message to log
  */
 
-// Copying this from Python because I like it
-#define CRITICAL 50
-#define ERROR 40
-#define WARNING 30
-#define INFO 20
-
-void DEBUG_LOG(int level, string function, string msg);
+void DEBUG_LOG(debug_level_t level, string function, string msg);
 
 #endif // DEBUG_H

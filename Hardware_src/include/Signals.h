@@ -1,6 +1,9 @@
 #ifndef SIGNALS_H
 #define SIGNALS_H
 
+// n.b. The functions I need to define for this also fit easily into Serial, so I'll probably remove this header later.
+// Keeping it for now so that all my design decisions stay documented.
+
 using namespace std;
 
 /**
@@ -42,5 +45,7 @@ const uint8_t DATA_HEADER = {};
 // 0xFF 0xFF |  0xXX 0xXX | string | 0x00 
 //  opcode   | error code | error message - null terminated
 const uint8_t ERROR_HEADER = {};
+
+uint8_t encodeData(string data);
 
 #endif
