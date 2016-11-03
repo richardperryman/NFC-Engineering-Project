@@ -69,8 +69,7 @@ static void teardown()
 
 static uint8_t verifyModules()
 {
-	// Poll 
-	ostringstream path = "/dev/ttyACM";
+	// Poll "/dev/ttyACM";
 	
 	// Get String names from modules
 	
@@ -81,11 +80,11 @@ static uint8_t verifyModules()
 	return 0;
 }
 
-static uint8_t[] getToken()
+static uint8_t* getToken()
 {
 	// Open up Serial
 	
 	// Read token from Serial
 	
-	return [0,0,0,0];
+	return 0;
 }

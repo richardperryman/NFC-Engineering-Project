@@ -7,7 +7,7 @@ CFLAGS = $(LFLAGS) -c
 
 # File stuff
 EXECUTABLE = GPIOTest
-OBJECTS = main.o GPIOPin.o Serial.o Debug.o
+OBJECTS = main.o DataPacket.o GPIOPin.o Serial.o Debug.o
 RM = rm -f *.o
 
 default : $(EXECUTABLE)
@@ -25,6 +25,9 @@ $(EXECUTABLE) : $(OBJECTS)
 # Intermediate object files
 main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/Serial.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) main.cpp
+	
+DataPacket.o : $(INCLUDE)/DataPacket.h DataPacket.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) DataPacket.cpp
 
 GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) GPIOPin.cpp

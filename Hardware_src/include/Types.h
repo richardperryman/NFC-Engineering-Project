@@ -19,11 +19,11 @@ enum debug_level_t {
 
 // Missing opcodes for startup sequence stuff
 // Not sure if I'll leave this as 16-bit hex numbers or convert to byte array
-enum serial_opcodes_t {
-    REQUESTAUTH = 0x0001,
-    ACKNOWLEDGE = 0x0002,
-    DATA = 0x0003,
-    ERROR = 0xFFFF
+enum packet_opcode_t {
+    OPCODE_REQ = 0x0001,
+    OPCODE_ACK = 0x0002,
+    OPCODE_DATA = 0x0003,
+    OPCODE_ERR = 0xFFFF
 };
 
 #endif // TYPES_H

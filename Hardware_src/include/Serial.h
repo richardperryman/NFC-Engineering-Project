@@ -2,6 +2,7 @@
 #define SERIAL_H
 
 #include <Types.h>
+#include <DataPacket.h>
 using namespace std;
 
 /**
@@ -69,6 +70,7 @@ public:
 	int dataAvailable();
     char readChar();
 	void writeData(string data);
+    void sendPacket(DataPacket packet);
 };
 
 #endif // SERIAL_H
