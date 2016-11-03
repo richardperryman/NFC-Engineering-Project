@@ -2,7 +2,7 @@
 CC = g++
 DEBUG = -DDEBUG
 INCLUDE = ./include
-LFLAGS = -Wall -I$(INCLUDE)
+LFLAGS = -Wall -I$(INCLUDE) -std=c++11
 CFLAGS = $(LFLAGS) -c
 
 # File stuff
