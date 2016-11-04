@@ -8,8 +8,9 @@ SELECT * FROM sbacsDb.Registrations
 WHERE Lock_Id = ??;
 
 -- Then get the needed authenticators for each identity from above
-SELECT * FROM sbacsDb.Authenticators
-WHERE Identity_Id = ??;
+SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt
+FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita
+WHERE ita.Identity_Id = ?? AND a.Auth_Id = ita.Auth_Id;
 
 -- Compare each list until one matches
 

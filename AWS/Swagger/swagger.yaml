@@ -269,6 +269,11 @@ paths:
           description: AuthValue of the authenticator
           required: true
           type: string
+		- name: authSalt
+          in: query
+          description: AuthSalt of the authenticator
+          required: true
+          type: string
       tags:
         - Authenticators
       responses:
@@ -299,6 +304,11 @@ paths:
         - name: authValue
           in: query
           description: AuthValue of the authenticator
+          required: true
+          type: string
+		- name: authSalt
+          in: query
+          description: AuthSalt of the authenticator
           required: true
           type: string
       tags:
@@ -509,6 +519,11 @@ paths:
           required: true
           type: integer
           format: int32
+		- name: expirationTime
+          in: query
+          description: ExpirationTime (in UTC string) of when the access expires
+          required: true
+          type: string
       tags:
         - Access Management
       responses:
