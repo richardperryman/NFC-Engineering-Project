@@ -17,12 +17,18 @@ CREATE TABLE Identities(
 
 CREATE TABLE Authenticators(
 	Auth_Id int NOT NULL auto_increment,
-	Identity_Id int,
 	AuthType varchar(255) NOT NULL,
 	AuthKey varchar(255) NOT NULL,
 	AuthSalt varchar(255) NOT NULL,
-	PRIMARY KEY (Auth_Id),
-	FOREIGN KEY (Identity_Id) REFERENCES Identities(Identity_Id)
+	PRIMARY KEY (Auth_Id)
+);
+
+CREATE TABLE IdentityToAuth(
+	Auth_Id int,
+	Identity_Id int,
+	FOREIGN KEY (Identity_Id) REFERENCES Identities(Identity_Id),
+	FOREIGN KEY (Auth_Id) REFERENCES Authenticators(Auth_Id),
+	PRIMARY KEY (Identity_Id,Auth_Id)
 );
 
 CREATE TABLE Locks(
