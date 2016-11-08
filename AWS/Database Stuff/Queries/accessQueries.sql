@@ -3,14 +3,10 @@
 
 -- GET /access Needs ALL OF FOLLOWING:
 
--- get the list of identities that are associated with the lock
-SELECT * FROM sbacsDb.Registrations
-WHERE Lock_Id = ??;
-
--- Then get the needed authenticators for each identity from above
+-- Get the needed authenticators for each identity on the given lock from above
 SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt
-FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita
-WHERE ita.Identity_Id = ?? AND a.Auth_Id = ita.Auth_Id;
+FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Registrations as r
+WHERE r.Lock_Id = ?? AND r.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id;
 
 -- Compare each list until one matches
 
