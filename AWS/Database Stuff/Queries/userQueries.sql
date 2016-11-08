@@ -13,8 +13,7 @@ WHERE Name like '%??' AND Rights like '%??';
 
 -- Needed PUTS / DELTES
 -- PUT /users
-INSERT INTO sbacsDb.Users (Name, Rights) VALUES (??, ??)
-ON DUPLICATE KEY UPDATE Name=??, Rights=??;
+INSERT INTO sbacsDb.Users (Name, Rights) VALUES (??, ??);
 -- TODO: THEN Need to get the id of the inserted/updated row
 
 -- DELETE /users

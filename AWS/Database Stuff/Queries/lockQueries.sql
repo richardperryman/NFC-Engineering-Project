@@ -11,8 +11,7 @@ WHERE Name like '%??' AND BelongsTo like '%??';
 
 -- Needed PUTS / DELTES
 -- PUT /locks
-INSERT INTO sbacsDb.Locks (Name, BelongsTo, lockKey) VALUES (??, ??, ??)
-ON DUPLICATE KEY UPDATE Name=??, BelongsTo=??, lockKey=??;
+INSERT INTO sbacsDb.Locks (Name, BelongsTo, lockKey) VALUES (??, ??, ??);
 -- TODO: THEN Need to get the id of the inserted/updated row
 
 -- DELETE /locks

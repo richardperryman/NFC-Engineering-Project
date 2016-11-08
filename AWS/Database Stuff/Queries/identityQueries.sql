@@ -11,8 +11,7 @@ WHERE User_Id = ??;
 
 -- Needed PUTS / DELTES
 -- PUT /identities
-INSERT INTO sbacsDb.Identities (User_Id, Name) VALUES (??, ??)
-ON DUPLICATE KEY UPDATE User_Id=??, Name=??;
+INSERT INTO sbacsDb.Identities (User_Id, Name) VALUES (??, ??);
 -- TODO: THEN Need to get the id of the inserted/updated row
 
 -- DELETE /identities
