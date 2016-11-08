@@ -28,7 +28,10 @@ handleRequest : function(req,res,db_helper) {
 	} else if (req.method === 'DELETE') {
 		handleDelete(req,res);
 	} else {
-		// Return generic message
+		// Change to 405, with Allow header later
+		res.writeHead(500);
+		res.write('Method not supported');
+		res.end();
 	}
 }
 

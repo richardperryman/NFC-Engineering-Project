@@ -21,7 +21,10 @@ handleRequest : function(req,res,db_helper) {
 	if(req.method === 'GET'){
 		handleGet(req,res);
 	} else {
-		// Return generic message
+		// Change to 405, with Allow header later
+		res.writeHead(500);
+		res.write('Method not supported');
+		res.end();
 	}
 }
 // Note that to add a more functions, use a comma
