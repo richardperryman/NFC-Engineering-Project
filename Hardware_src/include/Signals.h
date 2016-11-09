@@ -4,8 +4,6 @@
 // n.b. The functions I need to define for this also fit easily into Serial, so I'll probably remove this header later.
 // Keeping it for now so that all my design decisions stay documented.
 
-using namespace std;
-
 /**
  * @file Signals.h
  * @brief A collection of constants used for signalling between the Raspberry Pi and authentication modules.

@@ -3,7 +3,6 @@
 
 #include <Types.h>
 #include <DataPacket.h>
-using namespace std;
 
 /**
  * @class Serial
@@ -60,16 +59,18 @@ using namespace std;
 class Serial
 {
 private:
-	string portName;
+	std::string portName;
 	int serialPort;
 public:
-	Serial(string portName);
+	Serial(std::string portName);
 	int openPort(int baudRate);
 	void closePort();
 	void flush();
 	int dataAvailable();
-    char readChar();
-	void writeData(string data);
+    uint8_t readChar();
+    DataPacket* receivePacket();
+    void writeChar(uint8_t character);
+	void writeData(std::string data);
     void sendPacket(DataPacket packet);
 };
 

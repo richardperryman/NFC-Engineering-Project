@@ -2,7 +2,6 @@
 #define DEBUG_H
 
 #include <Types.h>
-using namespace std;
 
 /**
  * @file Debug.h
@@ -19,6 +18,6 @@ using namespace std;
  * @param[in] msg The message to log
  */
 
-void DEBUG_LOG(debug_level_t level, string function, string msg);
+void DEBUG_LOG(debug_level_t level, std::string function, std::string msg);
 
 #endif // DEBUG_H
