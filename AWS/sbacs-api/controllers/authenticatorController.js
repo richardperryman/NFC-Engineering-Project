@@ -1,5 +1,6 @@
+const QUERY_GET_ALL = 'SELECT * FROM sbacsDb.Authenticators';
 const QUERY_GET_WITH_AUTH = 'SELECT * FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
-const QUERY_GET_WITH_IDENTITY = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.IdentityToAuth as i, sbacsDb.Authenticators as a WHERE i.Identity_Id = ?';
+const QUERY_GET_WITH_IDENTITY = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.IdentityToAuth as i, sbacsDb.Authenticators as a WHERE i.Identity_Id = ? AND i.Auth_Id = a.Auth_Id';
 const QUERY_GET_WITH_USER = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Identities AS i, sbacsDb.IdentityToAuth as ita, sbacsDb.Authenticators as a WHERE i.User_Id = ? AND i.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
 const QUERY_PUT = 'INSERT INTO sbacsDb.Authenticators (AuthType, AuthKey, AuthSalt) VALUES (?, ?, ?)';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
@@ -51,8 +52,7 @@ function handleGet(req,res){
 	if(auth_id == undefined){
 		if(identity_id == undefined){
 			if(user_id == undefined){
-				var inserts = ['%'];
-				queryString = mysql.format(QUERY_GET_WITH_AUTH,inserts);
+				queryString = QUERY_GET_ALL;
 			} else {
 				var inserts = [user_id];
 				queryString = mysql.format(QUERY_GET_WITH_USER,inserts);

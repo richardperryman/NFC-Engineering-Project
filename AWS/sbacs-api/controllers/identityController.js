@@ -1,3 +1,4 @@
+const QUERY_GET_ALL = 'SELECT * FROM sbacsDb.Identities';
 const QUERY_GET_WITH_ID = 'SELECT * FROM sbacsDb.Identities WHERE Identity_Id = ?';
 const QUERY_GET_WITHOUT_ID = 'SELECT * FROM sbacsDb.Identities WHERE User_Id = ?';
 const QUERY_PUT = 'INSERT INTO sbacsDb.Identities (User_Id, Name) VALUES (?, ?)';
@@ -43,8 +44,7 @@ function handleGet(req,res){
 	if(identity_id == undefined){
 		var user_id = parsedRequest.query['user_id'];
 		if(user_id == undefined){
-			var inserts = ['%'];
-			queryString = mysql.format(QUERY_GET_WITH_ID,inserts);
+			queryString = QUERY_GET_ALL;
 		} else {
 			var inserts = [user_id];
 			queryString = mysql.format(QUERY_GET_WITHOUT_ID,inserts);
