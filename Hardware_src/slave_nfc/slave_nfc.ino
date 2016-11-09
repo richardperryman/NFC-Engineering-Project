@@ -1,6 +1,6 @@
 /**************************************************************************/
 /*! 
-    @file     slave_nfc.pde
+    @file     slave_nfc.ino
     @author   Adafruit Industries, with modification by Jessica Morris
     @license  BSD (see license.txt)
     This example will wait for any ISO14443A card or tag, and
@@ -17,17 +17,12 @@
    
     Note that you need the baud rate to be 115200 because we need to
   print out the data and read from the card at the same time!
-
-  Modifications by Jess:
-    1) Not really anything as of yet
 */
 /**************************************************************************/
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_PN532.h>
-
-// Hardware ID definition
-
+#include <DataPacket.h>
 
 // SPI communication pins
 #define PN532_SCK  (15)
@@ -35,21 +30,17 @@
 #define PN532_SS   (5)
 #define PN532_MISO (14)
 
-// Comment out this next line if I'm not debugging stuff
-#define DEBUG
-
 // Define breakout with a SPI connection:
 Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
 
+// Other stuff
+static uint8_t MODULE_ID[] = {'N', 'F', 'C', '\0'};
+static bool errorDuringSetup = false;
+void flushRemaining();
+static uint8_t sendData(uint8_t* data, uint16_t dataLen);
+
 uint8_t* readCard(int uidLength) {
-  uint8_t result[] = { 0, 0, 0, 0, 0, 0, 0 };
-  
-  // Display some basic information about the card
-  Serial.println("Found an ISO14443A card");
-  Serial.print("  UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
-  Serial.print("  UID Value: ");
-  nfc.PrintHex(result, uidLength);
-  
+  uint8_t result[] = { 0, 0, 0, 0, 0, 0, 0 };  
   if (uidLength == 4)
   {
     // We probably have a Mifare Classic card ... 
@@ -60,47 +51,54 @@ uint8_t* readCard(int uidLength) {
     cardid |= result[2];  
     cardid <<= 8;
     cardid |= result[3]; 
-    Serial.print("Seems to be a Mifare Classic card #");
-    Serial.println(cardid);
   }
-  Serial.println("");
-
   return result;
 }
 
 void setup(void) {
   Serial.begin(115200);
-  #ifdef DEBUG
-  Serial.println("Hello!");
-  #endif
-
+  
   // NFC setup
   nfc.begin();
 
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (! versiondata) {
-    #ifdef DEBUG
-    Serial.print("Didn't find PN53x board");
-    #endif
+    errorDuringSetup = true;
     while (1); // halt
   }
-  // Got ok data, print it out!
-  #ifdef DEBUG
-  Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
-  Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
-  Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
-  #endif
   
   // configure board to read RFID tags
   nfc.SAMConfig();
 
-  #ifdef DEBUG
-  Serial.println("Waiting for an ISO14443A Card ...");
-  #endif
+  // Wait for SETUP packet on serial
+  while (!Serial.available())
+  {
+    delay(100);
+  }
+
+  // Read in four bytes - these should be the SETUP packet
+  uint8_t setup[4];
+  for (int i = 0; i < 4; i++)
+  {
+    setup[i] = Serial.read();
+  }
+  flushRemaining();
+
+  DataPacket* received = new DataPacket(setup, 4);
+  if (received->getOpcode() != OPCODE_SETUP)
+  {
+    //panic
+    errorDuringSetup = true;
+    
+  } else {  
+    DataPacket *data = new DataPacket(OPCODE_DATA, 1, MODULE_ID, sizeof(MODULE_ID)/sizeof(MODULE_ID[0]));
+  }
 }
 
 
 void loop(void) {
+  
+  
   uint8_t success;
   uint8_t *uid;  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
@@ -114,3 +112,75 @@ void loop(void) {
     uid = readCard(uidLength);
   }
 }
+
+static void flushRemaining()
+{
+  while (Serial.available()) Serial.read();
+}
+
+static uint8_t sendData(uint8_t* data, uint16_t dataLen)
+{
+  uint16_t numPackets = 1 + ((dataLen - 1) / MAX_DATA_BYTES);
+  bool error = false;
+
+  for (uint16_t i = 0; i < numPackets && !error; i++)
+  {
+    // Send DATA
+    uint8_t* ptr = data + i*508;
+    DataPacket* data = new DataPacket(OPCODE_DATA, i+1, ptr, dataLen - 508*i);
+
+    uint8_t byteBuffer[data->getPacketSize()];
+    uint16_t numBytes = data->toByteArray(byteBuffer);
+
+    uint16_t j;
+    for (j = 0; j < numBytes; j++)
+    {
+      Serial.write(byteBuffer[i]);
+    }
+
+    // Receive ACK
+    j = 0;
+    while(j++ < 30 && !Serial.available())
+    {
+      delay(100);
+    }
+
+    if (j == 30)
+    {
+      error = true;
+    }
+    else {
+      uint8_t ack[6];
+      
+      // Read in three bytes - check for OPCODE_ERROR first
+      for (j = 0; j < 4; j++)
+      {
+        ack[j] = Serial.read();
+      }
+
+      if ((packet_opcode_t)((ack[1] << 8) + (ack[2] & 0xFF)) == OPCODE_ACK)
+      {
+        // Read in the rest of the ACK packet
+        for (; j < 6; j++)
+        {
+          ack[j] = Serial.read();
+        }
+
+        uint16_t ackNum = (ack[3] << 8) + (ack[4] & 0xFF);
+        
+        if (ackNum != i+1)
+        {
+          error = true;
+        }
+      }
+      else
+      {
+        // Read in the rest of the bad packet
+        error = true;
+      }
+    }
+  }
+  
+  return error;
+}
+

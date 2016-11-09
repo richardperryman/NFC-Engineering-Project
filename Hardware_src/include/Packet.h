@@ -1,5 +1,5 @@
-#ifndef DATAPACKET_H
-#define DATAPACKET_H
+#ifndef PACKET_H
+#define PACKET_H
 
 #ifdef ARDUINO
 #include "Arduino.h"
@@ -20,11 +20,26 @@
 #define MAX_ENCODED_BYTES 512
 #define PACKET_FLAG 0x7E
 
-class DataPacket
+class Packet
 {
 private:
-    bool isEncoded;
     packet_opcode_t opcode;
+public:
+    Packet(packet_opcode_t opcode);
+    packet_opcode_t getOpcode();
+};
+
+/*class ACKPacket : public Packet
+{
+private:
+    uint16_t blockNum;
+public:
+    uint16_t getBlockNum();
+}
+
+class DATAPacket : public Packet
+{
+private:
     uint16_t blockNum;
     uint8_t decodedData[MAX_DATA_BYTES];
     uint8_t encodedData[MAX_ENCODED_BYTES];
@@ -35,20 +50,27 @@ private:
     uint16_t getDecodedSize();
     uint16_t encodeData();
     uint16_t decodeData();
-    
 public:
-    DataPacket(uint8_t packetData[], uint16_t dataLen); // For decoding
-    DataPacket(packet_opcode_t opcode); // SETUP Packet constructor
-    DataPacket(packet_opcode_t opcode, uint16_t blockNum); // ACK packet constructor
-    #ifndef ARDUINO
-    DataPacket(packet_opcode_t opcode, std::string data); // For encoding (DATA packet constructor)
-    #endif
-    DataPacket(packet_opcode_t opcode, uint16_t blockNum, uint8_t data[], uint16_t dataLen); // For encoding (DATA packet constructor)
-    packet_opcode_t getOpcode();
-    uint16_t getDataSize();
-    uint16_t getData(uint8_t* destination);
-    uint16_t getPacketSize();
-    uint16_t toByteArray(uint8_t* destination);
+    
+}
+
+class ERRORPacket : public Packet
+{
+private:
+    uint16_t errorCode;
+    uint8_t errorMsg;
+}
+
+class REQPacket : public Packet
+{
+private:
+    uint16_t numBlocks;
+}*/
+
+class SETUPPacket : public Packet
+{
+public:
+    SETUPPacket();
 };
 
-#endif // DATAPACKET_H
+#endif // PACKET_H

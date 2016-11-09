@@ -7,9 +7,7 @@
 #include <Debug.h>
 #include <Serial.h>
 
-using namespace std;
-
-Serial::Serial(string portName)
+Serial::Serial(std::string portName)
 {
     this->portName = portName;
     this->serialPort = -1;
@@ -52,11 +50,11 @@ int Serial::openPort(int baudRate)
     // O_NOCTTY = this process "own" the port
     // O_NDELAY = use non-blocking I/O
     // open returns a file descriptor which will be stored as an int
-    serialPort = open(this->portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
+    serialPort = open(portName.c_str(), O_RDWR | O_NOCTTY | O_NDELAY | O_NONBLOCK);
 
     if (serialPort == -1)
     {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port " + this->portName + ".");
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port " + portName + ".");
         return -1;
     }
     
@@ -82,7 +80,7 @@ int Serial::openPort(int baudRate)
     portOptions.c_oflag &= ~OPOST; // No local output processing
     
     portOptions.c_cc[VMIN] = 0; // Minimum number of bytes to return from read() is 0
-    portOptions.c_cc[VTIME] = 100; // Wait up to 10 seconds for a character
+    portOptions.c_cc[VTIME] = 50; // Wait up to 5 seconds for a character
 
     // Flush and push options to port
     tcsetattr(serialPort, TCSANOW | TCSAFLUSH, &portOptions);
@@ -111,7 +109,7 @@ void Serial::flush()
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
         return;
     }
     
@@ -122,7 +120,7 @@ int Serial::dataAvailable()
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
         return -1;
     }
     
@@ -130,20 +128,20 @@ int Serial::dataAvailable()
     
     if (ioctl(serialPort, FIONREAD, &result) == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in " + this->portName + " failed.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in " + portName + " failed.");
         result = -1;
     }
     
     return result;
 }
 
-char Serial::readChar()
+uint8_t Serial::readChar()
 {
-    char result;
+    uint8_t result;
     
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
         return -1;
     }
     
@@ -152,16 +150,80 @@ char Serial::readChar()
         return -1;
     }
     
-    return result;
+    return ((uint8_t)result & 0xFF);
 }
 
-void Serial::writeData(string data)
+DataPacket* Serial::receivePacket()
+{
+    uint8_t buffer;
+    uint8_t *temp;
+    
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        return nullptr;
+    }
+    
+    if ((buffer = readChar()) == 1)
+    {
+        return nullptr;
+    }
+    else
+    {
+        if (buffer == PACKET_FLAG)
+        {
+            uint16_t i = 0;
+            temp = (uint8_t*)malloc(sizeof(uint8_t) * 516);
+            do
+            {
+                temp[i++] = buffer;
+                buffer = readChar();
+            } while (buffer != PACKET_FLAG && buffer != -1);
+            
+            temp[i++] = buffer; // Write the last PACKET_FLAG
+            return new DataPacket(temp, i+1);
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+}
+
+void Serial::writeChar(uint8_t character)
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + this->portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        return;
+    }
+    
+    write(serialPort, &character, 1);   
+}
+
+void Serial::writeData(std::string data)
+{
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
         return;
     }
     
     write(serialPort, data.c_str(), strlen(data.c_str()));
+}
+
+void Serial::sendPacket(DataPacket packet)
+{
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        return;
+    }
+    
+    uint16_t numBytes = packet.getPacketSize();
+    uint8_t packetBytes[numBytes];
+    packet.toByteArray(packetBytes);
+    
+    write(serialPort, packetBytes, numBytes);
+    
 }

@@ -3,7 +3,6 @@
  
 #include <Types.h>
 #include <Debug.h>
-using namespace std;
 
 /**
  * @class GPIOPin
@@ -81,19 +80,19 @@ using namespace std;
 class GPIOPin
 {
 private:
-    string pinNum;
-    int setDirection(string dir); // Set the direction of this pin
+    std::string pinNum;
+    int setDirection(std::string dir); // Set the direction of this pin
  
 public:
     GPIOPin(); // Default constructor, create a GPIOPin for GPIO4
-    GPIOPin(string gnum); // Oveloaded constructor, create a GPIOPin for GPIOx
-    string getPin(); // Returns the GPIO pin number
+    GPIOPin(std::string gnum); // Oveloaded constructor, create a GPIOPin for GPIOx
+    std::string getPin(); // Returns the GPIO pin number
     int exportPin(); // Exports GPIO
     int unexportPin(); // Unexport GPIO
     int setOutput(); // Set up this pin as output
     int setInput(); // Set up this pin as input
-    int setValue(string value); // Send value on the pin
-    int getValue(string &value); // Get value from the pin
+    int setValue(std::string value); // Send value on the pin
+    int getValue(std::string &value); // Get value from the pin
 };
  
 #endif // GPIOPIN_H

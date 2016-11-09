@@ -2,7 +2,7 @@
 CC = g++
 DEBUG = -DDEBUG
 INCLUDE = ./include
-LFLAGS = -Wall -I$(INCLUDE)
+LFLAGS = -Wall -I$(INCLUDE) -std=c++11
 CFLAGS = $(LFLAGS) -c
 
 # File stuff
@@ -26,7 +26,7 @@ $(EXECUTABLE) : $(OBJECTS)
 main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/Serial.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) main.cpp
 	
-DataPacket.o : $(INCLUDE)/DataPacket.h DataPacket.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
+DataPacket.o : $(INCLUDE)/DataPacket.h DataPacket.cpp $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) DataPacket.cpp
 
 GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h

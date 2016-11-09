@@ -1,12 +1,9 @@
 
-#include <string>
 #include <iostream>
 #include <Debug.h>
 
-using namespace std;
-
 #ifdef DEBUG
-static string levelToString(debug_level_t level)
+static std::string levelToString(debug_level_t level)
 {
 	switch(level)
 	{
@@ -24,10 +21,10 @@ static string levelToString(debug_level_t level)
 }
 #endif
 
-void DEBUG_LOG(debug_level_t level, string function, string msg)
+void DEBUG_LOG(debug_level_t level, std::string function, std::string msg)
 {
 	#ifdef DEBUG
-	cout << levelToString(level) << " - " << function << ": " << msg << endl;
+	std::cout << levelToString(level) << " - " << function << ": " << msg << std::endl;
 	#endif
 	return;
 }

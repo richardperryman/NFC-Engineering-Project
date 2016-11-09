@@ -2,30 +2,28 @@
 #include <fstream>
 #include <iostream>
 #include <GPIOPin.h>
- 
-using namespace std;
 
 GPIOPin::GPIOPin()
 {
     this->pinNum = "4"; // GPIO4 is default because reasons
 }
 
-GPIOPin::GPIOPin(string gnum)
+GPIOPin::GPIOPin(std::string gnum)
 {
 	this->pinNum = gnum;
 }
  
-string GPIOPin::getPin()
+std::string GPIOPin::getPin()
 {
     return this->pinNum;
 }
 
 int GPIOPin::exportPin()
 {
-	string export_path = "/sys/class/gpio/export";
-	ofstream exportgpio(export_path.c_str()); // Open export file
+	std::string export_path = "/sys/class/gpio/export";
+	std::ofstream exportgpio(export_path.c_str()); // Open export file
 	
-	if (exportgpio < 0)
+	if (!exportgpio)
 	{
 		DEBUG_LOG(CRITICAL, __FUNCTION__, "Unable to export GPIO"+this->pinNum);
 		return -1;
@@ -38,10 +36,10 @@ int GPIOPin::exportPin()
 
 int GPIOPin::unexportPin()
 {
-	string unexport_path = "/sys/class/gpio/unexport";
-	ofstream unexportgpio(unexport_path.c_str()); // Open unexport file
+	std::string unexport_path = "/sys/class/gpio/unexport";
+	std::ofstream unexportgpio(unexport_path.c_str()); // Open unexport file
 	
-	if (unexportgpio < 0)
+	if (!unexportgpio)
 	{
 		DEBUG_LOG(CRITICAL, __FUNCTION__, "Unable to unexport GPIO"+this->pinNum);
 		return -1;
@@ -52,12 +50,12 @@ int GPIOPin::unexportPin()
 	return 0;
 }
 
-int GPIOPin::setDirection(string dir)
+int GPIOPin::setDirection(std::string dir)
 {
-	string setdir_path = "/sys/class/gpio/gpio" + this->pinNum + "/direction";
-	ofstream setdirgpio(setdir_path.c_str()); // Open direction file for this pin
+	std::string setdir_path = "/sys/class/gpio/gpio" + this->pinNum + "/direction";
+	std::ofstream setdirgpio(setdir_path.c_str()); // Open direction file for this pin
 	
-	if (setdirgpio < 0)
+	if (!setdirgpio)
 	{
 		DEBUG_LOG(CRITICAL, __FUNCTION__, "Unable to set direction of GPIO"+this->pinNum);
 	}
@@ -77,12 +75,12 @@ int GPIOPin::setInput()
 	return setDirection(GPIO_IN);
 }
 
-int GPIOPin::setValue(string value)
+int GPIOPin::setValue(std::string value)
 {
-	string setval_path = "/sys/class/gpio/gpio" + this->pinNum + "/value";
-	ofstream setvalgpio(setval_path.c_str()); // Open value file for this pin
+	std::string setval_path = "/sys/class/gpio/gpio" + this->pinNum + "/value";
+	std::ofstream setvalgpio(setval_path.c_str()); // Open value file for this pin
 	
-	if (setvalgpio < 0)
+	if (!setvalgpio)
 	{
 		DEBUG_LOG(CRITICAL, __FUNCTION__, "Unable to set the value of GPIO"+this->pinNum);
 		return -1;
@@ -93,12 +91,12 @@ int GPIOPin::setValue(string value)
 	return 0;
 }
 
-int GPIOPin::getValue(string &value)
+int GPIOPin::getValue(std::string &value)
 {
-	string getval_path = "/sys/class/gpio/gpio" + this->pinNum + "/value";
-	ifstream getvalgpio(getval_path.c_str()); // Open value file for this pin
+	std::string getval_path = "/sys/class/gpio/gpio" + this->pinNum + "/value";
+	std::ifstream getvalgpio(getval_path.c_str()); // Open value file for this pin
 	
-	if (getvalgpio < 0)
+	if (!getvalgpio)
 	{
 		DEBUG_LOG(CRITICAL, __FUNCTION__, "Unable to get value of GPIO"+this->pinNum);
 		return -1;
