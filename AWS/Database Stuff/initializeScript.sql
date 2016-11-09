@@ -35,7 +35,6 @@ CREATE TABLE Locks(
 	Lock_Id int NOT NULL auto_increment,
 	Name varchar(255) NOT NULL,
 	BelongsTo varchar(255) NOT NULL,
-	lockKey varchar(255) NOT NULL,
 	PRIMARY KEY (Lock_Id)
 );
 
@@ -50,13 +49,3 @@ CREATE TABLE Registrations(
 );
 
 
--- Add some basic information to make sure it works (no foreign keys)
-start transaction;
-
-INSERT INTO Users (Name, Rights) VALUES ("Craig", "Customer");
-INSERT INTO Users (Name, Rights) VALUES ("Richard", "Admin");
-
-INSERT INTO Locks (Name, BelongsTo, lockKey) VALUES ("Lock1", "Walmart", "QfEUdIYqjc");
-INSERT INTO Locks (Name, BelongsTo, lockKey) VALUES ("Lock2", "Dymon", "BoIiYdEsZE");
-
-commit; -- Ends the transaction
