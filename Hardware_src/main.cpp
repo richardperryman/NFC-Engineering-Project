@@ -67,16 +67,13 @@ int main()
         for (uint8_t i = 0; i < modules.size(); i++)
         {
             Serial module = modules.at(i);
-            if (module.dataAvailable())
-            {
-                uint8_t destination[1024];
-                getToken(module, destination);
-            }
+            
+            //
         }
         
         usleep(300);
     }
-    
+
     teardown();
     
 	return 0;
@@ -160,28 +157,28 @@ static std::vector<Serial> verifyModules()
     {
         Serial *usb = new Serial(devices.at(i));
         usb->openPort(SERIAL_BAUD_NFC);
+
         usb->sendPacket(*setup);
         usb->flush();
+
+        while (usb->dataAvailable() < 0)
+        {
+            // Block for response
+        }
         
-        uint8_t chaar = usb->readChar();
-        printf("Received char 0x%02X\n", chaar);
-        /*DataPacket* response = usb->receivePacket();
+        DataPacket* response = usb->receivePacket();
         if (response == nullptr)
         {
             DEBUG_LOG(WARNING, __FUNCTION__, "Device on " + devices.at(i) + " is not a valid authentication module.");
         }
         else
         {
-            printf("Received packet: ");
             uint8_t bytes[512];
-            uint16_t bytesReceived = response->toByteArray(bytes);
-            for (int j = 0; j < bytesReceived; j++) {
-                printf("0x%02X ", bytes[j]);
-            }
-            printf("\n");
+            response->getData(bytes);
+            printf("Found module with ID: %s\n", bytes);
             
             modules.push_back(*usb);
-        }*/
+        }
     }
 	// Package up lock ID, modules, fire this off to the server to verify
 	

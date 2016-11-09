@@ -113,7 +113,11 @@ void Serial::flush()
         return;
     }
     
-    tcflush(serialPort, TCIOFLUSH);
+    int result = tcdrain(serialPort);
+    if (result != 0)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "tcdrain returned error code " + std::to_string(result));
+    }
 }
 
 int Serial::dataAvailable()
@@ -125,8 +129,18 @@ int Serial::dataAvailable()
     }
     
     int result;
+
+    // Deal with race condition
+    fd_set rfd;
+    FD_ZERO(&rfd);
+    FD_SET(serialPort, &rfd);
+    timeval tv = { 0 };
+    select(serialPort+1, &rfd, 0, 0, &tv);
+    if (!FD_ISSET(serialPort, &rfd)) {
+        return -2;
+    }
     
-    if (ioctl(serialPort, FIONREAD, &result) == -1)
+    if (ioctl(serialPort, FIONREAD, &result) < 0)
     {
         DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in " + portName + " failed.");
         result = -1;
@@ -150,13 +164,13 @@ uint8_t Serial::readChar()
         return -1;
     }
     
-    return ((uint8_t)result & 0xFF);
+    return result;
 }
 
 DataPacket* Serial::receivePacket()
 {
     uint8_t buffer;
-    uint8_t *temp;
+    uint8_t temp[516];
     
     if (serialPort == -1)
     {
@@ -173,7 +187,6 @@ DataPacket* Serial::receivePacket()
         if (buffer == PACKET_FLAG)
         {
             uint16_t i = 0;
-            temp = (uint8_t*)malloc(sizeof(uint8_t) * 516);
             do
             {
                 temp[i++] = buffer;

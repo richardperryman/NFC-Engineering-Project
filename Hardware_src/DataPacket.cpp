@@ -11,18 +11,27 @@ DataPacket::DataPacket(uint8_t packetData[], uint16_t dataLen)
     
     // First byte is the opening FLAG byte so ignore it
     this->opcode = (packet_opcode_t)((packetData[1] << 8) + (packetData[2] & 0xFF));
-    this->blockNum = (uint16_t)((packetData[3] << 8) + (packetData[4] & 0xFF));
     
-    clearArrays();
-      
-    // Read encoded data in until the null character
-    uint16_t index = 5;
-    do
+    if (dataLen > 4)
     {
-        encodedData[index-5] = packetData[index];
-    } while (packetData[index++] != '\0' && index < dataLen-1);
+        this->blockNum = (uint16_t)((packetData[3] << 8) + (packetData[4] & 0xFF));
+    
+        clearArrays();
+          
+        // Read encoded data in until the null character
+        uint16_t index = 5;
+        do
+        {
+            encodedData[index-5] = packetData[index];
+            index++;
+        } while (index < dataLen-1);
 
-    this->dataLen = index-3;
+        this->dataLen = index-3;
+    }
+    else
+    {
+        this->dataLen = dataLen - 2;
+    }
 }
 
 DataPacket::DataPacket(packet_opcode_t opcode)
@@ -264,7 +273,6 @@ uint16_t DataPacket::toByteArray(uint8_t* destination)
     
     if (blockNum != 0xFFFF)
     {
-        printf("Blocknum is not -1\n");
         destination[i++] = (blockNum >> 8) & 0xFF;
         destination[i++] = opcode & 0xFF;
     }
@@ -272,7 +280,6 @@ uint16_t DataPacket::toByteArray(uint8_t* destination)
     uint16_t offset = i;
     for (; i < this->getEncodedSize() + offset; i++)
     {
-        printf("Did some encoded stuff\n");
         destination[i] = encodedData[i - offset];
     }
     
