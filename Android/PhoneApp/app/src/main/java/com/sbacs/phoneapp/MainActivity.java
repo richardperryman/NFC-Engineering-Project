@@ -1,5 +1,6 @@
 package com.sbacs.phoneapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 public class MainActivity extends AppCompatActivity {
+    public final static String EXTRA_MESSAGE = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,5 +69,12 @@ public class MainActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
+    }
+
+    public void login(View view) {
+        Intent loginIntent = new Intent(this, UserActivity.class);
+        String message = "I did a success";
+        loginIntent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(loginIntent);
     }
 }

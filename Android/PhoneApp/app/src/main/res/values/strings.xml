@@ -4,6 +4,7 @@
     <string name="ping_server">Ping Server</string>
     <string name="get_users">Get Users</string>
     <string name="get_locks">Get Locks</string>
+    <string name="login">Login</string>
     <string name="sbacs_url">http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/</string>
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>
