@@ -14,8 +14,6 @@ import com.android.volley.toolbox.Volley;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final String SBACS_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public void pingServer(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.GET, SBACS_URL, genericResponseListener(results),
+        String url = getResources().getText(R.string.sbacs_url).toString();
+        StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
     }
@@ -51,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     public void getUsers(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = SBACS_URL + "users";
+        String url = getResources().getText(R.string.sbacs_url).toString() +
+                getResources().getText(R.string.user_table_name).toString();
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public void getLocks(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = SBACS_URL + "locks";
+        String url = getResources().getText(R.string.sbacs_url).toString() +
+                getResources().getText(R.string.lock_table_name).toString();
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
