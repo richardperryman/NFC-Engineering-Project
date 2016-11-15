@@ -13,10 +13,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
 public class MainActivity extends AppCompatActivity {
-    public final static String EXTRA_MESSAGE = "";
+    public final static String EXTRA_MESSAGE = "com.SBACS.app.MESSAGE";
+    public final static String USER_ID = "com.SBACS.app.USER_ID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public void pingServer(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getResources().getText(R.string.sbacs_url).toString();
+        String url = getResources().getString(R.string.sbacs_url);
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
@@ -54,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     public void getUsers(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getResources().getText(R.string.sbacs_url).toString() +
-                getResources().getText(R.string.user_table_name).toString();
+        String url = getResources().getString(R.string.sbacs_url) +
+                getResources().getString(R.string.user_table_name);
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
@@ -64,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
     public void getLocks(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getResources().getText(R.string.sbacs_url).toString() +
-                getResources().getText(R.string.lock_table_name).toString();
+        String url = getResources().getString(R.string.sbacs_url) +
+                getResources().getString(R.string.lock_table_name);
         StringRequest request = new StringRequest(Request.Method.GET, url, genericResponseListener(results),
                 genericErrorListener(results));
         queue.add(request);
@@ -73,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View view) {
         Intent loginIntent = new Intent(this, UserActivity.class);
-        String message = "I did a success";
+        String message = "I did a success: ";
         loginIntent.putExtra(EXTRA_MESSAGE, message);
+        loginIntent.putExtra(USER_ID, 1);
         startActivity(loginIntent);
     }
 }

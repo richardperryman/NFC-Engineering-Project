@@ -15,7 +15,7 @@ public class UserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         TextView tempView = new TextView(this);
-        tempView.setText(intent.getStringExtra(MainActivity.EXTRA_MESSAGE));
+        tempView.setText(intent.getStringExtra(MainActivity.EXTRA_MESSAGE) + intent.getIntExtra(MainActivity.USER_ID, -1));
         ((ViewGroup) findViewById(R.id.activity_user)).addView(tempView);
     }
 }
