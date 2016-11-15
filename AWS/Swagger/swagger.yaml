@@ -269,11 +269,6 @@ paths:
           description: AuthValue of the authenticator
           required: true
           type: string
-		- name: authSalt
-          in: query
-          description: AuthSalt of the authenticator
-          required: true
-          type: string
       tags:
         - Authenticators
       responses:
@@ -304,11 +299,6 @@ paths:
         - name: authValue
           in: query
           description: AuthValue of the authenticator
-          required: true
-          type: string
-		- name: authSalt
-          in: query
-          description: AuthSalt of the authenticator
           required: true
           type: string
       tags:
@@ -429,11 +419,6 @@ paths:
           description: Who owns the lock
           required: true
           type: string
-        - name: encryptedKey
-          in: query
-          description: An encrypted key that is used to open the lock
-          required: true
-          type: string
       tags:
         - Locks
       responses:
@@ -490,7 +475,7 @@ paths:
         - Access
       responses:
         200:
-          description: The encrypted key from the lock (see encryptedKey parameter in locks PUT)
+          description: The encrypted key from the lock
           schema:
             type: string
         401:

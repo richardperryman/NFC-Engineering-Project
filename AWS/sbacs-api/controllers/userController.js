@@ -83,13 +83,66 @@ function handlePost(req,res){
 }
 
 function handlePut(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var name = parsedRequest.query['name'];
+	var rights = parsedRequest.query['rights'];
+	if(name == undefined || rights == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [name,rights];
+	queryString = mysql.format(QUERY_PUT,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'ID of created row: ' + rows.insertId;
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handleDelete(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var user_id = parsedRequest.query['user_id'];
+	if(user_id == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [user_id];
+	queryString = mysql.format(QUERY_DELETE,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'Successfully deleted row';
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }

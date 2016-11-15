@@ -3,8 +3,10 @@ const QUERY_GET_WITH_AUTH = 'SELECT * FROM sbacsDb.Authenticators WHERE Auth_Id 
 const QUERY_GET_WITH_IDENTITY = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.IdentityToAuth as i, sbacsDb.Authenticators as a WHERE i.Identity_Id = ? AND i.Auth_Id = a.Auth_Id';
 const QUERY_GET_WITH_USER = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Identities AS i, sbacsDb.IdentityToAuth as ita, sbacsDb.Authenticators as a WHERE i.User_Id = ? AND i.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
 const QUERY_PUT = 'INSERT INTO sbacsDb.Authenticators (AuthType, AuthKey, AuthSalt) VALUES (?, ?, ?)';
+const QUERY_PUT_IDENTITY = 'INSERT INTO sbacsDb.IdentityToAuth (Identity_Id, Auth_Id) VALUES (?, ?)';
+const QUERY_DELETE_IDENTITY = 'DELETE FROM sbacsDb.IdentityToAuth WHERE Auth_Id = ?';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
-const QUERY_POST = 'UPDATE sbacsDb.Authenticators SET AuthType = ?, AuthKey = ?, AuthSalt = ? WHERE Auth_Id = ?';
+const QUERY_POST = 'UPDATE sbacsDb.Authenticators SET AuthType = ?, AuthKey = ? WHERE Auth_Id = ?';
 
 
 var url = require('url');
@@ -66,8 +68,7 @@ function handleGet(req,res){
 		var inserts = [auth_id];
 		queryString = mysql.format(QUERY_GET_WITH_AUTH,inserts);
 	}
-	
-	console.log(queryString);
+
 	
 	// Execute query, return needed results
 	db.performQuery(queryString, function(err,rows,fields){
@@ -93,13 +94,92 @@ function handlePost(req,res){
 }
 
 function handlePut(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var authType = parsedRequest.query['authType'];
+	var authValue = parsedRequest.query['authValue'];
+	var identity_id = parsedRequest.query['identity_id'];
+	if(authType == undefined || authValue == undefined || identity_id == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	// Make this an actual salt
+	var salt = 'saltySalt';
+	var inserts = [authType,authValue,salt];
+	queryString = mysql.format(QUERY_PUT,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'ID of created row: ' + rows.insertId;
+			inserts = [identity_id,rows.insertId];
+			queryString = mysql.format(QUERY_PUT_IDENTITY,inserts);
+			db.performQuery(queryString, function(err,rows,fields){
+				if(!err){
+					res.writeHead(200);
+					res.write(formattedOut);
+					res.end();
+				} else {
+					// Handle error
+					console.log('Error with DB');
+					res.writeHead(500);
+					res.write('Unable to complete request.');
+					res.end();
+				}
+			});
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handleDelete(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var auth_id = parsedRequest.query['auth_id'];
+	if(auth_id == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [auth_id];
+	queryString = mysql.format(QUERY_DELETE_IDENTITY,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			queryString = mysql.format(QUERY_DELETE,inserts);
+			db.performQuery(queryString, function(err,rows,fields){
+				if(!err){	
+					var formattedOut = 'Successfully deleted row';
+					res.writeHead(200);
+					res.write(formattedOut);
+					res.end();
+				} else {
+					// Handle error
+					console.log('Error with DB');
+					res.writeHead(500);
+					res.write('Unable to complete request.');
+					res.end();
+				}
+			});
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
