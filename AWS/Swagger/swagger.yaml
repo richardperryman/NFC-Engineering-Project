@@ -61,12 +61,12 @@ paths:
         - name: name
           in: query
           description: Name of the user
-          required: false
+          required: true
           type: string
         - name: rights
           in: query
           description: Rights level of the user (Customer/Admin)
-          required: false
+          required: true
           type: string
       tags:
         - Users
@@ -385,12 +385,12 @@ paths:
         - name: name
           in: query
           description: Name of the lock
-          required: false
+          required: true
           type: string
         - name: belongsTo
           in: query
           description: Who owns the lock
-          required: false
+          required: true
           type: string
       tags:
         - Locks
