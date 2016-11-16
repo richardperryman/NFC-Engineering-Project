@@ -18,6 +18,6 @@
  * @param[in] msg The message to log
  */
 
-void DEBUG_LOG(debug_level_t level, std::string function, std::string msg);
+void DEBUG_LOG(debug_level_t level, const char* function, const char* format, ... );
 
 #endif // DEBUG_H

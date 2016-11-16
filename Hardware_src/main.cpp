@@ -3,11 +3,17 @@
 #include <vector>
 #include <unistd.h>
 #include <stdio.h>
+#include <string>
+#include <sstream>
+#include <chrono>
+#include <thread>
 #include <sys/stat.h>
 #include <Types.h>
 #include <Serial.h>
 #include <GPIOPin.h>
-#include <DataPacket.h>
+#include <DecodedPacket.h>
+#include <EncodedPacket.h>
+#include <Debug.h>
 
 // To do:
 // Read configuration file at start up (server URL, lock ID)
@@ -20,7 +26,7 @@
 // Server encrypts yes/no with one-time-use key and sends it back to the Pi
 
 // For QR:
-// User takes photo of code (the code is the lock ID), sends to server
+// User takes photo of code (the code is the lock ID), sends code to server
 // Server forwards user info to Pi (server is a authentication module)
 
 static uint32_t LOCK_ID;
@@ -30,72 +36,10 @@ static GPIOPin* RED;
 // static GPIOPin* RELAY_SIGNAL;
 
 static void maintenanceLoop();
+static void pollingLoop(std::vector<Serial> modules);
 static uint8_t readConfiguration(std::string filepath);
-static void setUpLEDs();
-static void teardown();
 static std::vector<Serial> verifyModules();
-static uint8_t getToken(Serial port, uint8_t* destination);
-
-int main()
-{
-    uint8_t status = 0;
-    std::string filepath = "/not/real/rightnow.cfg";
-    
-    std::vector<Serial> modules;
-    
-    setUpLEDs();
-    status = readConfiguration(filepath);
-    
-    if (status != 0)
-    {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from " + filepath);
-        maintenanceLoop();
-    }
-    
-    modules = verifyModules();
-    
-    if (modules.size() == 0)
-    {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
-        maintenanceLoop();
-    }
-    
-    BLUE->setValue(GPIO_HIGH);   
-    while(true)
-    {
-        // Poll each device
-        for (uint8_t i = 0; i < modules.size(); i++)
-        {
-            Serial module = modules.at(i);
-            
-            //
-        }
-        
-        usleep(300);
-    }
-
-    teardown();
-    
-	return 0;
-}
-
-static uint8_t readConfiguration(std::string filepath)
-{
-    LOCK_ID = 0xDEADBEEF;
-    
-	return 0;
-}
-
-static void maintenanceLoop()
-{
-    while(true)
-    {
-        RED->setValue(GPIO_HIGH);
-        sleep(1);
-        RED->setValue(GPIO_LOW);
-        sleep(1);
-    }
-}
+static uint16_t getToken(Serial port, uint8_t* destination);
 
 static void setUpLEDs()
 {
@@ -123,35 +67,131 @@ static void teardown()
 	RED->unexportPin();	
 
 	sleep(1);
+    
+    delete(GREEN);
+    delete(BLUE);
+    delete(RED);
+}
+
+void accessGranted()
+{
+    BLUE->setValue(GPIO_LOW);
+    GREEN->setValue(GPIO_HIGH);
+    // RELAY_SIGNAL->setValue(GPIO_HIGH);
+    
+    sleep(3); // Disengage the lock for three seconds
+    
+    BLUE->setValue(GPIO_HIGH);
+    GREEN->setValue(GPIO_LOW);
+    // RELAY_SIGNAL->setValue(GPIO_LOW);
+}
+
+void accessDenied()
+{
+    BLUE->setValue(GPIO_LOW);
+    RED->setValue(GPIO_HIGH);
+    
+    sleep(1); // Show red for one second
+    
+    BLUE->setValue(GPIO_HIGH);
+    RED->setValue(GPIO_LOW);
+}
+
+int main()
+{
+    uint8_t status = 0;
+    std::string filepath = "/not/real/rightnow.cfg";
+    
+    std::vector<Serial> modules;
+
+    setUpLEDs();
+    status = readConfiguration(filepath);
+    
+    if (status != 0)
+    {
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath);
+    }
+    
+    modules = verifyModules();
+    
+    if (modules.size() == 0)
+    {
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
+        maintenanceLoop();
+    } else {
+        pollingLoop(modules);
+    }
+    
+    teardown();
+    return 0;
+}
+
+static uint8_t readConfiguration(std::string filepath)
+{
+    LOCK_ID = 0xDEADBEEF;
+    
+	return 0;
+}
+
+static void maintenanceLoop()
+{
+    while(true)
+    {
+        RED->setValue(GPIO_HIGH);
+        sleep(1);
+        RED->setValue(GPIO_LOW);
+        sleep(1);
+    }
+}
+
+static void pollingLoop(std::vector<Serial> modules)
+{
+    BLUE->setValue(GPIO_HIGH);   
+    while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
+    {
+        // Poll each device
+        for (uint8_t i = 0; i < modules.size(); i++)
+        {
+            Serial module = modules.at(i);
+            
+            if (module.dataAvailable())
+            {
+                DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
+                uint8_t test[512];
+                getToken(module, test);
+            }
+        }
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }   
 }
 
 static std::vector<Serial> verifyModules()
 {
     uint8_t i = 0;
-    uint8_t result;
-    const std::string path = "/dev/ttyACM";
-    std::string fullpath;
-    struct stat buffer;
-        
+    
     std::vector<std::string> devices; // Not every ACMx device is a module
     std::vector<Serial> modules;
-        
+
     // Get all device paths on /dev/ttyACM*
-    do
-    {
-        fullpath = path + std::to_string(i);
-        result = stat(fullpath.c_str(), &buffer);
-        
-        if (result == 0)
-        {
-            printf("Found device on %s\n", fullpath.c_str());
-            devices.push_back(fullpath);
-        }
-        i++;
-    } while (result == 0);
+    FILE * f = popen( "find /dev -name ttyACM*", "r" );
+    if ( f == 0 ) {
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Could not get device listing from /dev.");
+        return modules;
+    }
+    
+    const int BUFSIZE = 260; // 255 + 5 chars for "/dev/"
+    char buf[ BUFSIZE ];
+    
+    while( fgets( buf, BUFSIZE,  f ) ) {
+        std::string* path= new std::string(buf);
+        devices.push_back((*path).substr(0, (*path).length()-1));
+        DEBUG_LOG(INFO, __FUNCTION__, "Found device on %s", ((*path).substr(0, (*path).length()-1)).c_str());
+    }
+    pclose( f );
     
 	// Get String names from modules
-	DataPacket* setup = new DataPacket(OPCODE_SETUP);
+	EncodedPacket* setup = new EncodedPacket(OPCODE_SETUP, 0x0000);
     
     for (i = 0; i < devices.size(); i++)
     {
@@ -161,37 +201,38 @@ static std::vector<Serial> verifyModules()
         usb->sendPacket(*setup);
         usb->flush();
 
-        while (usb->dataAvailable() < 0)
-        {
-            // Block for response
-        }
-        
-        DataPacket* response = usb->receivePacket();
+        DecodedPacket* response = usb->receivePacket();
         if (response == nullptr)
         {
-            DEBUG_LOG(WARNING, __FUNCTION__, "Device on " + devices.at(i) + " is not a valid authentication module.");
+            DEBUG_LOG(WARNING, __FUNCTION__, "Device on %s is not a valid authentication module.", devices.at(i).c_str());
         }
         else
         {
-            uint8_t bytes[512];
-            response->getData(bytes);
-            printf("Found module with ID: %s\n", bytes);
+            uint8_t responseData[response->getDataSize()];
+            response->getData(responseData);
             
+            DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
             modules.push_back(*usb);
+            
+            // Send ACK back
+            EncodedPacket* ack = new EncodedPacket(OPCODE_ACK, response->getBlockNumber());
+            usb->sendPacket(*ack);
+            delete(ack);
         }
     }
+    
+    delete(setup);
 	// Package up lock ID, modules, fire this off to the server to verify
 	
-	
-	// Return happy or sad
 	return modules;
 }
 
 // Currently will just print stuff
 // todo: more robust error handling, result should be stored to a temporary buffer first, then copied
-static uint8_t getToken(Serial port, uint8_t* destination)
+static uint16_t getToken(Serial port, uint8_t* destination)
 {
-	DataPacket* receivedPacket = port.receivePacket();
+    // Receive REQUEST
+	DecodedPacket* receivedPacket = port.receivePacket();
     
     if (receivedPacket == nullptr)
     {
@@ -200,65 +241,54 @@ static uint8_t getToken(Serial port, uint8_t* destination)
     }
     else
     {
-        if (receivedPacket->getOpcode() != OPCODE_REQ)
+        if (receivedPacket->getOpcode() != OPCODE_REQUEST)
         {
             DEBUG_LOG(ERROR, __FUNCTION__, "Received request packet with bad opcode.");
             return -1;
         }
         else
         {
-            uint8_t packetData[MAX_DATA_BYTES];
-            uint16_t numBytes = receivedPacket->getData(packetData);
+            uint16_t numDataPackets = receivedPacket->getBlockNumber();
+            uint16_t currentDataPacket = 0x0000;
             
-            if (numBytes != 2)
+            DEBUG_LOG(INFO, __FUNCTION__, "Expecting %d data packets.", numDataPackets);
+            
+            bool error = false;
+            for (; currentDataPacket < numDataPackets + 1 && !error; currentDataPacket++)
             {
-                DEBUG_LOG(ERROR, __FUNCTION__, "Received request packet with bad data.");
-                return -1;
-            }
-            else
-            {
-                uint16_t numDataPackets = ((packetData[1] << 8) + (packetData[2] & 0xFF));
-                uint16_t currentDataPacket = 0x0000;
+                // Send ACK
+                EncodedPacket *ack = new EncodedPacket(OPCODE_ACK, currentDataPacket);
+                port.sendPacket(*ack);
                 
-                bool error = false;
-                for (; currentDataPacket < numDataPackets + 1 && !error; currentDataPacket++)
+                // Receive DATA
+                if (currentDataPacket < numDataPackets)
                 {
-                    // Send ACK
-                    DataPacket *ack = new DataPacket(OPCODE_ACK, currentDataPacket);
-                    port.sendPacket(*ack);
-                    
-                    // Receive DATA
-                    if (currentDataPacket < numDataPackets)
+                    DecodedPacket *data = port.receivePacket();
+                        
+                    if (data == nullptr)
                     {
-                        if (!port.dataAvailable())
-                        {
-                            DEBUG_LOG(ERROR, __FUNCTION__, "Data packet timed out.");
-                            return -1;
+                        DEBUG_LOG(ERROR, __FUNCTION__, "Data packet timed out.");
+                        return -1;
+                    }
+                        
+                    if (data->getOpcode() != OPCODE_DATA)
+                    {
+                        DEBUG_LOG(ERROR, __FUNCTION__, "Received data packet with bad opcode.");
+                        return -1;
+                    }
+                    else
+                    {
+                        uint8_t dataBuffer[data->getDataSize()];
+                        uint16_t bytesReceived = data->getData(dataBuffer);
+                        
+                        DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", bytesReceived);
+                        
+                        for (int i = 0; i < bytesReceived; i++) {
+                            printf("0x%02X ", dataBuffer[i]);
+                            if (i > 0 && i%127 == 0) printf("\n");
                         }
-                        else
-                        {
-                            DataPacket *data = port.receivePacket();
-                            
-                            if (data->getOpcode() != OPCODE_DATA)
-                            {
-                                DEBUG_LOG(ERROR, __FUNCTION__, "Received data packet with bad opcode.");
-                                return -1;
-                            }
-                            else
-                            {
-                                uint8_t dataBuffer[MAX_DATA_BYTES];
-                                uint16_t bytesReceived = data->getData(dataBuffer);
-                                
-                                DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length " + std::to_string(bytesReceived));
-                                
-                                for (int i = 0; i < bytesReceived; i++) {
-                                    printf("0x%02X ", dataBuffer[i]);
-                                    if (i%127 == 0) printf("\n");
-                                }
-                                printf("\n");
-                            }
-                        }
-                    }                    
+                        printf("\n");
+                    }
                 }
             }
         }

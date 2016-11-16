@@ -2,7 +2,6 @@
 #define GPIOPIN_H
  
 #include <Types.h>
-#include <Debug.h>
 
 /**
  * @class GPIOPin

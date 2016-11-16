@@ -4,8 +4,12 @@
 #include <termios.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <chrono>
+#include <thread>
 #include <Debug.h>
 #include <Serial.h>
+
+#define DELAY 100
 
 Serial::Serial(std::string portName)
 {
@@ -54,7 +58,7 @@ int Serial::openPort(int baudRate)
 
     if (serialPort == -1)
     {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port " + portName + ".");
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failed to open port %s.", portName.c_str());
         return -1;
     }
     
@@ -96,6 +100,14 @@ int Serial::openPort(int baudRate)
     
     usleep(10000);
     
+    // This next bit deals with race conditions
+    fd_set rfd;
+    FD_ZERO(&rfd);
+    FD_SET(serialPort, &rfd);
+    timeval tv = { 0 };
+    select(serialPort+1, &rfd, 0, 0, &tv);
+    //if (!FD_ISSET(serialPort, &rfd)) {
+    
     return 0;
 }
 
@@ -109,14 +121,22 @@ void Serial::flush()
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return;
     }
     
     int result = tcdrain(serialPort);
     if (result != 0)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "tcdrain returned error code " + std::to_string(result));
+        DEBUG_LOG(WARNING, __FUNCTION__, "tcdrain returned error code %d", result);
+    }
+}
+
+void Serial::flushRemaining()
+{
+    while (this->dataAvailable())
+    {
+        readChar();
     }
 }
 
@@ -124,29 +144,42 @@ int Serial::dataAvailable()
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return -1;
     }
     
     int result;
 
-    // Deal with race condition
-    fd_set rfd;
-    FD_ZERO(&rfd);
-    FD_SET(serialPort, &rfd);
-    timeval tv = { 0 };
-    select(serialPort+1, &rfd, 0, 0, &tv);
-    if (!FD_ISSET(serialPort, &rfd)) {
-        return -2;
-    }
-    
     if (ioctl(serialPort, FIONREAD, &result) < 0)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in " + portName + " failed.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "ioctl to get number of bytes buffered in %s failed.", portName.c_str());
         result = -1;
     }
     
     return result;
+}
+
+uint8_t Serial::blockForData(uint8_t maxSeconds)
+{
+    if (serialPort == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
+        return -1;
+    }
+    
+    uint16_t numDelays = maxSeconds * 10;
+    
+    for (uint16_t i = 0; i < numDelays; i++)
+    {
+        if (dataAvailable())
+        {
+            return 0;
+        } else {
+            std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
+        }
+    }
+    
+    return -1;
 }
 
 uint8_t Serial::readChar()
@@ -155,7 +188,7 @@ uint8_t Serial::readChar()
     
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return -1;
     }
     
@@ -167,76 +200,62 @@ uint8_t Serial::readChar()
     return result;
 }
 
-DataPacket* Serial::receivePacket()
+DecodedPacket* Serial::receivePacket()
 {
     uint8_t buffer;
-    uint8_t temp[516];
+    uint8_t temp[MAX_PACKET_SIZE];
     
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return nullptr;
     }
     
-    if ((buffer = readChar()) == 1)
+    // Block 3 seconds for data - return nullptr if no data
+    if (blockForData(3) != 0)
     {
         return nullptr;
     }
-    else
-    {
-        if (buffer == PACKET_FLAG)
-        {
-            uint16_t i = 0;
-            do
-            {
-                temp[i++] = buffer;
-                buffer = readChar();
-            } while (buffer != PACKET_FLAG && buffer != -1);
-            
-            temp[i++] = buffer; // Write the last PACKET_FLAG
-            return new DataPacket(temp, i+1);
-        }
-        else
-        {
-            return nullptr;
-        }
-    }
+    
+    do {
+        buffer = readChar();
+    } while (buffer != PACKET_FLAG);
+    
+    uint16_t i = 0;
+    do {
+        temp[i++] = buffer;
+        buffer = readChar();
+    } while (buffer != PACKET_FLAG && buffer != -1);
+    
+    temp[i++] = buffer;
+    flushRemaining();
+    
+    return new DecodedPacket(temp, i);
 }
 
 void Serial::writeChar(uint8_t character)
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return;
     }
     
     write(serialPort, &character, 1);   
 }
 
-void Serial::writeData(std::string data)
+void Serial::sendPacket(EncodedPacket packet)
 {
     if (serialPort == -1)
     {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
-        return;
-    }
-    
-    write(serialPort, data.c_str(), strlen(data.c_str()));
-}
-
-void Serial::sendPacket(DataPacket packet)
-{
-    if (serialPort == -1)
-    {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Port " + portName + " has not been opened.");
+        DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
         return;
     }
     
     uint16_t numBytes = packet.getPacketSize();
     uint8_t packetBytes[numBytes];
-    packet.toByteArray(packetBytes);
+    packet.getPacketBytes(packetBytes);
     
     write(serialPort, packetBytes, numBytes);
-    
+    flush();
 }

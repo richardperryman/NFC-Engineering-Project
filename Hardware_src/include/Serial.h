@@ -2,7 +2,8 @@
 #define SERIAL_H
 
 #include <Types.h>
-#include <DataPacket.h>
+#include <DecodedPacket.h>
+#include <EncodedPacket.h>
 
 /**
  * @class Serial
@@ -66,12 +67,13 @@ public:
 	int openPort(int baudRate);
 	void closePort();
 	void flush();
+    void flushRemaining();
 	int dataAvailable();
+    uint8_t blockForData(uint8_t maxSeconds);
     uint8_t readChar();
-    DataPacket* receivePacket();
+    DecodedPacket* receivePacket();
     void writeChar(uint8_t character);
-	void writeData(std::string data);
-    void sendPacket(DataPacket packet);
+    void sendPacket(EncodedPacket packet);
 };
 
 #endif // SERIAL_H

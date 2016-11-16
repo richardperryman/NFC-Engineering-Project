@@ -3,6 +3,8 @@
 
 #ifndef ARDUINO // Makes this header Arduino-safe
 #include <string>
+#else
+#include <Arduino.h>
 #endif
 #include <stdint.h>
 
@@ -19,14 +21,17 @@ enum debug_level_t {
     INFO = 20
 };
 
-// Missing opcodes for startup sequence stuff
-// Not sure if I'll leave this as 16-bit hex numbers or convert to byte array
 enum packet_opcode_t {
-    OPCODE_REQ = 0x0001, // Request authentication sequence start
+    OPCODE_REQUEST = 0x0001, // Request authentication sequence start
     OPCODE_ACK = 0x0002, // Acknowledge request/data
     OPCODE_DATA = 0x0003, // Send data
     OPCODE_SETUP = 0x1111, // Setup opcode
     OPCODE_ERR = 0xFFFF // Error
+};
+
+enum error_code_t {
+    ERROR_BADOPCODE = 0x0001,
+    ERROR_DECODING = 0x0002
 };
 
 #endif // TYPES_H

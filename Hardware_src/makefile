@@ -7,7 +7,7 @@ CFLAGS = $(LFLAGS) -c
 
 # File stuff
 EXECUTABLE = GPIOTest
-OBJECTS = main.o DataPacket.o GPIOPin.o Serial.o Debug.o
+OBJECTS = main.o DecodedPacket.o EncodedPacket.o GPIOPin.o Serial.o Debug.o
 RM = rm -f *.o
 
 default : $(EXECUTABLE)
@@ -23,11 +23,14 @@ $(EXECUTABLE) : $(OBJECTS)
 	$(RM)
 
 # Intermediate object files
-main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/Serial.h $(INCLUDE)/Types.h
+main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/DecodedPacket.h $(INCLUDE)/EncodedPacket.h  $(INCLUDE)/Serial.h $(INCLUDE)/Types.h $(INCLUDE)/Debug.h
 	$(CC) $(CFLAGS) main.cpp
 	
-DataPacket.o : $(INCLUDE)/DataPacket.h DataPacket.cpp $(INCLUDE)/Types.h
-	$(CC) $(CFLAGS) DataPacket.cpp
+DecodedPacket.o : $(INCLUDE)/DecodedPacket.h DecodedPacket.cpp $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) DecodedPacket.cpp
+	
+EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) EncodedPacket.cpp
 
 GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) GPIOPin.cpp
