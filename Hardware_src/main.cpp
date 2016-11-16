@@ -103,7 +103,7 @@ int main()
     std::string filepath = "/not/real/rightnow.cfg";
     
     std::vector<Serial> modules;
-
+    
     setUpLEDs();
     status = readConfiguration(filepath);
     
@@ -159,6 +159,8 @@ static void pollingLoop(std::vector<Serial> modules)
                 DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
                 uint8_t test[512];
                 getToken(module, test);
+                
+                DEBUG_LOG(INFO, __FUNCTION__, "Token as string: %s\n", test);
             }
         }
         
@@ -283,11 +285,12 @@ static uint16_t getToken(Serial port, uint8_t* destination)
                         
                         DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", bytesReceived);
                         
+                        printf("Received packet bytes: [ ");
                         for (int i = 0; i < bytesReceived; i++) {
                             printf("0x%02X ", dataBuffer[i]);
                             if (i > 0 && i%127 == 0) printf("\n");
                         }
-                        printf("\n");
+                        printf("]\n\n");
                     }
                 }
             }

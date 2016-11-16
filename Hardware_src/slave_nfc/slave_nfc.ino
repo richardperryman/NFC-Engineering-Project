@@ -47,7 +47,7 @@ static bool errorDuringSetup = false;
 void flushRemaining();
 static uint8_t sendData(uint8_t* data, uint16_t dataLen);
 static DecodedPacket* receivePacket();
-static void sendPacket(EncodedPacket packet);
+static void sendPacket(EncodedPacket* packet);
 static void flashLED();
 
 uint16_t readCard(uint8_t* destination)
@@ -235,13 +235,13 @@ void setup() {
     errorDuringSetup = true;
   } else {
     EncodedPacket* response = new EncodedPacket(OPCODE_DATA, 1, MODULE_ID, sizeof(MODULE_ID)/sizeof(MODULE_ID[0]));
-    sendPacket(*response);
+    sendPacket(response);
 
     // Receive ACK
     DecodedPacket* ackPacket = receivePacket();
     if (ackPacket->getOpcode() != OPCODE_ACK)
     {
-      //errorDuringSetup = true;
+      errorDuringSetup = true;
     }
 
     delete(response);
@@ -253,14 +253,14 @@ void setup() {
 void loop() {
   if (errorDuringSetup)
   {
-    delay(10000); // delay ad infinitum
+    flashLED();
+    //delay(10000); // delay ad infinitum
   }
   else {
     // Wait for something to read
     uint8_t buffer[512];
     uint16_t numBytes;
     if ((numBytes = readCard(buffer)) > 0) {
-      flashLED();
       sendData(buffer, numBytes); 
     }
   }
@@ -276,12 +276,11 @@ static uint8_t sendData(uint8_t* data, uint16_t dataLen)
   uint16_t numPackets = 1 + ((dataLen - 1) / MAX_DECODED_BYTES);
   bool error = false;
 
-  Serial.print("Received data: ");
-  for (int i = 0; i < dataLen; i++) {
-    Serial.print(data[i], HEX); Serial.print(" ");
-  }
-  Serial.println();
-
+  //Serial.println("Received data: ");
+  //for (int i = 0; i < dataLen; i++) {
+  //  Serial.print(data[i], HEX); Serial.print(" ");
+  //}
+  
   // On i = 0, send the REQUEST packet, after that send DATA packets
   for (uint16_t i = 0; i < numPackets + 1 && !error; i++)
   {
@@ -290,13 +289,13 @@ static uint8_t sendData(uint8_t* data, uint16_t dataLen)
       // Send DATA
       uint8_t* ptr = data + ((i-1)*508);
       EncodedPacket* data = new EncodedPacket(OPCODE_DATA, i, ptr, dataLen - 508*(i-1));
-      sendPacket(*data);
+      sendPacket(data);
       delete(data);
     } else {
       // Send REQ
       EncodedPacket* req = new EncodedPacket(OPCODE_REQUEST, numPackets);
-      sendPacket(*req);
-      delete(req);
+      sendPacket(req);
+      delete(req);      
     }
 
     // Receive ACK
@@ -310,7 +309,6 @@ static uint8_t sendData(uint8_t* data, uint16_t dataLen)
     }
     delete(ack);
   }
-  
   return error;
 }
 
@@ -342,15 +340,15 @@ static DecodedPacket* receivePacket()
   return new DecodedPacket(packetBytes, i);
 }
 
-static void sendPacket(EncodedPacket packet)
+static void sendPacket(EncodedPacket* packet)
 {
-  uint8_t byteBuffer[packet.getPacketSize()];
+  uint8_t* byteBuffer = new uint8_t[packet->getPacketSize()];
   uint16_t numBytes = 0;
 
-  numBytes = packet.getPacketBytes(byteBuffer);
-
+  numBytes = packet->getPacketBytes(byteBuffer);
+  
   Serial.write(byteBuffer, numBytes);
-  Serial.flush();
+  delete(byteBuffer);
 }
 
 static void flashLED() {
