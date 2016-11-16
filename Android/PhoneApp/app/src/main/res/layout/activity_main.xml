@@ -5,21 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <Button
+    <EditText android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ping_server"
-        android:onClick="pingServer"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/get_users"
-        android:onClick="getUsers"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/get_locks"
-        android:onClick="getLocks"/>
+        android:hint="@string/enter_user_name"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
