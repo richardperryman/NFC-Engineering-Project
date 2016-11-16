@@ -1,9 +1,8 @@
 const QUERY_GET_WITH_ID = 'SELECT * FROM sbacsDb.Locks WHERE Lock_Id = ?';
 const QUERY_GET_WITHOUT_ID = 'SELECT * FROM sbacsDb.Locks WHERE Name like ? AND BelongsTo like ?';
-const QUERY_PUT = 'INSERT INTO sbacsDb.Locks (Name, BelongsTo, lockKey) VALUES (?, ?, ?)';
+const QUERY_PUT = 'INSERT INTO sbacsDb.Locks (Name, BelongsTo) VALUES (?, ?)';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Locks WHERE Lock_Id = ?';
-const QUERY_POST_BASE = 'UPDATE sbacsDb.Locks SET Name = ?, BelongsTo = ? WHERE Lock_Id = ?';
-// Posts are a bit harder, since the number of arguments is variable, and we can't use % trick like GETs
+const QUERY_POST = 'UPDATE sbacsDb.Locks SET Name = ?, BelongsTo = ? WHERE Lock_Id = ?';
 
 var url = require('url');
 var mysql = require('mysql');
@@ -77,20 +76,100 @@ function handleGet(req,res){
 }
 
 function handlePost(req,res){
-	// A little more to this one, leaving for later
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var lock_id = parsedRequest.query['lock_id'];
+	var name = parsedRequest.query['name'];
+	var belongsTo = parsedRequest.query['belongsTo'];
+	if(lock_id == undefined || name == undefined || belongsTo == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [name,belongsTo,lock_id];
+	queryString = mysql.format(QUERY_POST,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'Successfully updated row';
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handlePut(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var name = parsedRequest.query['name'];
+	var belongsTo = parsedRequest.query['belongsTo'];
+	if(name == undefined || belongsTo == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [name,belongsTo];
+	queryString = mysql.format(QUERY_PUT,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'ID of created row: ' + rows.insertId;
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handleDelete(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var lock_id = parsedRequest.query['lock_id'];
+	if(lock_id == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [lock_id];
+	queryString = mysql.format(QUERY_DELETE,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'Successfully deleted row';
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }

@@ -61,12 +61,12 @@ paths:
         - name: name
           in: query
           description: Name of the user
-          required: false
+          required: true
           type: string
         - name: rights
           in: query
           description: Rights level of the user (Customer/Admin)
-          required: false
+          required: true
           type: string
       tags:
         - Users
@@ -269,11 +269,6 @@ paths:
           description: AuthValue of the authenticator
           required: true
           type: string
-		- name: authSalt
-          in: query
-          description: AuthSalt of the authenticator
-          required: true
-          type: string
       tags:
         - Authenticators
       responses:
@@ -304,11 +299,6 @@ paths:
         - name: authValue
           in: query
           description: AuthValue of the authenticator
-          required: true
-          type: string
-		- name: authSalt
-          in: query
-          description: AuthSalt of the authenticator
           required: true
           type: string
       tags:
@@ -395,12 +385,12 @@ paths:
         - name: name
           in: query
           description: Name of the lock
-          required: false
+          required: true
           type: string
         - name: belongsTo
           in: query
           description: Who owns the lock
-          required: false
+          required: true
           type: string
       tags:
         - Locks
@@ -427,11 +417,6 @@ paths:
         - name: belongsTo
           in: query
           description: Who owns the lock
-          required: true
-          type: string
-        - name: encryptedKey
-          in: query
-          description: An encrypted key that is used to open the lock
           required: true
           type: string
       tags:
@@ -490,7 +475,7 @@ paths:
         - Access
       responses:
         200:
-          description: The encrypted key from the lock (see encryptedKey parameter in locks PUT)
+          description: The encrypted key from the lock
           schema:
             type: string
         401:

@@ -4,7 +4,6 @@ const QUERY_GET_WITHOUT_ID = 'SELECT * FROM sbacsDb.Users WHERE Name like ? AND 
 const QUERY_PUT = 'INSERT INTO sbacsDb.Users (Name, Rights) VALUES (?, ?)';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Users WHERE User_Id = ?';
 const QUERY_POST = 'UPDATE sbacsDb.Users SET Name = ?, Rights = ? WHERE User_Id = ?';
-// Posts are a bit harder, since the number of arguments is variable, and we can't use % trick like GETs
 
 var url = require('url');
 var mysql = require('mysql');
@@ -76,20 +75,100 @@ function handleGet(req,res){
 }
 
 function handlePost(req,res){
-	// A little more to this one, leaving for later
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var user_id = parsedRequest.query['user_id'];
+	var name = parsedRequest.query['name'];
+	var rights = parsedRequest.query['rights'];
+	if(user_id == undefined || name == undefined || rights == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [name,rights,user_id];
+	queryString = mysql.format(QUERY_POST,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'Successfully updated row';
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handlePut(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var name = parsedRequest.query['name'];
+	var rights = parsedRequest.query['rights'];
+	if(name == undefined || rights == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [name,rights];
+	queryString = mysql.format(QUERY_PUT,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'ID of created row: ' + rows.insertId;
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
 
 function handleDelete(req,res){
-	res.writeHead(200);
-	res.write('Generic response');
-	res.end();
+	var parsedRequest = url.parse(req.url, true);
+	var queryString = '';
+	
+	// Prepare the query to be performed
+	var user_id = parsedRequest.query['user_id'];
+	if(user_id == undefined){
+		console.log('Invalid input');
+		res.writeHead(400);
+		res.write('Not all parameters met.');
+		res.end();
+		return;
+	}
+	var inserts = [user_id];
+	queryString = mysql.format(QUERY_DELETE,inserts);
+	// Execute query, return needed results
+	db.performQuery(queryString, function(err,rows,fields){
+		if(!err){
+			var formattedOut = 'Successfully deleted row';
+			res.writeHead(200);
+			res.write(formattedOut);
+			res.end();
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
+	});
 }
