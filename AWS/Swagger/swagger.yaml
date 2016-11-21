@@ -466,11 +466,14 @@ paths:
           required: true
           type: integer
           format: int32
-        - name: auth
-          in: query
+        - name: body
+          in: body
           description: Authenticators to open the lock
           required: true
-          type: string
+          schema:
+            type: array
+            items:
+                $ref: '#/definitions/AuthList'
       tags:
         - Access
       responses:
@@ -504,7 +507,7 @@ paths:
           required: true
           type: integer
           format: int32
-		- name: expirationTime
+        - name: expirationTime
           in: query
           description: ExpirationTime (in UTC string) of when the access expires
           required: true
@@ -586,10 +589,6 @@ definitions:
         type: integer
         format: int32
         description: Unique identifier for Authenticator
-      identity_id:
-        type: integer
-        format: int32
-        description: id of identity that this belongs to
       auth_type:
         type: string
         description: Type of authenticator (password, NFC, etc.)
@@ -597,6 +596,16 @@ definitions:
         type: string
         description: Value of authenticator (actual password, NFC value, etc.)
   
+  AuthList:
+    type: object
+    properties:
+      auth_type:
+        type: string
+        description: Type of authenticator (password, NFC, etc.)
+      auth_value:
+        type: string
+        description: Value of authenticator (actual password, NFC value, etc.)
+        
   Lock:
     type: object
     properties:
