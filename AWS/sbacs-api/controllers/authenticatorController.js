@@ -7,10 +7,12 @@ const QUERY_PUT_IDENTITY = 'INSERT INTO sbacsDb.IdentityToAuth (Identity_Id, Aut
 const QUERY_DELETE_IDENTITY = 'DELETE FROM sbacsDb.IdentityToAuth WHERE Auth_Id = ?';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
 const QUERY_POST = 'UPDATE sbacsDb.Authenticators SET AuthType = ?, AuthKey = ? WHERE Auth_Id = ?';
+const QUERY_GET_SALT_WITH_AUTH = 'SELECT AuthSalt FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
 
 
 var url = require('url');
 var mysql = require('mysql');
+var crypt = require('../extensions/crypto_helper.js');
 
 var db;
 
@@ -102,15 +104,41 @@ function handlePost(req,res){
 		res.end();
 		return;
 	}
-	var inserts = [authType,authValue,auth_id];
-	queryString = mysql.format(QUERY_POST,inserts);
+	
+	var saltedValue = getSaltedValue(authValue,auth_id,function(saltedAuthValue){
+		var inserts = [authType,saltedAuthValue,auth_id];
+		queryString = mysql.format(QUERY_POST,inserts);
+		// Execute query, return needed results
+		db.performQuery(queryString, function(err,rows,fields){
+			if(!err){
+				var formattedOut = 'Successfully updated row';
+				res.writeHead(200);
+				res.write(formattedOut);
+				res.end();
+			} else {
+				// Handle error
+				console.log('Error with DB');
+				res.writeHead(500);
+				res.write('Unable to complete request.');
+				res.end();
+			}
+		});
+	});
+	
+	
+}
+
+function getSaltedValue(authValue,auth_id,callback){
+	var inserts = [auth_id];
+	var queryString = mysql.format(QUERY_GET_SALT_WITH_AUTH,inserts);
+	
 	// Execute query, return needed results
 	db.performQuery(queryString, function(err,rows,fields){
 		if(!err){
-			var formattedOut = 'Successfully updated row';
-			res.writeHead(200);
-			res.write(formattedOut);
-			res.end();
+			var salt = rows[0]['AuthSalt'];
+			var encryptedInfo = new crypt.encryptedAuth(authValue,salt);
+			console.log('Value: ' + encryptedInfo.secret);
+			return callback(encryptedInfo.secret);
 		} else {
 			// Handle error
 			console.log('Error with DB');
@@ -137,8 +165,8 @@ function handlePut(req,res){
 		return;
 	}
 	// Make this an actual salt
-	var salt = 'saltySalt';
-	var inserts = [authType,authValue,salt];
+	var encryptedInfo = new crypt.encryptedAuth(authValue);
+	var inserts = [authType,encryptedInfo.secret,encryptedInfo.salt];
 	queryString = mysql.format(QUERY_PUT,inserts);
 	// Execute query, return needed results
 	db.performQuery(queryString, function(err,rows,fields){
