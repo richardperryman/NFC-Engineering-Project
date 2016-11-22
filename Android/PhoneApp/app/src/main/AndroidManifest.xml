@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sbacs.phoneapp">
 
+    <uses-feature android:name="android.hardware.nfc" />
+    <uses-feature android:name="android.hardware.nfc.hce" />
+
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.BIND_NFC_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -18,6 +23,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".UserActivity"></activity>
+        <!-- I think exported should be false, but the example used true -->
+        <service android:name=".SBACSNFCService" android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE" >
+            <intent-filter>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
+            </intent-filter>
+            <meta-data android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/sbacs_nfc_service"/>
+        </service>
     </application>
 
 </manifest>
