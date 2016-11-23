@@ -160,7 +160,8 @@ static void pollingLoop(std::vector<Serial> modules)
                 uint8_t test[512];
                 getToken(module, test);
                 
-                DEBUG_LOG(INFO, __FUNCTION__, "Token as string: %s\n", test);
+                //DEBUG_LOG(INFO, __FUNCTION__, "Token as string: %s\n", test);
+                std::cout << "Token as string: " << test << "\n";
             }
         }
         
@@ -287,10 +288,11 @@ static uint16_t getToken(Serial port, uint8_t* destination)
                         
                         printf("Received packet bytes: [ ");
                         for (int i = 0; i < bytesReceived; i++) {
+                            destination[i] = dataBuffer[i];
                             printf("0x%02X ", dataBuffer[i]);
                             if (i > 0 && i%127 == 0) printf("\n");
                         }
-                        printf("]\n\n");
+                        printf("]\n");
                     }
                 }
             }
