@@ -466,6 +466,11 @@ paths:
           required: true
           type: integer
           format: int32
+        - name: lock_key
+          in: query
+          description: Unique key that will unlock the lock (temporary, sent by the lock)
+          required: true
+          type: string
         - name: body
           in: body
           description: Authenticators to open the lock
