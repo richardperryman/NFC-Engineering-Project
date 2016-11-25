@@ -40,8 +40,6 @@ void loop()
 {
   bool success;
   
-  uint8_t responseLength = 32;
-  
   Serial.println("Waiting for an ISO14443A card");
   
   // set shield to inListPassiveTarget
@@ -71,9 +69,9 @@ void loop()
 
         while(!dataCompletelyReceived) {
           // Build response
-          uint8_t* apdu = new uint8_t[responseLength + 1];
+          uint8_t* apdu = new uint8_t[dataLen + 1];
           apdu[0] = SENTINEL_BYTE;
-          for (uint16_t i = 0; i < responseLength; i++) {
+          for (uint16_t i = 0; i < dataLen; i++) {
             apdu[i+1] = data[i];
           }
           dataLen = MAX_TOKEN_LENGTH;
