@@ -6,6 +6,8 @@
 PN532_SPI pn532spi(SPI, 5);
 PN532 nfc(pn532spi);
 
+#define SENTINEL_BYTE 0x00
+#define MAX_TOKEN_LENGTH 256
 
 void setup()
 {    
@@ -46,54 +48,56 @@ void loop()
   success = nfc.inListPassiveTarget();
 
   if(success) {
-   
-     Serial.println("Found something!");
-                  
-    uint8_t selectApdu[] = { 0x00, /* CLA */
-                             0xA4, /* INS */
-                             0x04, /* P1  */
-                             0x00, /* P2  */
-                             0x08, /* Length of AID  */
-                             0xF7, 0xA5, 0x39, 0x75, 0x8A, 0xB0, 0x00, 0x7F, /* AID defined on Android App */
-                             0x00  /* Le  */ };
-                              
-    uint8_t response[32];  
-     
-    success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), response, &responseLength);
-    
-    if(success) {
-      
-      Serial.print("responseLength: "); Serial.println(responseLength);
-       
-      nfc.PrintHexChar(response, responseLength);
-      
-      do {
-        uint8_t apdu[] = "Hello from Arduino";
-        uint8_t back[32];
-        uint8_t length = 32; 
 
-        success = nfc.inDataExchange(apdu, sizeof(apdu), back, &length);
+    boolean dataCompletelyReceived = false;
+    Serial.println("Found something!");
+
+      uint8_t selectApdu[] = { 0x00, /* CLA */
+                               0xA4, /* INS */
+                               0x04, /* P1  */
+                               0x00, /* P2  */
+                               0x08, /* Length of AID  */
+                               0xF7, 0xA5, 0x39, 0x75, 0x8A, 0xB0, 0x00, 0x7F, /* AID defined on Android App */
+                               0x00  /* Le  */ };
+      
+      uint8_t data[MAX_TOKEN_LENGTH];
+      uint8_t dataLen = MAX_TOKEN_LENGTH;
+
+      success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), data, &dataLen);
+
+      if (success) {
+        Serial.print("Data length: "); Serial.println(dataLen);
+        nfc.PrintHexChar(data, dataLen);
+
+        while(!dataCompletelyReceived) {
+          // Build response
+          uint8_t* apdu = new uint8_t[responseLength + 1];
+          apdu[0] = SENTINEL_BYTE;
+          for (uint16_t i = 0; i < responseLength; i++) {
+            apdu[i+1] = data[i];
+          }
+          dataLen = MAX_TOKEN_LENGTH;
+
+          success = nfc.inDataExchange(apdu, sizeof(apdu), data, &dataLen);
+
+          if (success) {
+            Serial.print("Response length: "); Serial.println(dataLen);
+            nfc.PrintHexChar(data, dataLen);
+
+            if (dataLen == 1 && data[0] == SENTINEL_BYTE) {
+              dataCompletelyReceived = true;
+            }
+          } else {
+            Serial.println("Broken connection?"); 
+          }
+        }
         
-        if(success) {
-         
-          Serial.print("responseLength: "); Serial.println(length);
-           
-          nfc.PrintHexChar(back, length);
-        }
-        else {
-          
-          Serial.println("Broken connection?"); 
-        }
-      }
-      while(success);
-    }
-    else {
-     
-      Serial.println("Failed sending SELECT AID"); 
-    }
+      } else {
+        Serial.println("Failed sending SELECT AID"); 
+      } 
   }
+      
   else {
-   
     Serial.println("Didn't find anything!");
   }
 
