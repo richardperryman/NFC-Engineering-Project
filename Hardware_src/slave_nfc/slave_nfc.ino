@@ -21,7 +21,9 @@
 /**************************************************************************/
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_PN532.h>
+#include <PN532_SPI.h>
+#include <PN532Interface.h>
+#include <PN532.h>
 
 #include <DecodedPacket.h>
 #include <EncodedPacket.h>
@@ -38,11 +40,20 @@
 #define PN532_MISO (14)
 #define LED (18)
 
+#define CLA 0x00
+#define INS 0xA4
+#define P1 0x04
+#define P2 0x00
+#define LE 0x00
+
 // Define breakout with a SPI connection:
-Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
+PN532_SPI pn532spi(SPI, PN532_SS);
+PN532 nfc(pn532spi);
 
 // Other stuff
 static uint8_t MODULE_ID[] = {'N', 'F', 'C', 0x00};
+static uint8_t AID[] = { 0xF7, 0xA5, 0x39, 0x75, 0x8A, 0xB0, 0x00, 0x7F };
+
 static bool errorDuringSetup = false;
 void flushRemaining();
 static uint8_t sendData(uint8_t* data, uint16_t dataLen);
@@ -129,6 +140,47 @@ uint16_t readCard(uint8_t* destination)
   }
 }
 
+uint16_t readAndroid(uint8_t* destination)
+{
+  uint8_t aidLen = sizeof(AID)/sizeof(AID[0]);
+  uint8_t *selectApdu = new uint8_t[6 + aidLen];
+  uint16_t i = 0;
+  
+  selectApdu[i++] = CLA;
+  selectApdu[i++] = INS;
+  selectApdu[i++] = P1;
+  selectApdu[i++] = P2;
+  selectApdu[i++] = aidLen;
+  memcpy(selectApdu+i, AID, aidLen);
+  i += aidLen;
+  selectApdu[i] = LE;
+
+    uint8_t responseLength = 32;
+    
+    uint8_t response[responseLength];  
+
+    bool success = nfc.inDataExchange(selectApdu, sizeof(selectApdu), response, &responseLength);
+    
+    if (success) {
+      /*Serial.println("Received data");
+      Serial.println(responseLength);*/
+      
+      // Record the data
+      for (uint16_t i = 0; i < responseLength; i++) {
+        destination[i] = response[i];
+      }
+      delete(selectApdu);
+      return responseLength;
+    }
+    else {
+     // Problem reading
+     return 0;
+    }
+    
+  delete(selectApdu);
+  delay(1000);
+}
+
 void setup() {
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
@@ -178,9 +230,12 @@ void loop() {
     // Wait for something to read
     uint8_t buffer[512];
     uint16_t numBytes;
-    if ((numBytes = readCard(buffer)) > 0) {
+    //if ((numBytes = readCard(buffer)) > 0) {
+    Serial.println("loop");
+    if ((numBytes = readAndroid(buffer)) > 0) {
       sendData(buffer, numBytes); 
     }
+    delay(1000);
   }
 }
 
