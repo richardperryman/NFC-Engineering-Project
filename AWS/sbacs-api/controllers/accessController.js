@@ -20,6 +20,8 @@ handleRequest : function(req,res,db_helper) {
 	// See what type of request was made
 	if(req.method === 'GET'){
 		handleGet(req,res);
+	} else if (req.method === 'POST'){
+		handlePost(req,res);
 	} else {
 		// Change to 405, with Allow header later
 		res.writeHead(500);
@@ -27,12 +29,15 @@ handleRequest : function(req,res,db_helper) {
 		res.end();
 	}
 }
-// Note that to add a more functions, use a comma
 
 };
 
 
 function handleGet(req,res) {
+	// TODO Write the authenticator set GET method
+}
+
+function handlePost(req,res){
 	var parsedRequest = url.parse(req.url, true);
 	
 	// Extract information that is needed
@@ -78,6 +83,7 @@ function handleGet(req,res) {
 		}
 	});
 }
+
 
 // Checks if the given and needed authenticators are equal
 //	 returns true if equal, otherwise false

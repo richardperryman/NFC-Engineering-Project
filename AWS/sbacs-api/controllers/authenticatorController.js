@@ -96,36 +96,36 @@ function handlePost(req,res){
 	// Prepare the query to be performed
 	var auth_id = parsedRequest.query['auth_id'];
 	var authType = parsedRequest.query['authType'];
-	var authValue = parsedRequest.query['authValue'];
-	if(auth_id == undefined || authType == undefined || authValue == undefined){
-		console.log('Invalid input');
-		res.writeHead(400);
-		res.write('Not all parameters met.');
-		res.end();
-		return;
-	}
-	
-	var saltedValue = getSaltedValue(authValue,auth_id,function(saltedAuthValue){
-		var inserts = [authType,saltedAuthValue,auth_id];
-		queryString = mysql.format(QUERY_POST,inserts);
-		// Execute query, return needed results
-		db.performQuery(queryString, function(err,rows,fields){
-			if(!err){
-				var formattedOut = 'Successfully updated row';
-				res.writeHead(200);
-				res.write(formattedOut);
-				res.end();
-			} else {
-				// Handle error
-				console.log('Error with DB');
-				res.writeHead(500);
-				res.write('Unable to complete request.');
-				res.end();
-			}
+	req.on('data', function(chunk){
+		var authValue = chunk.toString();
+		if(auth_id == undefined || authType == undefined || authValue == undefined){
+			console.log('Invalid input');
+			res.writeHead(400);
+			res.write('Not all parameters met.');
+			res.end();
+			return;
+		}
+		
+		var saltedValue = getSaltedValue(authValue,auth_id,function(saltedAuthValue){
+			var inserts = [authType,saltedAuthValue,auth_id];
+			queryString = mysql.format(QUERY_POST,inserts);
+			// Execute query, return needed results
+			db.performQuery(queryString, function(err,rows,fields){
+				if(!err){
+					var formattedOut = 'Successfully updated row';
+					res.writeHead(200);
+					res.write(formattedOut);
+					res.end();
+				} else {
+					// Handle error
+					console.log('Error with DB');
+					res.writeHead(500);
+					res.write('Unable to complete request.');
+					res.end();
+				}
+			});
 		});
 	});
-	
-	
 }
 
 function getSaltedValue(authValue,auth_id,callback){
@@ -155,46 +155,49 @@ function handlePut(req,res){
 	
 	// Prepare the query to be performed
 	var authType = parsedRequest.query['authType'];
-	var authValue = parsedRequest.query['authValue'];
 	var identity_id = parsedRequest.query['identity_id'];
-	if(authType == undefined || authValue == undefined || identity_id == undefined){
-		console.log('Invalid input');
-		res.writeHead(400);
-		res.write('Not all parameters met.');
-		res.end();
-		return;
-	}
-	// Make this an actual salt
-	var encryptedInfo = new crypt.encryptedAuth(authValue);
-	var inserts = [authType,encryptedInfo.secret,encryptedInfo.salt];
-	queryString = mysql.format(QUERY_PUT,inserts);
-	// Execute query, return needed results
-	db.performQuery(queryString, function(err,rows,fields){
-		if(!err){
-			var formattedOut = 'ID of created row: ' + rows.insertId;
-			inserts = [identity_id,rows.insertId];
-			queryString = mysql.format(QUERY_PUT_IDENTITY,inserts);
-			db.performQuery(queryString, function(err,rows,fields){
-				if(!err){
-					res.writeHead(200);
-					res.write(formattedOut);
-					res.end();
-				} else {
-					// Handle error
-					console.log('Error with DB');
-					res.writeHead(500);
-					res.write('Unable to complete request.');
-					res.end();
-				}
-			});
-		} else {
-			// Handle error
-			console.log('Error with DB');
-			res.writeHead(500);
-			res.write('Unable to complete request.');
+	req.on('data', function(chunk){
+		var authValue = chunk.toString();
+		if(authType == undefined || authValue == undefined || identity_id == undefined){
+			console.log('Invalid input');
+			res.writeHead(400);
+			res.write('Not all parameters met.');
 			res.end();
+			return;
 		}
+		// Make this an actual salt
+		var encryptedInfo = new crypt.encryptedAuth(authValue);
+		var inserts = [authType,encryptedInfo.secret,encryptedInfo.salt];
+		queryString = mysql.format(QUERY_PUT,inserts);
+		// Execute query, return needed results
+		db.performQuery(queryString, function(err,rows,fields){
+			if(!err){
+				var formattedOut = 'ID of created row: ' + rows.insertId;
+				inserts = [identity_id,rows.insertId];
+				queryString = mysql.format(QUERY_PUT_IDENTITY,inserts);
+				db.performQuery(queryString, function(err,rows,fields){
+					if(!err){
+						res.writeHead(200);
+						res.write(formattedOut);
+						res.end();
+					} else {
+						// Handle error
+						console.log('Error with DB');
+						res.writeHead(500);
+						res.write('Unable to complete request.');
+						res.end();
+					}
+				});
+			} else {
+				// Handle error
+				console.log('Error with DB');
+				res.writeHead(500);
+				res.write('Unable to complete request.');
+				res.end();
+			}
+		});
 	});
+	
 }
 
 function handleDelete(req,res){
