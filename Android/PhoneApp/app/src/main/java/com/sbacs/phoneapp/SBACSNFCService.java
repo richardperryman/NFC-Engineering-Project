@@ -38,7 +38,7 @@ public class SBACSNFCService extends HostApduService {
             return data_message;
         } else if (apdu[0] == sentinel_byte) {
             byte[] check = Arrays.copyOfRange(apdu, 1, data_message.length);
-            if (Arrays.equals(apdu, data_message)) {
+            if (Arrays.equals(check, data_message)) {
                 return success_message;
             } else {
                 return data_message;
