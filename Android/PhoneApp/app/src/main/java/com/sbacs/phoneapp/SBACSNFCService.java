@@ -31,7 +31,7 @@ public class SBACSNFCService extends HostApduService {
         // If this becomes expensive use another thread and use sendResponseApdu()
 
         Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
-        notifyIntent.putExtra(SBACS_MESSAGE, apdu.toString());
+        notifyIntent.putExtra(SBACS_MESSAGE, new String(apdu));
         broadcaster.sendBroadcast(notifyIntent);
 
         if (apdu.length == 0) {
