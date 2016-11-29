@@ -1,8 +1,7 @@
 // Note that mysql.format(query, values), only works where values
 // are strings, and puts the value with single quotes around it
 
-const QUERY_GET_NEEDED_AUTH = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Registrations as r WHERE r.Lock_Id = ? AND r.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
-const QUERY_GET_LOCK_KEY = 'SELECT lockKey FROM Locks WHERE Lock_Id = ?';
+const QUERY_GET_NEEDED_AUTH = 'SELECT r.Identity_Id, a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Registrations as r WHERE r.Lock_Id = ? AND r.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
 
 
 var url = require('url');
@@ -107,7 +106,7 @@ function handlePost(req,res){
 				// Check given and needed authenticators
 				if(checkAuth(given_auth, needed_auth)){
 					res.writeHead(200);
-					res.write('SuccessCode');
+					res.write(lock_key);
 					res.end();
 				} else {
 					res.writeHead(401);
@@ -129,6 +128,9 @@ function handlePost(req,res){
 function getMinimalAuthSet(all_auth) {
 	// TODO: Implement this function
 	
+	// Make a set of authTypes from given list
+	// Return that set of authTypes
+	
 	return 'blah';
 }
 
@@ -136,6 +138,15 @@ function getMinimalAuthSet(all_auth) {
 //	 returns true if equal, otherwise false
 function checkAuth(given, needed){
 	// TODO: Implement this function
+	
+	// For each needed list:
+		// Get type of needed
+		// Check that given has one element of same type
+		// Check that given and needed values are same
+		// Else on either, return false
+	// End for
+	
+	// Return true if made it out of loop
 	
 	if(given === needed){
 		return true;
@@ -146,14 +157,23 @@ function checkAuth(given, needed){
 
 // Extracts the authenticators from DB into useful format
 function extractAuthenticatorsFromDb(rows,fields) {
-	// TODO: Implement this function
+	// TODO: Currently only works correctly if there is just one Identity_Id
+		// Make it work with multiple somehow
 	
-	return 'blah';
+	var auth = [];
+	for(var i=0;i<rows.length;i++){
+		auth[i] = {id:rows[i]['Identity_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt']};
+	}
+
+	return auth;
 }
 
 // Extracts the authenticators from Body info useful format
+	// Body will be JSON, following Swagger definition
 function extractAuthenticatorsFromBody(body){
-	// TODO: Implement this function
+	// Format will look like: 
+		//'[{"type":"password","value":"blah"},{"type":"nfc","value":"blah2"}]'
+	var auth = JSON.parse(body);
 	
-	return 'blah';
+	return auth;
 }
