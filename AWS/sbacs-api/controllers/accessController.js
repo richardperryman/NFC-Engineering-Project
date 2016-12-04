@@ -6,6 +6,7 @@ const QUERY_GET_NEEDED_AUTH = 'SELECT r.Identity_Id, a.Auth_Id, a.AuthType, a.Au
 
 var url = require('url');
 var mysql = require('mysql');
+var crypt = require('../extensions/crypto_helper.js');
 
 var db;
 
@@ -52,9 +53,11 @@ function handleGet(req,res) {
 			// Extract authenticator info
 			var needed_auth = extractAuthenticatorsFromDb(rows,fields);
 			var minimal_auth_set = getMinimalAuthSet(needed_auth);
+			
+			var auth_set_string = getAuthSetString(minimal_auth_set);
 			// Send results back
 			res.writeHead(200);
-			res.write(minimal_auth_set);
+			res.write(auth_set_string);
 			res.end();
 		} else {
 			// Handle error
@@ -126,40 +129,97 @@ function handlePost(req,res){
 
 // Gets the minimal set of authenticators needed for the given list
 function getMinimalAuthSet(all_auth) {
-	// TODO: Implement this function
-	
-	// Make a set of authTypes from given list
-	// Return that set of authTypes
-	
-	return 'blah';
+	// Get list of unique identities
+	var identities = [];
+	for(var i=0;i<all_auth.length;i++){
+		var auth = all_auth[i];
+		if(!arrayContains(identities,auth.id)){
+			identities.push(auth.id);
+		}
+	}
+	// For each identity, get the set of authenticator types needed
+	var final_sets = [];
+	for(var i=0;i<identities.length;i++){
+		var id = identities[i];
+		var id_set = getAuthSetForIdentity(all_auth,id);
+		// Add the identity's set to the full set
+		final_sets.push(id_set);
+	}
+	return final_sets;
+}
+
+// Get string representation of auth set
+function getAuthSetString(auth_set){
+	return JSON.stringify(auth_set);
+}
+
+// Gets the set of auth types needed for an identity
+function getAuthSetForIdentity(all_auth,id){
+	var auth_set = [];
+	for(var i=0;i<all_auth.length;i++){
+		var auth = all_auth[i];
+		if(auth.id == id){
+			auth_set.push(auth.type);
+		}
+	}
+	return auth_set;
 }
 
 // Checks if the given and needed authenticators are equal
 //	 returns true if equal, otherwise false
 function checkAuth(given, needed){
-	// TODO: Implement this function
-	
-	// For each needed list:
-		// Get type of needed
-		// Check that given has one element of same type
-		// Check that given and needed values are same
-		// Else on either, return false
-	// End for
-	
-	// Return true if made it out of loop
-	
-	if(given === needed){
-		return true;
-	} else {
-		return false;
+	// Get list of unique identities
+	var identities = [];
+	for(var i=0;i<needed.length;i++){
+		var auth = needed[i];
+		if(!arrayContains(identities,auth.id)){
+			identities.push(auth.id);
+		}
 	}
+	// Check for each identity, are any of them met
+	for(var i=0;i<identities.length;i++){
+		var id = identities[i];
+		if(checkAuthForId(given,needed,id)){
+			return true;
+		}
+	}
+	return false;
+}
+
+// Check that for a given identity, the given authenticators meet requirements
+function checkAuthForId(given,needed,id){
+	// For each authenticator required by this identity,
+		// check that the given list contains it
+	for(var i=0;i<needed.length;i++){
+		var neededAuth = needed[i];
+		if(id == neededAuth.id){
+			if(!checkGivenContains(given,neededAuth)){
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+// Check that a single required authenticator is in the given list
+function checkGivenContains(given,neededAuth){
+	// For each given auth, if it matches the type, the value must also match
+	// If value matches, return true. If we make it through without finding it, return false
+	for(var i=0;i<given.length;i++){
+		givenAuth = given[i];
+		if(givenAuth.type == neededAuth.type){
+			var encryptedInfo = new crypt.encryptedAuth(givenAuth.value,neededAuth.salt);
+			if(encryptedInfo.secret == neededAuth.value){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 // Extracts the authenticators from DB into useful format
 function extractAuthenticatorsFromDb(rows,fields) {
-	// TODO: Currently only works correctly if there is just one Identity_Id
-		// Make it work with multiple somehow
-	
+	// Extracts all rows of the table as is and turns it into array
 	var auth = [];
 	for(var i=0;i<rows.length;i++){
 		auth[i] = {id:rows[i]['Identity_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt']};
@@ -176,4 +236,15 @@ function extractAuthenticatorsFromBody(body){
 	var auth = JSON.parse(body);
 	
 	return auth;
+}
+
+// Apparently not all versions of Node have an Array.include, so writing my own
+function arrayContains(array,element) {
+	for(var i=0;i<array.length;i++){
+		e = array[i];
+		if(e == element){
+			return true;
+		}
+	}
+	return false;
 }
