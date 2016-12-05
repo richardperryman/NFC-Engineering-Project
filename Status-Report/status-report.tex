@@ -57,6 +57,16 @@ requirements like the rinal report.
 
 \section{Access Points}
 
+There were meant to be two main access points to the SBACS system: a phone application as well as a web portal. Both
+systems allow users to manage their various identities and the locks that they associate them with. Both also expose
+administrative capabilities for service providers. The phone application also had to provide a way for NFC to be used
+with locks associated with the user.
+
+The phone application currently does not authenticate users, but otherwise can perform all of the required actions.
+The authentication implementation needs to be worked on in conjunction with the server adding the notion of sessions or
+something similar. The web application currently doesn't exist, but should largely mimic the phone application in
+design.
+
 \section{Conclusion}
 
 \end{document}
