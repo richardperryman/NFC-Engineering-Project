@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
-#include <sstream>
 #include <chrono>
 #include <thread>
 #include <sys/stat.h>
@@ -13,6 +12,7 @@
 #include <GPIOPin.h>
 #include <DecodedPacket.h>
 #include <EncodedPacket.h>
+#include <ServerConnection.h>
 #include <Debug.h>
 
 // To do:
@@ -30,6 +30,8 @@
 // Server forwards user info to Pi (server is a authentication module)
 
 static uint32_t LOCK_ID;
+static std::string SERVER_URL;
+
 static GPIOPin* GREEN;
 static GPIOPin* BLUE;
 static GPIOPin* RED;
@@ -37,8 +39,8 @@ static GPIOPin* RED;
 
 static void maintenanceLoop();
 static void pollingLoop(std::vector<Serial> modules);
-static uint8_t readConfiguration(std::string filepath);
-static std::vector<Serial> verifyModules();
+static int8_t readConfiguration(std::string filepath);
+static int8_t verifyModules(std::vector<Serial>* modules);
 static uint16_t getToken(Serial port, uint8_t* destination);
 
 static void setUpLEDs()
@@ -102,33 +104,80 @@ int main()
     uint8_t status = 0;
     std::string filepath = "/not/real/rightnow.cfg";
     
-    std::vector<Serial> modules;
+    std::vector<std::string> moduleIDs;
+    std::vector<uint8_t*> tokens;
+    uint8_t testToken[255];
+    testToken[0] = 0x11;
+    testToken[1] = 0x22;
+    uint8_t testToken2[255];
+    //moduleIDs.push_back("NFC");
+    //tokens.push_back(testToken);
+    moduleIDs.push_back("Password");
+    testToken2[0] = 'p';
+    testToken2[1] = 'a';
+    testToken2[2] = 's';
+    testToken2[3] = 's';
+    testToken2[4] = 'w';
+    testToken2[5] = 'o';
+    testToken2[6] = 'r';
+    testToken2[7] = 'd';
+    tokens.push_back(testToken2);
+    uint32_t lockID = 0x1;
     
-    setUpLEDs();
+    printf("Generating server connection\n");
+    ServerConnection* conn = new ServerConnection("http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com");
+    printf("Checking for signs of life\n");
+    conn->openConnection();
+    if (0 == conn->verifyConnection())
+    {
+        printf("Server online, performing query\n");
+        conn->requestAccess(lockID, moduleIDs, tokens);
+    } else {
+        printf("Server not online\n");
+    }
+    
+    conn->closeConnection();
+    delete(conn);
+    
+    /*setUpLEDs();
     status = readConfiguration(filepath);
     
-    if (status != 0)
-    {
+    if (status != 0) {
         DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath);
-    }
-    
-    modules = verifyModules();
-    
-    if (modules.size() == 0)
-    {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
         maintenanceLoop();
     } else {
-        pollingLoop(modules);
+        ServerConnection* conn = new ServerConnection(SERVER_URL);
+        //ServerConnection* conn = new ServerConnection("google.com");
+        conn->openConnection();
+        status = conn->verifyConnection();
+        
+        if (status != 0) {
+            DEBUG_LOG(CRITICAL, __FUNCTION__, "Cannot reach server.");
+            conn->closeConnection();
+            maintenanceLoop();
+        } else {
+            status = verifyModules(&modules);
+            
+            if (status != 0) {
+                DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
+            } else if (modules.size() == 0) {
+                DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
+                conn->closeConnection();
+                maintenanceLoop();
+            } else {
+                pollingLoop(modules);
+            }
+        }
     }
     
-    teardown();
+    teardown();*/
     return 0;
 }
 
-static uint8_t readConfiguration(std::string filepath)
+static int8_t readConfiguration(std::string filepath)
 {
     LOCK_ID = 0xDEADBEEF;
+    SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
     
 	return 0;
 }
@@ -149,6 +198,8 @@ static void pollingLoop(std::vector<Serial> modules)
     BLUE->setValue(GPIO_HIGH);   
     while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
     {
+        std::vector<uint8_t[255]> tokens;
+        
         // Poll each device
         for (uint8_t i = 0; i < modules.size(); i++)
         {
@@ -157,11 +208,13 @@ static void pollingLoop(std::vector<Serial> modules)
             if (module.dataAvailable())
             {
                 DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
-                uint8_t test[512];
+                uint8_t test[255];
                 getToken(module, test);
                 
                 //DEBUG_LOG(INFO, __FUNCTION__, "Token as string: %s\n", test);
                 std::cout << "Token as string: " << test << "\n";
+                
+                
             }
         }
         
@@ -169,18 +222,17 @@ static void pollingLoop(std::vector<Serial> modules)
     }   
 }
 
-static std::vector<Serial> verifyModules()
+static int8_t verifyModules(std::vector<Serial>* modules)
 {
     uint8_t i = 0;
     
-    std::vector<std::string> devices; // Not every ACMx device is a module
-    std::vector<Serial> modules;
+    std::vector<std::string> device_paths; // Not every ACMx device is a module
 
     // Get all device paths on /dev/ttyACM*
     FILE * f = popen( "find /dev -name ttyACM*", "r" );
     if ( f == 0 ) {
         DEBUG_LOG(CRITICAL, __FUNCTION__, "Could not get device listing from /dev.");
-        return modules;
+        return -1;
     }
     
     const int BUFSIZE = 260; // 255 + 5 chars for "/dev/"
@@ -188,17 +240,23 @@ static std::vector<Serial> verifyModules()
     
     while( fgets( buf, BUFSIZE,  f ) ) {
         std::string* path= new std::string(buf);
-        devices.push_back((*path).substr(0, (*path).length()-1));
-        DEBUG_LOG(INFO, __FUNCTION__, "Found device on %s", ((*path).substr(0, (*path).length()-1)).c_str());
+        device_paths.push_back(path->substr(0, path->length()-1));
+        DEBUG_LOG(INFO, __FUNCTION__, "Found device on %s", (path->substr(0, path->length()-1)).c_str());
     }
     pclose( f );
+    
+    if (device_paths.size() == 0)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "No device paths found.");
+        return -1;
+    }
     
 	// Get String names from modules
 	EncodedPacket* setup = new EncodedPacket(OPCODE_SETUP, 0x0000);
     
-    for (i = 0; i < devices.size(); i++)
+    for (i = 0; i < device_paths.size(); i++)
     {
-        Serial *usb = new Serial(devices.at(i));
+        Serial *usb = new Serial(device_paths.at(i));
         usb->openPort(SERIAL_BAUD_NFC);
 
         usb->sendPacket(*setup);
@@ -207,7 +265,7 @@ static std::vector<Serial> verifyModules()
         DecodedPacket* response = usb->receivePacket();
         if (response == nullptr)
         {
-            DEBUG_LOG(WARNING, __FUNCTION__, "Device on %s is not a valid authentication module.", devices.at(i).c_str());
+            DEBUG_LOG(WARNING, __FUNCTION__, "Device on %s is not a valid authentication module.", device_paths.at(i).c_str());
         }
         else
         {
@@ -215,7 +273,7 @@ static std::vector<Serial> verifyModules()
             response->getData(responseData);
             
             DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
-            modules.push_back(*usb);
+            modules->push_back(*usb);
             
             // Send ACK back
             EncodedPacket* ack = new EncodedPacket(OPCODE_ACK, response->getBlockNumber());
@@ -225,12 +283,10 @@ static std::vector<Serial> verifyModules()
     }
     
     delete(setup);
-	// Package up lock ID, modules, fire this off to the server to verify
 	
-	return modules;
+	return 0;
 }
 
-// Currently will just print stuff
 // todo: more robust error handling, result should be stored to a temporary buffer first, then copied
 static uint16_t getToken(Serial port, uint8_t* destination)
 {
