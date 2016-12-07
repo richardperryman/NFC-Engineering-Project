@@ -29,14 +29,16 @@ formatDbOutput : function (rows, fields){
 	
 	// Return results
 	// TODO: Figure out how to get column names
-	var string = '';
-	for(var i=0;i<rows.length;i++){
-		for(val in rows[i]){
-			string += rows[i][val] + ' ';
-		}
-		string += '\n';
-	}
-	return string;
+	// var string = '';
+	// for(var i=0;i<rows.length;i++){
+		// for(val in rows[i]){
+			// string += rows[i][val] + ' ';
+		// }
+		// string += '\n';
+	// }
+	// return string;
+	
+	return JSON.stringify(rows);
 }
 
 };
