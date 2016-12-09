@@ -53,6 +53,24 @@ requirements like the final report.
 
 \section{Hardware}
 
+At this point in time, the main lock process running on the Raspberry Pi is able to receive authentication tokens of 
+variable size, process them, and send them to the server to request access. It can then process the server's response, 
+and grant or deny access as necessary. On startup, the main process will verify that it can reach the server, verify 
+that it has at least one authentication module connected, and then enter a polling loop to wait for tokens from 
+authentication modules. If a combination of tokens is required, the authentication process can time out. The tokens are 
+cleared from memory after an access request has been sent, and after the timeout.
+
+The NFC authentication module has been fully developed, and can receive the 256-byte NFC authentication token from an 
+Android phone, and forward it to the main process. Due to the limitations of the PN532 NFC shield, the token is built 
+from data across several messages received from the Android phone; however, this means that the module itself is more 
+accomodating to changes, should we decide to change the size of an NFC token.
+
+The work remaining to fully complete the hardware component is to refactor the authentication module code to create a 
+"AuthenticationModule" abstract class. Since the mechanism for sending data to the main process is the same across all 
+authentication modules, but the manner in which a module receives data from the user is unique to the module, 
+refactoring the code will facilitate the development of new authentication modules for the system. In addition to this, 
+video streaming from the IR camera attached to the Pi to a user's mobile phone still needs to be implemented.
+
 \section{Server}
 
 The server handles the maintenance of users, locks, and means of authentication. The server connects with the database
