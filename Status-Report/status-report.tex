@@ -40,7 +40,7 @@ Supervisors: Shikharesh Majumdar and Chung-Horng Lung
 
 This report outlines the work that has been done so far on the Sensor Based Access Control System (SBACS). There are
 three main components to the system: the hardware and software that manages the lock units, the server which stores
-information about the system, and the software that handles user interations with the server and lock units.
+information about the system, and the software that handles user interactions with the server and lock units.
 
 At this time, most of the work on the lock unit technology as well as the server has been completed. The majority of the
 remaining work to be done is on the access points, in particular, a web application to run administrative or user tasks
@@ -49,11 +49,22 @@ has only been planned.
 Aside from this missing element, we are mostly on track compared to our schedule from our initial proposal. We are in
 the middle of preliminary integration testing, and intend to have the system fully functional by the end of December.
 From there, we can work on refining the design of the system, testing the system, and handling the other course
-requirements like the rinal report.
+requirements like the final report.
 
 \section{Hardware}
 
 \section{Server}
+
+The server handles the maintenance of users, locks, and means of authentication. The server connects with the database
+to store and retrieve the information as it is needed. The server currently is able to handle and respond to a variety
+of accessor and mutator types of requests to view and modify the user, lock, and authentication information. There is
+also functionality to verify that the provided authenticators are allowed to open a given lock. Overall, the server
+portion of the project is largely functional and on schedule.
+
+The one part of the server that is not yet implemented is logging in by users, for the phone application and web portal.
+This would restrict access and modification of the information stored in the database to users that are supposed to have
+those rights. This functionality is the one of the last steps to completing the work on the server, and should be finished
+by the beginning of the next school term.
 
 \section{Access Points}
 

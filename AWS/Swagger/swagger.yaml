@@ -663,10 +663,10 @@ definitions:
   AuthList:
     type: object
     properties:
-      auth_type:
+      type:
         type: string
         description: Type of authenticator (password, NFC, etc.)
-      auth_value:
+      value:
         type: string
         description: Value of authenticator (actual password, NFC value, etc.)
         
