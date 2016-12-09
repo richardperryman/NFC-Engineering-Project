@@ -56,7 +56,7 @@ void loop()
                                0x00, /* P2  */
                                0x08, /* Length of AID  */
                                0xF7, 0xA5, 0x39, 0x75, 0x8A, 0xB0, 0x00, 0x7F, /* AID defined on Android App */
-                               0x00  /* Le  */ };
+                               0xF4  /* Le  */ };
       
       uint8_t data[MAX_TOKEN_LENGTH];
       uint8_t dataLen = MAX_TOKEN_LENGTH;
@@ -66,6 +66,33 @@ void loop()
       if (success) {
         Serial.print("Data length: "); Serial.println(dataLen);
         nfc.PrintHexChar(data, dataLen);
+
+        uint8_t temp[0xF4];
+        dataLen = MAX_TOKEN_LENGTH;
+
+        success = nfc.inDataExchange(initMsg, sizeof(initMsg), temp, &dataLen);
+
+        if (success) {
+          Serial.print("Second data length: "); Serial.println(dataLen);
+          nfc.PrintHexChar(temp, dataLen);
+
+          uint8_t finalMsg[] = { 0x00, /* CLA */
+                               0xA4, /* INS */
+                               0x04, /* P1  */
+                               0x00, /* P2  */
+                               0x08, /* Length of AID  */
+                               0xF7, 0xA5, 0x39, 0x75, 0x8A, 0xB0, 0x00, 0x7F, /* AID defined on Android App */
+                               0x00  /* Le  */ };
+
+          uint8_t endMsg[MAX_TOKEN_LENGTH];
+          dataLen = MAX_TOKEN_LENGTH;
+          success = nfc.inDataExchange(finalMsg, sizeof(finalMsg), endMsg, &dataLen);
+
+          if (success) {
+            Serial.print("Final data length (should be nil): "); Serial.println(dataLen);
+            nfc.PrintHexChar(endMsg, dataLen);
+          }
+        }
         /*
         uint8_t tries = 0;
 

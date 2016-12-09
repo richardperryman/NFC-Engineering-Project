@@ -12,6 +12,7 @@
 #include <GPIOPin.h>
 #include <DecodedPacket.h>
 #include <EncodedPacket.h>
+#include <AuthenticationToken.h>
 #include <ServerConnection.h>
 #include <Debug.h>
 
@@ -38,10 +39,10 @@ static GPIOPin* RED;
 // static GPIOPin* RELAY_SIGNAL;
 
 static void maintenanceLoop();
-static void pollingLoop(std::vector<Serial> modules);
+static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> moduleIDs, ServerConnection* connection);
 static int8_t readConfiguration(std::string filepath);
-static int8_t verifyModules(std::vector<Serial>* modules);
-static uint16_t getToken(Serial port, uint8_t* destination);
+static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::string>* moduleIDs);
+static int8_t getToken(Serial port, uint8_t* destination, uint16_t* dataLen);
 
 static void setUpLEDs()
 {
@@ -103,43 +104,10 @@ int main()
 {
     uint8_t status = 0;
     std::string filepath = "/not/real/rightnow.cfg";
-    
+    std::vector<Serial> modules;
     std::vector<std::string> moduleIDs;
-    std::vector<uint8_t*> tokens;
-    uint8_t testToken[255];
-    testToken[0] = 0x11;
-    testToken[1] = 0x22;
-    uint8_t testToken2[255];
-    //moduleIDs.push_back("NFC");
-    //tokens.push_back(testToken);
-    moduleIDs.push_back("Password");
-    testToken2[0] = 'p';
-    testToken2[1] = 'a';
-    testToken2[2] = 's';
-    testToken2[3] = 's';
-    testToken2[4] = 'w';
-    testToken2[5] = 'o';
-    testToken2[6] = 'r';
-    testToken2[7] = 'd';
-    tokens.push_back(testToken2);
-    uint32_t lockID = 0x1;
-    
-    printf("Generating server connection\n");
-    ServerConnection* conn = new ServerConnection("http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com");
-    printf("Checking for signs of life\n");
-    conn->openConnection();
-    if (0 == conn->verifyConnection())
-    {
-        printf("Server online, performing query\n");
-        conn->requestAccess(lockID, moduleIDs, tokens);
-    } else {
-        printf("Server not online\n");
-    }
-    
-    conn->closeConnection();
-    delete(conn);
-    
-    /*setUpLEDs();
+
+    setUpLEDs();
     status = readConfiguration(filepath);
     
     if (status != 0) {
@@ -147,7 +115,6 @@ int main()
         maintenanceLoop();
     } else {
         ServerConnection* conn = new ServerConnection(SERVER_URL);
-        //ServerConnection* conn = new ServerConnection("google.com");
         conn->openConnection();
         status = conn->verifyConnection();
         
@@ -156,7 +123,7 @@ int main()
             conn->closeConnection();
             maintenanceLoop();
         } else {
-            status = verifyModules(&modules);
+            status = verifyModules(&modules, &moduleIDs);
             
             if (status != 0) {
                 DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
@@ -165,18 +132,18 @@ int main()
                 conn->closeConnection();
                 maintenanceLoop();
             } else {
-                pollingLoop(modules);
+                pollingLoop(modules, moduleIDs, conn);
             }
         }
     }
     
-    teardown();*/
+    teardown();
     return 0;
 }
 
 static int8_t readConfiguration(std::string filepath)
 {
-    LOCK_ID = 0xDEADBEEF;
+    LOCK_ID = 0x1;
     SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
     
 	return 0;
@@ -193,12 +160,15 @@ static void maintenanceLoop()
     }
 }
 
-static void pollingLoop(std::vector<Serial> modules)
+static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> moduleIDs, ServerConnection* connection)
 {
     BLUE->setValue(GPIO_HIGH);   
     while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
     {
-        std::vector<uint8_t[255]> tokens;
+        uint16_t counter = 30;
+        bool counting = false;
+        std::vector<AuthenticationToken*> tokens;
+        tokens.reserve(modules.size());
         
         // Poll each device
         for (uint8_t i = 0; i < modules.size(); i++)
@@ -208,21 +178,54 @@ static void pollingLoop(std::vector<Serial> modules)
             if (module.dataAvailable())
             {
                 DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
-                uint8_t test[255];
-                getToken(module, test);
                 
-                //DEBUG_LOG(INFO, __FUNCTION__, "Token as string: %s\n", test);
-                std::cout << "Token as string: " << test << "\n";
+                uint8_t data[1024];
+                uint16_t dataLen = 0;
                 
+                if (0 == getToken(module, data, &dataLen)) {
+                    std::vector<AuthenticationToken*>::iterator it = tokens.begin();
+                    AuthenticationToken* t = new AuthenticationToken(dataLen, data);
+                    tokens.insert(it + i, t);
+                    
+                    // On first token, start 3-second countdown
+                    if (!counting) {
+                        counting = true;
+                    }
+                    
+                    else if (tokens.size() == modules.size())
+                    {
+                        // Attempt an unlock
+                        if (0 == connection->requestAccess(LOCK_ID, moduleIDs, tokens)) {
+                            accessGranted();
+                        } else {
+                            accessDenied();
+                        }
+                        
+                        tokens.clear();
+                    }
+                }
+                
+                if (counting)
+                {
+                    counter--;
+                    
+                    if (counter == 0)
+                    {
+                        counter = 30;
+                        counting = false;
+                        tokens.clear();
+                        accessDenied();
+                    }
+                }
                 
             }
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
-        
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }   
 }
 
-static int8_t verifyModules(std::vector<Serial>* modules)
+static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::string>* moduleIDs)
 {
     uint8_t i = 0;
     
@@ -274,6 +277,8 @@ static int8_t verifyModules(std::vector<Serial>* modules)
             
             DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
             modules->push_back(*usb);
+            std::string* id = new std::string((const char*)responseData, response->getDataSize());
+            moduleIDs->push_back(*id);
             
             // Send ACK back
             EncodedPacket* ack = new EncodedPacket(OPCODE_ACK, response->getBlockNumber());
@@ -288,8 +293,10 @@ static int8_t verifyModules(std::vector<Serial>* modules)
 }
 
 // todo: more robust error handling, result should be stored to a temporary buffer first, then copied
-static uint16_t getToken(Serial port, uint8_t* destination)
+static int8_t getToken(Serial port, uint8_t* destination, uint16_t* dataLen)
 {
+    *dataLen = 0;
+    
     // Receive REQUEST
 	DecodedPacket* receivedPacket = port.receivePacket();
     
@@ -349,6 +356,8 @@ static uint16_t getToken(Serial port, uint8_t* destination)
                             if (i > 0 && i%127 == 0) printf("\n");
                         }
                         printf("]\n");
+                        
+                        *dataLen += bytesReceived;
                     }
                 }
             }

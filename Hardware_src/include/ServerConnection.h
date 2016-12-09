@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <Types.h>
+#include <AuthenticationToken.h>
 #include <curl/curl.h>
 
 class ServerConnection
@@ -20,7 +21,7 @@ public:
     void openConnection();
     void closeConnection();
     int8_t verifyConnection();
-    int8_t requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<uint8_t*> tokens);
+    int8_t requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<AuthenticationToken*> tokens);
 };
 
 #endif // SERVERCONNECTION_H

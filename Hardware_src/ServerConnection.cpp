@@ -67,7 +67,8 @@ void generateSecret(uint8_t* buffer, uint16_t buffLen)
 }
 
 static
-uint16_t byteArrayToHexString(uint8_t* in, uint16_t inLen, std::string* out) {
+uint16_t byteArrayToHexString(uint8_t* in, uint16_t inLen, std::string* out)
+{
     uint16_t i;
     for (i = 0; i < inLen; i++)
     {
@@ -78,7 +79,24 @@ uint16_t byteArrayToHexString(uint8_t* in, uint16_t inLen, std::string* out) {
     return i+1;
 }
 
-int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<uint8_t*> tokens)
+static
+int8_t processResult(CURL* session)
+{
+    long http_code = 0;
+    curl_easy_getinfo (session, CURLINFO_RESPONSE_CODE, &http_code);
+    
+    if (http_code == 401)
+    {
+        printf("XX DENID\n");
+        return -1;
+    } else if (http_code == 200) {
+        return 1;
+    } else {
+        return -1;
+    }
+}
+
+int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<AuthenticationToken*> tokens)
 {
     // cURL stuff
     CURLcode res;
@@ -105,45 +123,45 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, "Content-Type: application/json");
 
-    // Generate 
+    // Generate query string
     queryString << "?lock_id=";
     queryString << std::hex << lock_id;
     queryString << "&lock_key=";
     queryString << lock_key;
     url = url + queryString.str();
-    printf("Using URL: %s\n", url.c_str());
 
     // Generate JSON data for module : token info
-    json_object *tokensArray;
-    tokensArray = json_object_new_array();
+    json = json_object_new_array();
     for (uint8_t i = 0; i < moduleIDs.size(); i++) {
         json_object* token;
-        std::string tokenStr;
+        std::string* tokenStr = tokens.at(i)->toString();
         
-        tokenStr.reserve(sizeof(tokens.at(i)));
-        byteArrayToHexString(tokens.at(i), sizeof(tokens.at(i)), &tokenStr);  
-              
         token = json_object_new_object();
-        json_object_object_add(token, "auth_type", json_object_new_string(moduleIDs.at(i).c_str()));
-        json_object_object_add(token, "auth_value", json_object_new_string(tokenStr.c_str()));
-        json_object_array_add(tokensArray, token);
+        json_object_object_add(token, "type", json_object_new_string(moduleIDs.at(i).c_str()));
+        json_object_object_add(token, "value", json_object_new_string(tokenStr->c_str()));
+        json_object_array_add(json, token);
+        delete(tokenStr);
     }
-    printf("Query string in json: %s\n", json_object_to_json_string(tokensArray));
+    printf("Post body in json: %s\n", json_object_to_json_string(json));
+    
+    FILE *devnull = fopen("/dev/null", "w+");
     
     curl_easy_setopt(this->curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(this->curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(this->curl, CURLOPT_POSTFIELDS, json_object_to_json_string(tokensArray));
+    curl_easy_setopt(this->curl, CURLOPT_POSTFIELDS, json_object_to_json_string(json));
     curl_easy_setopt(this->curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
-    //curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*) cf); // Write the response 
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, devnull); // Don't print the response 
     res = curl_easy_perform(this->curl);
     res = CURLE_OK;
     
     if (res != CURLE_OK) {
         DEBUG_LOG(WARNING, __FUNCTION__, "Sending access request failed. Message: %s\n", url.c_str(), curl_easy_strerror(res));
+    } else {
+        processResult(this->curl);
     }
     
+    fclose(devnull);
     json_object_put(json);
-    json_object_put(tokensArray);
     curl_easy_cleanup(this->curl);
     curl_slist_free_all(headers);
     return 0;

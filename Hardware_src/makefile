@@ -7,7 +7,7 @@ CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c
 
 # File stuff
 EXECUTABLE = GPIOTest
-OBJECTS = main.o DecodedPacket.o EncodedPacket.o GPIOPin.o Serial.o ServerConnection.o Debug.o
+OBJECTS = main.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o Debug.o
 RM = rm -f *.o
 
 default : $(EXECUTABLE) 
@@ -27,10 +27,13 @@ main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/DecodedPacket.h $(INCLUDE)/Enc
 	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
 	
 DecodedPacket.o : $(INCLUDE)/DecodedPacket.h DecodedPacket.cpp $(INCLUDE)/Types.h
-	$(CC) $(CFLAGS) DecodedPacket.cpp $(LDFLAGS)
+	$(CC) $(CFLAGS) DecodedPacket.cpp
 	
 EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h
-	$(CC) $(CFLAGS) EncodedPacket.cpp $(LDFLAGS)
+	$(CC) $(CFLAGS) EncodedPacket.cpp
+	
+AuthenticationToken.o : $(INCLUDE)/AuthenticationToken.h AuthenticationToken.cpp $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) AuthenticationToken.cpp
 
 GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) GPIOPin.cpp $(LDFLAGS)
@@ -38,7 +41,7 @@ GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types
 Serial.o : $(INCLUDE)/Serial.h $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) Serial.cpp $(LDFLAGS)
 	
-ServerConnection.o: $(INCLUDE)/ServerConnection.h ServerConnection.cpp $(INCLUDE)/Types.h
+ServerConnection.o: $(INCLUDE)/ServerConnection.h ServerConnection.cpp $(INCLUDE)/Types.h $(INCLUDE)/AuthenticationToken.h
 	$(CC) $(CFLAGS) ServerConnection.cpp $(LDFLAGS) 
 
 Debug.o : $(INCLUDE)/Debug.h Debug.cpp
