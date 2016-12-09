@@ -40,9 +40,9 @@ Supervisors: Shikharesh Majumdar and Chung-Horng Lung
 
 This report outlines the work that has been done so far on the Sensor Based Access Control System (SBACS). There are
 three main components to the system: the hardware and software that manages the lock units, the server which stores
-information about the system, and the software that handles user interactions with the server and lock units.
+information about the system, and the phone application and web-based interface for user interations.
 
-At this time, most of the work on the lock unit technology as well as the server has been completed. The majority of the
+At this time, most of the work on the lock unit technology, as well as the server has been completed. The majority of the
 remaining work to be done is on the access points, in particular, a web application to run administrative or user tasks
 has only been planned.
 
@@ -60,16 +60,16 @@ that it has at least one authentication module connected, and then enter a polli
 authentication modules. If a combination of tokens is required, the authentication process can time out. The tokens are 
 cleared from memory after an access request has been sent, and after the timeout.
 
-The NFC authentication module has been fully developed, and can receive the 256-byte NFC authentication token from an 
-Android phone, and forward it to the main process. Due to the limitations of the PN532 NFC shield, the token is built 
-from data across several messages received from the Android phone; however, this means that the module itself is more 
+The NFC authentication module can receive the 256-byte NFC authentication token from an 
+Android device, and forward it to the main process. Due to the limitations of the PN532 NFC shield, the token is built 
+from data across several messages received from the Android phone. However, this means that the module itself is more 
 accomodating to changes, should we decide to change the size of an NFC token.
 
-The work remaining to fully complete the hardware component is to refactor the authentication module code to create a 
-\emph{AuthenticationModule} abstract class. Since the mechanism for sending data to the main process is the same across all 
-authentication modules, but the manner in which a module receives data from the user is unique to the module, 
-refactoring the code will facilitate the development of new authentication modules for the system. In addition to this, 
-video streaming from the IR camera attached to the Pi to a user's mobile phone still needs to be implemented.
+The work remaining to fully complete the hardware component is to refactor the authentication module code to create an 
+\emph{AuthenticationModule} abstract class. Refactoring the code will facilitate the development of new authentication
+modules for the system because the sending mechanism is the same across all authentication modules. In addition to this,
+video streaming from the IR camera attached to the Pi to a user's mobile phone still needs to be implemented. Finally,
+acquiring and installing the electric strike lock that will be used as our proof of concept still needs to be done.
 
 \section{Server}
 
@@ -79,10 +79,11 @@ of accessor and mutator types of requests to view and modify the user, lock, and
 also functionality to verify that the provided authenticators are allowed to open a given lock. Overall, the server
 portion of the project is largely functional and on schedule.
 
-The one part of the server that is not yet implemented is logging in by users, for the phone application and web portal.
+The main part of the server that is not yet implemented is logging in by users, for the phone application and web portal.
 This would restrict access and modification of the information stored in the database to users that are supposed to have
 those rights. This functionality is the one of the last steps to completing the work on the server, and should be finished
-by the beginning of the next school term.
+by the beginning of the next school term. The other outstanding feature of the server is the ability to provide the IR
+camera video stream.
 
 \section{Access Points}
 
@@ -91,11 +92,18 @@ systems allow users to manage their various identities and the locks that they a
 administrative capabilities for service providers. The phone application also had to provide a way for NFC to be used
 with locks associated with the user.
 
-The phone application currently does not authenticate users, but otherwise can perform all of the required actions.
-The authentication implementation needs to be worked on in conjunction with the server adding the notion of sessions or
-something similar. The web application currently doesn't exist, but should largely mimic the phone application in
-design.
+The phone application currently does not authenticate users, but otherwise can perform most of the required actions.
+The main remaining feature to work on is the ability to configure whether the SBACS locks can be unlocked while the
+Android device is locked. The authentication implementation needs to be worked on in conjunction with the server adding
+the notion of sessions or something similar. The web application currently doesn't exist, but should largely mimic the
+phone application in design.
 
 \section{Conclusion}
+
+According to the proposed timeline, we should be workign on integration testing and preliminary integration. We are on
+track with this, however some prototyping still needs to be finished. Our main points of focus for our work in the next
+few weeks are: completing the hardware prototype, adding authentication to the server and Android app, and the
+development of the web application. Our stretch goals will be to get the video streaming prototyped and to add a formal
+test plan. We expect to be done our main goals by the beginning of the Winter term.
 
 \end{document}
