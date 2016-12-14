@@ -2,15 +2,15 @@
 CC = g++
 DEBUG = -DDEBUG
 INCLUDE = ./include
-LFLAGS = -Wall -I$(INCLUDE) -std=c++11
-CFLAGS = $(LFLAGS) -c
+LDFLAGS = $(shell pkg-config --libs libcurl) $(shell pkg-config --libs json-c)
+CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c
 
 # File stuff
 EXECUTABLE = GPIOTest
-OBJECTS = main.o DecodedPacket.o EncodedPacket.o GPIOPin.o Serial.o Debug.o
+OBJECTS = main.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o Debug.o
 RM = rm -f *.o
 
-default : $(EXECUTABLE)
+default : $(EXECUTABLE) 
 
 debug : CFLAGS += $(DEBUG)
 debug : $(EXECUTABLE)
@@ -19,24 +19,30 @@ clean :
 	$(RM) *~ $(EXECUTABLE)
 
 $(EXECUTABLE) : $(OBJECTS)
-	$(CC) $(LFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+	$(CC) $(OBJECTS) -o $(EXECUTABLE) $(LDFLAGS)
 	$(RM)
 
 # Intermediate object files
 main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/DecodedPacket.h $(INCLUDE)/EncodedPacket.h  $(INCLUDE)/Serial.h $(INCLUDE)/Types.h $(INCLUDE)/Debug.h
-	$(CC) $(CFLAGS) main.cpp
+	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
 	
 DecodedPacket.o : $(INCLUDE)/DecodedPacket.h DecodedPacket.cpp $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) DecodedPacket.cpp
 	
 EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) EncodedPacket.cpp
+	
+AuthenticationToken.o : $(INCLUDE)/AuthenticationToken.h AuthenticationToken.cpp $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) AuthenticationToken.cpp
 
 GPIOPin.o : $(INCLUDE)/GPIOPin.h GPIOPin.cpp $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
-	$(CC) $(CFLAGS) GPIOPin.cpp
+	$(CC) $(CFLAGS) GPIOPin.cpp $(LDFLAGS)
 
 Serial.o : $(INCLUDE)/Serial.h $(INCLUDE)/Debug.h $(INCLUDE)/Types.h
-	$(CC) $(CFLAGS) Serial.cpp
+	$(CC) $(CFLAGS) Serial.cpp $(LDFLAGS)
+	
+ServerConnection.o: $(INCLUDE)/ServerConnection.h ServerConnection.cpp $(INCLUDE)/Types.h $(INCLUDE)/AuthenticationToken.h
+	$(CC) $(CFLAGS) ServerConnection.cpp $(LDFLAGS) 
 
 Debug.o : $(INCLUDE)/Debug.h Debug.cpp
 	$(CC) $(CFLAGS) Debug.cpp
