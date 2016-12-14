@@ -11,5 +11,6 @@
     <string name="sbacs_url">http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/</string>
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>
+    <string name="auth_table_name">authenticators</string>
     <string name="registration_table_name">access/management</string>
 </resources>

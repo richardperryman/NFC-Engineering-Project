@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.Request;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,14 +44,18 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.user_table_name) +
                 "?name=" + user_name;
         final Context currentContext = this;
-        Response.Listener<String> loginResponseListener = new Response.Listener<String>() {
+        Response.Listener<JSONArray> loginResponseListener = new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(JSONArray response) {
                 int user_id;
                 try {
-                    // This probably shouldn't be hardcoded!
-                    user_id = Integer.parseInt(response.split("\\s+")[0]);
+                    JSONObject user = response.getJSONObject(0);
+                    //TODO Constants
+                    user_id = Integer.parseInt(user.getString("User_Id"));
                 } catch (NumberFormatException e) {
+                    user_id = -1;
+                } catch (JSONException e) {
+                    // TODO better handling
                     user_id = -1;
                 }
 
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(loginIntent);
             }
         };
-        StringRequest request = new StringRequest(Request.Method.GET, url, loginResponseListener,
+        JsonArrayRequest request = new JsonArrayRequest(url, loginResponseListener,
                 genericErrorListener(results));
         queue.add(request);
     }

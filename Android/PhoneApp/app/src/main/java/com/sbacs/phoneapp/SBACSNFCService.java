@@ -5,20 +5,30 @@ import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class SBACSNFCService extends HostApduService {
     public final static String SBACS_NOTIFICATION = "com.SBACS.service.NOTIFICATION";
     public final static String SBACS_MESSAGE = "com.SBACS.service.MESSAGE";
 
-    private final static byte[] data_message = "Hi Jess!".getBytes();
-    private final static byte[] success_message = new byte[]{0};
-    private final static byte sentinel_byte = 0x00;
+    private byte[] data_message;
+    private int bytes_sent = 0;
 
     private LocalBroadcastManager broadcaster;
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        // ISO 8859-1 is full 8 bit so we can send all the patterns we may need
+        data_message = intent.getStringExtra(UserActivity.USER_NFC_AUTH).getBytes(StandardCharsets.ISO_8859_1);
+
+        return START_REDELIVER_INTENT;
+    }
+
+    @Override
     public void onCreate() {
+        // Can be used to send data to the app
         broadcaster = LocalBroadcastManager.getInstance(this);
         // Just for testing
         Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
@@ -31,24 +41,26 @@ public class SBACSNFCService extends HostApduService {
         // If this becomes expensive use another thread and use sendResponseApdu()
 
         Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
-        notifyIntent.putExtra(SBACS_MESSAGE, new String(apdu));
+        notifyIntent.putExtra(SBACS_MESSAGE, String.valueOf(bytes_sent));
         broadcaster.sendBroadcast(notifyIntent);
 
-        if (apdu.length == 0) {
-            return data_message;
-        } else if (apdu[0] == sentinel_byte) {
-            byte[] check = Arrays.copyOfRange(apdu, 1, data_message.length);
-            if (Arrays.equals(check, data_message)) {
-                return success_message;
-            } else {
-                return data_message;
-            }
-        } else {
-            return data_message;
+        int length = apdu[apdu.length - 1];
+        if (length == 1) {
+            bytes_sent = 0;
+            return new byte[] {0x00};
+        } else if (length < 0) {
+            // Casting to int does sign extension, quick fix is to add 256 since we want positive values
+            length = 256 + length;
         }
+
+        byte[] result = Arrays.copyOfRange(data_message, Math.min(bytes_sent, data_message.length),
+                Math.min(bytes_sent + length, data_message.length));
+        bytes_sent += result.length;
+        return result;
     }
+
     @Override
     public void onDeactivated(int reason) {
-        // Clean up?
+        bytes_sent = 0;
     }
 }
