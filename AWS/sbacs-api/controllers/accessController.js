@@ -105,6 +105,9 @@ function handlePost(req,res){
 			}).on('end', function () {
 				body = Buffer.concat(body).toString();
 				
+				// TODO: Print body
+				console.log('Body: ' + body);
+				
 				var given_auth = extractAuthenticatorsFromBody(body);
 				// Check given and needed authenticators
 				if(checkAuth(given_auth, needed_auth)){
@@ -209,6 +212,8 @@ function checkGivenContains(given,neededAuth){
 		givenAuth = given[i];
 		if(givenAuth.type == neededAuth.type){
 			var encryptedInfo = new crypt.encryptedAuth(givenAuth.value,neededAuth.salt);
+			// TODO: Output some info
+			console.log('Type: ' + givenAuth.type + ', HashedGiven: ' + encryptedInfo.secret + ', Expected: ' +  neededAuth.value);
 			if(encryptedInfo.secret == neededAuth.value){
 				return true;
 			}
