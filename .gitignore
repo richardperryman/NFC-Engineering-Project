@@ -1,20 +1,3 @@
 # Exclude common unwanted files
 
 **/*.zip
-
-# Exclude unwanted TeX files
-
-**/*.aux
-**/*.bbl
-**/*.bib
-**/*.blg
-**/*.lof
-**/*.log
-**/*.synctex.gz
-**/*.toc
-**/*.run.xml
-
-# Exclude unwanted violet files
-
-**/*.db
-**/*.png
