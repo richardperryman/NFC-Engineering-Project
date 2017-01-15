@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <cstring>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 
 #include <iomanip>
 #include <json-c/json.h>
@@ -27,7 +29,7 @@ int8_t ServerConnection::verifyConnection()
     // Do a simple HTTP GET request to verify the server is online
     curl_easy_setopt(this->curl, CURLOPT_URL, this->getURL());
     curl_easy_setopt(this->curl, CURLOPT_HTTPGET, 1);
-    curl_easy_setopt(this->curl, CURLOPT_NOBODY, 1); // Disable printing
+    curl_easy_setopt(this->curl, CURLOPT_NOBODY, 1); // Disable printing result
     curl_easy_setopt(this->curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
     res = curl_easy_perform(this->curl);
 
@@ -87,10 +89,10 @@ int8_t processResult(CURL* session)
     
     if (http_code == 401)
     {
-        printf("XX DENID\n");
-        return -1;
-    } else if (http_code == 200) {
         return 1;
+    } else if (http_code == 200) {
+        // TODO: Make this actually process the result besides checking HTTP code
+        return 0;
     } else {
         return -1;
     }
@@ -111,6 +113,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     json_object* json;
 
     // Initialization
+    int8_t accessResult;
     curl = curl_easy_init();
     json = json_object_new_object();
     
@@ -121,7 +124,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     // Generate HTTP header
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json; charset=utf-8");
 
     // Generate query string
     queryString << "?lock_id=";
@@ -129,21 +132,25 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     queryString << "&lock_key=";
     queryString << lock_key;
     url = url + queryString.str();
+    DEBUG_LOG(INFO, __FUNCTION__, "Using URL: %s", url.c_str());
 
     // Generate JSON data for module : token info
     json = json_object_new_array();
     for (uint8_t i = 0; i < moduleIDs.size(); i++) {
         json_object* token;
-        std::string* tokenStr = tokens.at(i)->toString();
+        char tokenStr[tokens.at(i)->getSize() + 1];
+        memcpy(tokenStr, tokens.at(i)->getData(), tokens.at(i)->getSize());
+        tokenStr[tokens.at(i)->getSize()] = 0x00;
         
         token = json_object_new_object();
         json_object_object_add(token, "type", json_object_new_string(moduleIDs.at(i).c_str()));
-        json_object_object_add(token, "value", json_object_new_string(tokenStr->c_str()));
+        printf("Size of token: %d\n", tokens.at(i)->getSize());
+        json_object_object_add(token, "value", json_object_new_string(tokenStr));
         json_object_array_add(json, token);
-        delete(tokenStr);
     }
-    printf("Post body in json: %s\n", json_object_to_json_string(json));
+    DEBUG_LOG(INFO, __FUNCTION__, "Post body string size: %d in json: %s\n", strlen(json_object_to_json_string(json)), json_object_to_json_string(json));
     
+
     FILE *devnull = fopen("/dev/null", "w+");
     
     curl_easy_setopt(this->curl, CURLOPT_URL, url.c_str());
@@ -152,17 +159,18 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     curl_easy_setopt(this->curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, devnull); // Don't print the response 
     res = curl_easy_perform(this->curl);
-    res = CURLE_OK;
+    //res = CURLE_OK;
     
     if (res != CURLE_OK) {
         DEBUG_LOG(WARNING, __FUNCTION__, "Sending access request failed. Message: %s\n", url.c_str(), curl_easy_strerror(res));
+        accessResult = -1;
     } else {
-        processResult(this->curl);
+        accessResult = processResult(this->curl);
     }
     
     fclose(devnull);
     json_object_put(json);
     curl_easy_cleanup(this->curl);
     curl_slist_free_all(headers);
-    return 0;
+    return accessResult;
 }

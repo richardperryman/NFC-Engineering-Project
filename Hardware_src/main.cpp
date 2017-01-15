@@ -15,6 +15,8 @@
 #include <AuthenticationToken.h>
 #include <ServerConnection.h>
 #include <Debug.h>
+#include <fstream>
+#include <iostream>
 
 // To do:
 // Read configuration file at start up (server URL, lock ID)
@@ -78,6 +80,7 @@ static void teardown()
 
 void accessGranted()
 {
+    DEBUG_LOG(INFO, __FUNCTION__, "Access granted.");
     BLUE->setValue(GPIO_LOW);
     GREEN->setValue(GPIO_HIGH);
     // RELAY_SIGNAL->setValue(GPIO_HIGH);
@@ -91,6 +94,7 @@ void accessGranted()
 
 void accessDenied()
 {
+    DEBUG_LOG(INFO, __FUNCTION__, "Access denied.");
     BLUE->setValue(GPIO_LOW);
     RED->setValue(GPIO_HIGH);
     
@@ -111,7 +115,7 @@ int main()
     status = readConfiguration(filepath);
     
     if (status != 0) {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath);
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath.c_str());
         maintenanceLoop();
     } else {
         ServerConnection* conn = new ServerConnection(SERVER_URL);
@@ -145,6 +149,7 @@ static int8_t readConfiguration(std::string filepath)
 {
     LOCK_ID = 0x1;
     SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
+    //SERVER_URL = "127.0.0.1:3000";
     
 	return 0;
 }
@@ -165,7 +170,7 @@ static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> mo
     BLUE->setValue(GPIO_HIGH);   
     while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
     {
-        uint16_t counter = 30;
+        uint16_t counter = 50;
         bool counting = false;
         std::vector<AuthenticationToken*> tokens;
         tokens.reserve(modules.size());
@@ -175,25 +180,27 @@ static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> mo
         {
             Serial module = modules.at(i);
             
-            if (module.dataAvailable())
+            if (module.dataAvailable() > 0)
             {
                 DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
                 
                 uint8_t data[1024];
                 uint16_t dataLen = 0;
                 
-                if (0 == getToken(module, data, &dataLen)) {
+                if (0 == getToken(module, data, &dataLen)) {                    
                     std::vector<AuthenticationToken*>::iterator it = tokens.begin();
                     AuthenticationToken* t = new AuthenticationToken(dataLen, data);
                     tokens.insert(it + i, t);
                     
-                    // On first token, start 3-second countdown
+                    // On first token, start 5-second countdown
                     if (!counting) {
                         counting = true;
                     }
                     
-                    else if (tokens.size() == modules.size())
+                    if (tokens.size() == modules.size())
                     {
+                        // TODO: Maybe close all of the serial ports at this point so no extra tokens clog the system
+                        
                         // Attempt an unlock
                         if (0 == connection->requestAccess(LOCK_ID, moduleIDs, tokens)) {
                             accessGranted();
@@ -202,6 +209,8 @@ static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> mo
                         }
                         
                         tokens.clear();
+                        counting = false;
+                        counter = 50;
                     }
                 }
                 
@@ -211,7 +220,7 @@ static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> mo
                     
                     if (counter == 0)
                     {
-                        counter = 30;
+                        counter = 50;
                         counting = false;
                         tokens.clear();
                         accessDenied();
@@ -259,6 +268,7 @@ static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::strin
     
     for (i = 0; i < device_paths.size(); i++)
     {
+        DEBUG_LOG(INFO, __FUNCTION__, "Sending setup packet");
         Serial *usb = new Serial(device_paths.at(i));
         usb->openPort(SERIAL_BAUD_NFC);
 
@@ -349,11 +359,11 @@ static int8_t getToken(Serial port, uint8_t* destination, uint16_t* dataLen)
                         
                         DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", bytesReceived);
                         
-                        printf("Received packet bytes: [ ");
+                        printf("Received packet bytes:\n[ ");
                         for (int i = 0; i < bytesReceived; i++) {
                             destination[i] = dataBuffer[i];
                             printf("0x%02X ", dataBuffer[i]);
-                            if (i > 0 && i%127 == 0) printf("\n");
+                            if (i > 0 && i%16 == 0) printf("\n");
                         }
                         printf("]\n");
                         

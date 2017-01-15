@@ -12,6 +12,11 @@ uint16_t AuthenticationToken::getSize()
     return this->tokenSize;
 }
 
+const char* AuthenticationToken::getData()
+{
+    return (const char*)(this->tokenData);
+}
+
 std::string* AuthenticationToken::toString() {
     return new std::string((const char*)this->tokenData, this->tokenSize);
 }

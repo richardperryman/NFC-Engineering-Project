@@ -31,7 +31,8 @@ enum packet_opcode_t {
 
 enum error_code_t {
     ERROR_BADOPCODE = 0x0001,
-    ERROR_DECODING = 0x0002
+    ERROR_DECODING = 0x0002,
+    ERROR_SETUP = 0x0003
 };
 
 #endif // TYPES_H

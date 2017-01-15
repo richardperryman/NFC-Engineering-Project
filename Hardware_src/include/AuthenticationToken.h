@@ -11,6 +11,7 @@ private:
 
 public:
     AuthenticationToken(uint16_t tokenSize, uint8_t* tokenData);
+    const char* getData();
     uint16_t getSize();
     std::string* toString();
 };

@@ -1,5 +1,6 @@
 # Compiler stuff
 CC = g++
+#CC = arm-linux-gnueabi-g++
 DEBUG = -DDEBUG
 INCLUDE = ./include
 LDFLAGS = $(shell pkg-config --libs libcurl) $(shell pkg-config --libs json-c)
