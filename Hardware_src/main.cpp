@@ -1,9 +1,5 @@
 
-#include <iostream>
 #include <vector>
-#include <unistd.h>
-#include <stdio.h>
-#include <string>
 #include <chrono>
 #include <thread>
 #include <sys/stat.h>
@@ -12,21 +8,12 @@
 #include <GPIOPin.h>
 #include <DecodedPacket.h>
 #include <EncodedPacket.h>
-#include <AuthenticationToken.h>
 #include <ServerConnection.h>
+#include <AuthenticationModule.h>
 #include <Debug.h>
-#include <fstream>
-#include <iostream>
 
 // To do:
 // Read configuration file at start up (server URL, lock ID)
-
-
-// For unlocking:
-// Pi sends tokens to server
-// Server responds w/ "hey I'm ready to send yes/no"
-// Pi generates one-time-use public key (/dev/urandom or something, 256-bits) and sends to server
-// Server encrypts yes/no with one-time-use key and sends it back to the Pi
 
 // For QR:
 // User takes photo of code (the code is the lock ID), sends code to server
@@ -41,10 +28,9 @@ static GPIOPin* RED;
 // static GPIOPin* RELAY_SIGNAL;
 
 static void maintenanceLoop();
-static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> moduleIDs, ServerConnection* connection);
+static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConnection* connection);
 static int8_t readConfiguration(std::string filepath);
-static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::string>* moduleIDs);
-static int8_t getToken(Serial port, uint8_t* destination, uint16_t* dataLen);
+static int8_t verifyModules(std::vector<AuthenticationModule*>* modules);
 
 static void setUpLEDs()
 {
@@ -56,13 +42,13 @@ static void setUpLEDs()
 	BLUE->exportPin();
 	RED->exportPin();
 	
-	sleep(1);
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	
 	GREEN->setOutput();
 	BLUE->setOutput();
 	RED->setOutput();
 	
-	sleep(1);
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 static void teardown()
@@ -71,7 +57,7 @@ static void teardown()
 	BLUE->unexportPin();
 	RED->unexportPin();	
 
-	sleep(1);
+	std::this_thread::sleep_for(std::chrono::milliseconds(10));
     
     delete(GREEN);
     delete(BLUE);
@@ -85,7 +71,7 @@ void accessGranted()
     GREEN->setValue(GPIO_HIGH);
     // RELAY_SIGNAL->setValue(GPIO_HIGH);
     
-    sleep(3); // Disengage the lock for three seconds
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000)); // Disengage the lock for three seconds
     
     BLUE->setValue(GPIO_HIGH);
     GREEN->setValue(GPIO_LOW);
@@ -98,7 +84,7 @@ void accessDenied()
     BLUE->setValue(GPIO_LOW);
     RED->setValue(GPIO_HIGH);
     
-    sleep(1); // Show red for one second
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000)); // Show red for two seconds
     
     BLUE->setValue(GPIO_HIGH);
     RED->setValue(GPIO_LOW);
@@ -108,8 +94,7 @@ int main()
 {
     uint8_t status = 0;
     std::string filepath = "/not/real/rightnow.cfg";
-    std::vector<Serial> modules;
-    std::vector<std::string> moduleIDs;
+    std::vector<AuthenticationModule*> modules;
 
     setUpLEDs();
     status = readConfiguration(filepath);
@@ -118,30 +103,31 @@ int main()
         DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath.c_str());
         maintenanceLoop();
     } else {
-        ServerConnection* conn = new ServerConnection(SERVER_URL);
-        conn->openConnection();
-        status = conn->verifyConnection();
+        ServerConnection* connection = new ServerConnection(SERVER_URL);
+        connection->openConnection();
+        status = connection->verifyConnection();
         
         if (status != 0) {
             DEBUG_LOG(CRITICAL, __FUNCTION__, "Cannot reach server.");
-            conn->closeConnection();
             maintenanceLoop();
         } else {
-            status = verifyModules(&modules, &moduleIDs);
+            status = verifyModules(&modules);
             
             if (status != 0) {
                 DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
             } else if (modules.size() == 0) {
                 DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
-                conn->closeConnection();
                 maintenanceLoop();
             } else {
-                pollingLoop(modules, moduleIDs, conn);
+                pollingLoop(&modules, connection);
             }
         }
+        
+        connection->closeConnection();
     }
     
     teardown();
+    DEBUG_LOG(INFO, __FUNCTION__, "Shut down successful.");
     return 0;
 }
 
@@ -159,85 +145,59 @@ static void maintenanceLoop()
     while(true)
     {
         RED->setValue(GPIO_HIGH);
-        sleep(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         RED->setValue(GPIO_LOW);
-        sleep(1);
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
-static void pollingLoop(std::vector<Serial> modules, std::vector<std::string> moduleIDs, ServerConnection* connection)
+static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConnection* connection)
 {
-    BLUE->setValue(GPIO_HIGH);   
     while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
     {
         uint16_t counter = 50;
         bool counting = false;
-        std::vector<AuthenticationToken*> tokens;
-        tokens.reserve(modules.size());
+        uint16_t tokenCount = 0;
         
         // Poll each device
-        for (uint8_t i = 0; i < modules.size(); i++)
+        for (uint8_t i = 0; i < modules->size(); i++)
         {
-            Serial module = modules.at(i);
+            AuthenticationModule* module = modules->at(i);
+            printf("-- Polling device %s\n", module->getID());
             
-            if (module.dataAvailable() > 0)
+            if (module->getToken())
             {
-                DEBUG_LOG(INFO, __FUNCTION__, "Receiving auth token from module...");
-                
-                uint8_t data[1024];
-                uint16_t dataLen = 0;
-                
-                if (0 == getToken(module, data, &dataLen)) {                    
-                    std::vector<AuthenticationToken*>::iterator it = tokens.begin();
-                    AuthenticationToken* t = new AuthenticationToken(dataLen, data);
-                    tokens.insert(it + i, t);
-                    
-                    // On first token, start 5-second countdown
-                    if (!counting) {
-                        counting = true;
-                    }
-                    
-                    if (tokens.size() == modules.size())
-                    {
-                        // TODO: Maybe close all of the serial ports at this point so no extra tokens clog the system
-                        
-                        // Attempt an unlock
-                        if (0 == connection->requestAccess(LOCK_ID, moduleIDs, tokens)) {
-                            accessGranted();
-                        } else {
-                            accessDenied();
-                        }
-                        
-                        tokens.clear();
-                        counting = false;
-                        counter = 50;
-                    }
-                }
-                
-                if (counting)
+                tokenCount++;
+                            
+                // On first token, start 5-second countdown
+                if (!counting)
                 {
-                    counter--;
-                    
-                    if (counter == 0)
-                    {
-                        counter = 50;
-                        counting = false;
-                        tokens.clear();
-                        accessDenied();
-                    }
-                }
-                
+                    counting = true;
+                }         
             }
             
+            if (tokenCount == modules->size() || counter == 0)
+            {      
+                // Attempt an unlock
+                if (0 == connection->requestAccess(LOCK_ID, modules)) {
+                    accessGranted();
+                } else {
+                    accessDenied();
+                }
+
+                counting = false;
+                counter = 50;
+                tokenCount = 0;
+            }
+            
+            if (counting) counter--;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
     }   
 }
 
-static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::string>* moduleIDs)
+static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
 {
-    uint8_t i = 0;
-    
     std::vector<std::string> device_paths; // Not every ACMx device is a module
 
     // Get all device paths on /dev/ttyACM*
@@ -266,113 +226,53 @@ static int8_t verifyModules(std::vector<Serial>* modules, std::vector<std::strin
 	// Get String names from modules
 	EncodedPacket* setup = new EncodedPacket(OPCODE_SETUP, 0x0000);
     
-    for (i = 0; i < device_paths.size(); i++)
+    for (uint8_t i = 0; i < device_paths.size(); i++)
     {
         DEBUG_LOG(INFO, __FUNCTION__, "Sending setup packet");
-        Serial *usb = new Serial(device_paths.at(i));
+        Serial *usb = new Serial(device_paths[i]);
         usb->openPort(SERIAL_BAUD_NFC);
 
         usb->sendPacket(*setup);
-        usb->flush();
 
         DecodedPacket* response = usb->receivePacket();
         if (response == nullptr)
         {
             DEBUG_LOG(WARNING, __FUNCTION__, "Device on %s is not a valid authentication module.", device_paths.at(i).c_str());
+            usb->closePort();
+            delete(usb);
         }
         else
         {
-            uint8_t responseData[response->getDataSize()];
-            response->getData(responseData);
-            
-            DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
-            modules->push_back(*usb);
-            std::string* id = new std::string((const char*)responseData, response->getDataSize());
-            moduleIDs->push_back(*id);
-            
-            // Send ACK back
-            EncodedPacket* ack = new EncodedPacket(OPCODE_ACK, response->getBlockNumber());
-            usb->sendPacket(*ack);
-            delete(ack);
-        }
-    }
-    
-    delete(setup);
-	
-	return 0;
-}
-
-// todo: more robust error handling, result should be stored to a temporary buffer first, then copied
-static int8_t getToken(Serial port, uint8_t* destination, uint16_t* dataLen)
-{
-    *dataLen = 0;
-    
-    // Receive REQUEST
-	DecodedPacket* receivedPacket = port.receivePacket();
-    
-    if (receivedPacket == nullptr)
-    {
-        DEBUG_LOG(ERROR, __FUNCTION__, "Received an invalid packet.");
-        return -1;
-    }
-    else
-    {
-        if (receivedPacket->getOpcode() != OPCODE_REQUEST)
-        {
-            DEBUG_LOG(ERROR, __FUNCTION__, "Received request packet with bad opcode.");
-            return -1;
-        }
-        else
-        {
-            uint16_t numDataPackets = receivedPacket->getBlockNumber();
-            uint16_t currentDataPacket = 0x0000;
-            
-            DEBUG_LOG(INFO, __FUNCTION__, "Expecting %d data packets.", numDataPackets);
-            
-            bool error = false;
-            for (; currentDataPacket < numDataPackets + 1 && !error; currentDataPacket++)
+            if (response->getOpcode() != OPCODE_DATA)
             {
-                // Send ACK
-                EncodedPacket *ack = new EncodedPacket(OPCODE_ACK, currentDataPacket);
-                port.sendPacket(*ack);
-                
-                // Receive DATA
-                if (currentDataPacket < numDataPackets)
+                if (response->getOpcode() == OPCODE_ERROR)
                 {
-                    DecodedPacket *data = port.receivePacket();
-                        
-                    if (data == nullptr)
-                    {
-                        DEBUG_LOG(ERROR, __FUNCTION__, "Data packet timed out.");
-                        return -1;
-                    }
-                        
-                    if (data->getOpcode() != OPCODE_DATA)
-                    {
-                        DEBUG_LOG(ERROR, __FUNCTION__, "Received data packet with bad opcode.");
-                        return -1;
-                    }
-                    else
-                    {
-                        uint8_t dataBuffer[data->getDataSize()];
-                        uint16_t bytesReceived = data->getData(dataBuffer);
-                        
-                        DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", bytesReceived);
-                        
-                        printf("Received packet bytes:\n[ ");
-                        for (int i = 0; i < bytesReceived; i++) {
-                            destination[i] = dataBuffer[i];
-                            printf("0x%02X ", dataBuffer[i]);
-                            if (i > 0 && i%16 == 0) printf("\n");
-                        }
-                        printf("]\n");
-                        
-                        *dataLen += bytesReceived;
-                    }
+                    DEBUG_LOG(ERROR, __FUNCTION__, "Device on %s sent error code %04X.", device_paths.at(i).c_str(), response->getBlockNumber());
                 }
+                else
+                {
+                    DEBUG_LOG(ERROR, __FUNCTION__, "Device on %s sent a non-error, non-data packet.", device_paths.at(i).c_str());
+                }
+                usb->closePort();
+                delete(usb);
+            }
+            else
+            {
+                uint8_t responseData[response->getDataSize()];
+                response->getData(responseData);
+            
+                DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
+                std::string* id = new std::string((const char*)responseData, response->getDataSize());
+                modules->push_back(new AuthenticationModule(*id, usb));
+            
+                // Send ACK back
+                EncodedPacket* ack = new EncodedPacket(OPCODE_ACK, response->getBlockNumber());
+                usb->sendPacket(*ack);
+                delete(ack);
             }
         }
     }
     
+    delete(setup);
 	return 0;
 }

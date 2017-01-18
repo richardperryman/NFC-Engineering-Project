@@ -37,7 +37,9 @@ public:
     }
 
     if (error) {
-      // insert sending error packet here
+      EncodedPacket* errorPacket = new EncodedPacket(OPCODE_ERROR, ERROR_SETUP);
+      AuthenticationModule::sendPacket(errorPacket);
+      delete(errorPacket);
     }
 
     return error;
@@ -87,20 +89,12 @@ void loop() {
   if (error) {
     delay(10000);
   } else {
-    uint16_t dataLen = 1024;
+    // 512 byte buffer for data (a little overkill for NFC, but it's fine)
+    uint16_t dataLen = 512;
     uint8_t data[dataLen];
 
     if ((dataLen = nfcModule.getData(data, dataLen)) > 0) {
-       Serial.print("Data length: ");
-        Serial.println(dataLen);
-      for (uint16_t i = 0; i < dataLen; i++) {
-        Serial.print(data[i], HEX);
-        Serial.print(" ");
-        if (i > 0 && i%16 == 0) Serial.println();
-      }
-      Serial.println();
-      
-      //nfcModule.sendData(data, dataLen);
+      nfcModule.sendData(data, dataLen);
     }
 
     delay(300);

@@ -69,7 +69,7 @@ public:
 	void flush();
     void flushRemaining();
 	int dataAvailable();
-    uint8_t blockForData(uint8_t maxSeconds);
+    int8_t blockForData(uint8_t maxSeconds);
     uint8_t readChar();
     DecodedPacket* receivePacket();
     void writeChar(uint8_t character);

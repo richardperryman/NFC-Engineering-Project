@@ -26,7 +26,7 @@ enum packet_opcode_t {
     OPCODE_ACK = 0x0002, // Acknowledge request/data
     OPCODE_DATA = 0x0003, // Send data
     OPCODE_SETUP = 0x1111, // Setup opcode
-    OPCODE_ERR = 0xFFFF // Error
+    OPCODE_ERROR = 0xFFFF // Error
 };
 
 enum error_code_t {

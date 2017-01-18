@@ -1,4 +1,6 @@
 
+#include <ServerConnection.h>
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <cstring>
@@ -9,7 +11,7 @@
 #include <iomanip>
 #include <json-c/json.h>
 #include <Debug.h>
-#include <ServerConnection.h>
+#include <AuthenticationModule.h>
 
 ServerConnection::ServerConnection(std::string url)
 {
@@ -24,14 +26,17 @@ const char* ServerConnection::getURL()
 int8_t ServerConnection::verifyConnection()
 {
     int8_t result;
+    CURL* curl;
     CURLcode res;
+    
+    curl = curl_easy_init();
 
     // Do a simple HTTP GET request to verify the server is online
-    curl_easy_setopt(this->curl, CURLOPT_URL, this->getURL());
-    curl_easy_setopt(this->curl, CURLOPT_HTTPGET, 1);
-    curl_easy_setopt(this->curl, CURLOPT_NOBODY, 1); // Disable printing result
-    curl_easy_setopt(this->curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
-    res = curl_easy_perform(this->curl);
+    curl_easy_setopt(curl, CURLOPT_URL, this->getURL());
+    curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
+    curl_easy_setopt(curl, CURLOPT_NOBODY, 1); // Disable printing result
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
+    res = curl_easy_perform(curl);
 
     if (res != CURLE_OK) {
         DEBUG_LOG(WARNING, __FUNCTION__, "Server %s does not appear to be online. Message: %s\n", this->getURL(), curl_easy_strerror(res));
@@ -39,7 +44,7 @@ int8_t ServerConnection::verifyConnection()
     } else {
         result = 0;
     }
-    curl_easy_cleanup(this->curl);
+    curl_easy_cleanup(curl);
     
     return result;
 }
@@ -47,13 +52,6 @@ int8_t ServerConnection::verifyConnection()
 void ServerConnection::openConnection()
 {
     curl_global_init(CURL_GLOBAL_ALL);
-    
-    this->curl = curl_easy_init();
-    
-    if (!this->curl)
-    {
-        DEBUG_LOG(ERROR, __FUNCTION__, "Error initializing cURL.");
-    }
 }
 
 void ServerConnection::closeConnection()
@@ -66,6 +64,10 @@ void generateSecret(uint8_t* buffer, uint16_t buffLen)
 {
     int fd = open("/dev/random", O_RDONLY);
     read(fd, buffer, buffLen);
+    if (close(fd) == -1)
+    {
+        DEBUG_LOG(WARNING, __FUNCTION__, "Failed to close /dev/random");
+    }
 }
 
 static
@@ -98,10 +100,13 @@ int8_t processResult(CURL* session)
     }
 }
 
-int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<AuthenticationToken*> tokens)
+int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<AuthenticationModule*>* modules)
 {
     // cURL stuff
+    CURL* curly;
     CURLcode res;
+    struct curl_slist *headers = NULL;
+    int8_t accessResult;
     
     // Query stuff
     std::string url = this->url + access_table_name;
@@ -113,8 +118,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     json_object* json;
 
     // Initialization
-    int8_t accessResult;
-    curl = curl_easy_init();
+    curly = curl_easy_init();
     json = json_object_new_object();
     
     generateSecret(secret, sizeof(secret));
@@ -122,9 +126,8 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
     byteArrayToHexString(secret, sizeof(secret), &lock_key);
 
     // Generate HTTP header
-    struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json; charset=utf-8");
+    headers = curl_slist_append(headers, "Content-Type: application/json; charset=utf-16");
 
     // Generate query string
     queryString << "?lock_id=";
@@ -136,41 +139,44 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<std::string
 
     // Generate JSON data for module : token info
     json = json_object_new_array();
-    for (uint8_t i = 0; i < moduleIDs.size(); i++) {
-        json_object* token;
-        char tokenStr[tokens.at(i)->getSize() + 1];
-        memcpy(tokenStr, tokens.at(i)->getData(), tokens.at(i)->getSize());
-        tokenStr[tokens.at(i)->getSize()] = 0x00;
+    for (uint8_t i = 0; i < modules->size(); i++) {
         
-        token = json_object_new_object();
-        json_object_object_add(token, "type", json_object_new_string(moduleIDs.at(i).c_str()));
-        printf("Size of token: %d\n", tokens.at(i)->getSize());
-        json_object_object_add(token, "value", json_object_new_string(tokenStr));
-        json_object_array_add(json, token);
-    }
-    DEBUG_LOG(INFO, __FUNCTION__, "Post body string size: %d in json: %s\n", strlen(json_object_to_json_string(json)), json_object_to_json_string(json));
-    
+        AuthenticationModule* module = modules->at(i);
+        if (module->hasToken())
+        {
+            json_object* token;
+
+            token = json_object_new_object();
+            json_object_object_add(token, "type", json_object_new_string(module->getID()));
+            json_object_object_add(token, "value", json_object_new_string(module->getTokenString()));
+            json_object_array_add(json, token);
+            
+            DEBUG_LOG(INFO, __FUNCTION__, "Token string length: %d\n", strlen(module->getTokenString()));
+            
+            module->clearToken();
+        }        
+    }    
 
     FILE *devnull = fopen("/dev/null", "w+");
     
-    curl_easy_setopt(this->curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(this->curl, CURLOPT_HTTPHEADER, headers);
-    curl_easy_setopt(this->curl, CURLOPT_POSTFIELDS, json_object_to_json_string(json));
-    curl_easy_setopt(this->curl, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, devnull); // Don't print the response 
-    res = curl_easy_perform(this->curl);
+    curl_easy_setopt(curly, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curly, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curly, CURLOPT_POSTFIELDS, json_object_to_json_string(json));
+    curl_easy_setopt(curly, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
+    curl_easy_setopt(curly, CURLOPT_WRITEDATA, devnull); // Don't print the response 
+    res = curl_easy_perform(curly);
     //res = CURLE_OK;
     
     if (res != CURLE_OK) {
-        DEBUG_LOG(WARNING, __FUNCTION__, "Sending access request failed. Message: %s\n", url.c_str(), curl_easy_strerror(res));
+        DEBUG_LOG(WARNING, __FUNCTION__, "Sending access request failed. Message: %s\n", curl_easy_strerror(res));
         accessResult = -1;
     } else {
-        accessResult = processResult(this->curl);
+        accessResult = processResult(curly);
     }
     
     fclose(devnull);
     json_object_put(json);
-    curl_easy_cleanup(this->curl);
+    curl_easy_cleanup(curly);
     curl_slist_free_all(headers);
     return accessResult;
 }

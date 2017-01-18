@@ -159,7 +159,7 @@ int Serial::dataAvailable()
     return result;
 }
 
-uint8_t Serial::blockForData(uint8_t maxSeconds)
+int8_t Serial::blockForData(uint8_t maxSeconds)
 {
     if (serialPort == -1)
     {
@@ -178,7 +178,6 @@ uint8_t Serial::blockForData(uint8_t maxSeconds)
             std::this_thread::sleep_for(std::chrono::milliseconds(DELAY));
         }
     }
-    
     return -1;
 }
 

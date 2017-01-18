@@ -4,13 +4,13 @@
 #include <vector>
 #include <Types.h>
 #include <AuthenticationToken.h>
+#include <AuthenticationModule.h>
 #include <curl/curl.h>
 
 class ServerConnection
 {
 private:
     std::string url;
-    CURL* curl;
     
     const char* getURL();
     const char* lock_table_name = "/locks";
@@ -21,7 +21,7 @@ public:
     void openConnection();
     void closeConnection();
     int8_t verifyConnection();
-    int8_t requestAccess(uint32_t lock_id, std::vector<std::string> moduleIDs, std::vector<AuthenticationToken*> tokens);
+    int8_t requestAccess(uint32_t lock_id, std::vector<AuthenticationModule*>* modules);
 };
 
 #endif // SERVERCONNECTION_H
