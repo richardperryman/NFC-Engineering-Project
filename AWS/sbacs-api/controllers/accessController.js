@@ -212,14 +212,7 @@ function checkGivenContains(given,neededAuth){
 		givenAuth = given[i];
 		if(givenAuth.type == neededAuth.type){
 			var encryptedInfo = new crypt.encryptedAuth(givenAuth.value,neededAuth.salt);
-			// TODO: Output some info
-			console.log('Salt: ' + neededAuth.salt);
-			var expectedValue = getBytesFromString(neededAuth.value.toString());
-			var givenHashedValue = encryptedInfo.secret.toString();
-			console.log('Type: ' + givenAuth.type + ', HashedGiven: ' + encryptedInfo.secret + ', Expected: ' +  neededAuth.value);
-			console.log('Bytes of HashedGiven: ' + givenHashedValue);
-			console.log('Bytes of Expected: ' + expectedValue);
-			if(encryptedInfo.secret == neededAuth.value){
+			if(encryptedInfo.secret.toString() == neededAuth.value){
 				return true;
 			}
 		}
