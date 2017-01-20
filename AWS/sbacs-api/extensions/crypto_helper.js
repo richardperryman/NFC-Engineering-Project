@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const iterations = 100000;
-const secret_length = 256;
-const salt_length = 256;
+const secret_length = 255;
+const salt_length = 255;
 const hashAlgorithm = 'sha256';
 
 module.exports = {

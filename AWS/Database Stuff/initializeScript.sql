@@ -18,7 +18,7 @@ CREATE TABLE Identities(
 CREATE TABLE Authenticators(
 	Auth_Id int NOT NULL auto_increment,
 	AuthType varchar(255) NOT NULL,
-	AuthKey varchar(255) NOT NULL,
+	AuthKey varbinary(255) NOT NULL,
 	AuthSalt varchar(255) NOT NULL,
 	PRIMARY KEY (Auth_Id)
 );

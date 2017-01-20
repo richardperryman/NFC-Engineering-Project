@@ -212,14 +212,20 @@ function checkGivenContains(given,neededAuth){
 		givenAuth = given[i];
 		if(givenAuth.type == neededAuth.type){
 			var encryptedInfo = new crypt.encryptedAuth(givenAuth.value,neededAuth.salt);
-			// TODO: Output some info
-			console.log('Type: ' + givenAuth.type + ', HashedGiven: ' + encryptedInfo.secret + ', Expected: ' +  neededAuth.value);
-			if(encryptedInfo.secret == neededAuth.value){
+			if(encryptedInfo.secret.toString() == neededAuth.value){
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+function getBytesFromString(string){
+	var bytes=[];
+	for(var i=0;i<string.length;i++){
+		bytes.push(string.charCodeAt(i));
+	}
+	return bytes;
 }
 
 // Extracts the authenticators from DB into useful format
