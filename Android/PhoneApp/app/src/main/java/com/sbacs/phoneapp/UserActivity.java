@@ -138,9 +138,13 @@ public class UserActivity extends AppCompatActivity {
                     try {
                         JSONObject auth = response.getJSONObject(i);
                         // TODO move these things to constants
-                        if ("password".equalsIgnoreCase((String) auth.get("AuthType"))) {
-                            String key = (String) auth.get("AuthKey");
-                            serviceIntent.putExtra(UserActivity.USER_NFC_AUTH, key);
+                        if ("nfc".equalsIgnoreCase((String) auth.get("AuthType"))) {
+                            JSONArray key = auth.getJSONObject("AuthKey").getJSONArray("data");
+                            byte[] key_bytes = new byte[key.length()];
+                            for (int index=0; index<key.length(); index++) {
+                                key_bytes[index] = (byte) key.getInt(index);
+                            }
+                            serviceIntent.putExtra(UserActivity.USER_NFC_AUTH, key_bytes);
                             currentContext.startService(serviceIntent);
                             break;
 

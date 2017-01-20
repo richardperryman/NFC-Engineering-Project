@@ -20,8 +20,7 @@ public class SBACSNFCService extends HostApduService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        // ISO 8859-1 is full 8 bit so we can send all the patterns we may need
-        data_message = intent.getStringExtra(UserActivity.USER_NFC_AUTH).getBytes(StandardCharsets.ISO_8859_1);
+        data_message = intent.getByteArrayExtra(UserActivity.USER_NFC_AUTH);
 
         return START_REDELIVER_INTENT;
     }
