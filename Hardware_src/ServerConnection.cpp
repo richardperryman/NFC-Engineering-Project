@@ -1,3 +1,5 @@
+// DATA SHOULD NOW BE A LIST OF BYTES (DECIMAL VALUES I GUESS)
+
 
 #include <ServerConnection.h>
 
@@ -127,7 +129,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
 
     // Generate HTTP header
     headers = curl_slist_append(headers, "Accept: application/json");
-    headers = curl_slist_append(headers, "Content-Type: application/json; charset=utf-16");
+    headers = curl_slist_append(headers, "Content-Type: application/json; charset=utf-8");
 
     // Generate query string
     queryString << "?lock_id=";
@@ -145,17 +147,23 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
         if (module->hasToken())
         {
             json_object* token;
+            json_object* data;
 
             token = json_object_new_object();
+            data = json_object_new_array();
             json_object_object_add(token, "type", json_object_new_string(module->getID()));
-            json_object_object_add(token, "value", json_object_new_string(module->getTokenString()));
+            for (uint16_t i = 0; i < module->getTokenSize(); i++)
+            {
+                json_object_array_add(data, json_object_new_int(module->getTokenByteAt(i)));
+            }
+            json_object_object_add(token, "value", data);
+            //json_object_object_add(token, "value", json_object_new_string(module->getTokenString()));
             json_object_array_add(json, token);
-            
-            DEBUG_LOG(INFO, __FUNCTION__, "Token string length: %d\n", strlen(module->getTokenString()));
             
             module->clearToken();
         }        
-    }    
+    }
+    DEBUG_LOG(INFO, __FUNCTION__, "Post body: %s", json_object_to_json_string(json));
 
     FILE *devnull = fopen("/dev/null", "w+");
     

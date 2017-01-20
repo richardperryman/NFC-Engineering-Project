@@ -70,22 +70,18 @@ bool AuthenticationModule::getToken()
                             }
                             else
                             {
-                                DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", data->getDataSize());
+                                DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", data->getSize());
                                 
-                                if ((dataLen + data->getDataSize()) > MAX_TOKEN_SIZE)
+                                if ((dataLen + data->getSize()) > MAX_TOKEN_SIZE)
                                 {
                                     DEBUG_LOG(WARNING, __FUNCTION__, "Too much data sent from module %s, token will be truncated.", this->id.c_str());
                                     error = true;
                                 }
                                 
-                                printf("Received packet bytes:\n");
                                 int i = 0;
-                                for (; (i + dataLen) < data->getDataSize(); i++) {
-                                    destination[i + dataLen] = data->getDataByteAt(i);
-                                    printf("0x%02X ", destination[i + dataLen]);
-                                    if (i > 0 && (i+1)%16 == 0) printf("\n");
+                                for (; (i + dataLen) < data->getSize(); i++) {
+                                    destination[i + dataLen] = data->getByteAt(i);
                                 }
-                                printf("\n");
                             
                                 dataLen += i;
                             
@@ -123,4 +119,14 @@ void AuthenticationModule::clearToken()
 const char* AuthenticationModule::getTokenString()
 {
     return this->token->toString()->c_str();
+}
+
+uint16_t AuthenticationModule::getTokenSize()
+{
+    return this->token->getSize();
+}
+
+uint8_t AuthenticationModule::getTokenByteAt(uint16_t index)
+{
+    return this->token->getDataByteAt(index);
 }

@@ -8,7 +8,7 @@ CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c -g
 
 # File stuff
 EXECUTABLE = GPIOTest
-OBJECTS = main.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o AuthenticationModule.o Debug.o
+OBJECTS = main.o Packet.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o AuthenticationModule.o Debug.o
 RM = rm -f *.o
 
 default : $(EXECUTABLE) 
@@ -27,10 +27,13 @@ $(EXECUTABLE) : $(OBJECTS)
 main.o : main.cpp $(INCLUDE)/GPIOPin.h $(INCLUDE)/DecodedPacket.h $(INCLUDE)/EncodedPacket.h  $(INCLUDE)/Serial.h $(INCLUDE)/Types.h $(INCLUDE)/AuthenticationModule.h $(INCLUDE)/Debug.h
 	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
 	
+Packet.o: Packet.cpp $(INCLUDE)/Packet.h $(INCLUDE)/Types.h
+	$(CC) $(CFLAGS) Packet.cpp
+	
 DecodedPacket.o : $(INCLUDE)/DecodedPacket.h DecodedPacket.cpp $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) DecodedPacket.cpp
 	
-EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h
+EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h $(INCLUDE)/Packet.h
 	$(CC) $(CFLAGS) EncodedPacket.cpp
 	
 AuthenticationToken.o : $(INCLUDE)/AuthenticationToken.h AuthenticationToken.cpp $(INCLUDE)/Types.h
