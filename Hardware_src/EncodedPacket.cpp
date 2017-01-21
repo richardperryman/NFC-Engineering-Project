@@ -1,27 +1,19 @@
 
 #include <EncodedPacket.h>
 
-EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber)
+EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber) : Packet(opcode, blockNumber)
 {
-    this->opcode = opcode;
-    this->blockNumber = blockNumber;
     this->dataLen = 0;
 }
 
-EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber,  uint8_t* data, uint16_t dataLen)
+EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber,  uint8_t* data, uint16_t dataLen) : Packet(opcode, blockNumber)
 {
-    this->opcode = opcode;
-    this->blockNumber = blockNumber;
     #ifndef ARDUINO
     uint16_t dataLimit = std::min((int)dataLen, MAX_ENCODED_BYTES);
     #else
     uint16_t dataLimit = min(dataLen, MAX_ENCODED_BYTES);
     #endif
     this->dataLen = encodeData(data, dataLimit);
-}
-
-packet_opcode_t EncodedPacket::getOpcode(){
-    return this->opcode;
 }
 
 uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
@@ -39,7 +31,7 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 	while (readIndex < dataLen)
 	{
 		// Replace null char with pointer to next null
-		if (decodedData[readIndex] == 0x00)
+		if (decodedData[readIndex] == PACKET_FLAG)
 		{
 			encodedData[codeIndex] = code;
 			code = 0x01;
@@ -50,9 +42,12 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 		{
 			encodedData[writeIndex++] = decodedData[readIndex++];
 			code++;
+            
+            // Skip the packet flag while counting
+            if (code == PACKET_FLAG) code++;
 			
 			// Reset after hitting 254 bytes read
-			if (code == 0xFF)
+			else if (code == 0xFF)
 			{
 				encodedData[codeIndex] = code;
 				code = 0x01;
@@ -62,26 +57,26 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 	}
     
     encodedData[codeIndex] = code;
-    encodedData[writeIndex++] = 0x00;
+    encodedData[writeIndex++] = PACKET_FLAG;
 	
     return writeIndex;
 }
 
-uint16_t EncodedPacket::getPacketSize()
+uint16_t EncodedPacket::getSize()
 {
     // Total packet size = data length + 2 opcode bytes + 2 block number bytes + 2 flag bytes
     return dataLen + 6;
 }
 
-uint16_t EncodedPacket::getPacketBytes(uint8_t* destination)
+uint16_t EncodedPacket::getBytes(uint8_t* destination)
 {
     uint16_t i = 0;
     
     destination[i++] = PACKET_FLAG;
-    destination[i++] = opcode >> 8;
-    destination[i++] = opcode & 0x00FF;  
-    destination[i++] = blockNumber >> 8;
-    destination[i++] = blockNumber & 0x00FF;
+    destination[i++] = this->getOpcode() >> 8;
+    destination[i++] = this->getOpcode() & 0x00FF;  
+    destination[i++] = this->getBlockNumber() >> 8;
+    destination[i++] = this->getBlockNumber() & 0x00FF;
     
     uint16_t offset = i;
     for (; i < dataLen + offset; i++)

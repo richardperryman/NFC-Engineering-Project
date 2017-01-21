@@ -67,13 +67,17 @@ public:
           uint16_t j = 0;
           for (; j < dataLen && (bytesWritten + j) < bufferLen; j++) {
             buff[bytesWritten + j] = data[j];
+            //Serial.print("buff[");
+            //Serial.print(bytesWritten + j);
+            //Serial.print("] = ");
+            //Serial.println(data[j], HEX);
           }
 
           bytesWritten += j;
         }
       }
     }
-    
+
     return bytesWritten;
   }  
 };
@@ -100,3 +104,4 @@ void loop() {
     delay(300);
   }
 }
+

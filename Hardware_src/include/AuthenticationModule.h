@@ -17,6 +17,8 @@ public:
     bool hasToken();
     void clearToken();
     const char* getTokenString();
+    uint16_t getTokenSize();
+    uint8_t getTokenByteAt(uint16_t index);
 };
 
 #endif // AUTHENTICATIONMODULE_H

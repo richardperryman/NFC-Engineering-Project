@@ -183,17 +183,17 @@ int8_t Serial::blockForData(uint8_t maxSeconds)
 
 uint8_t Serial::readChar()
 {
-    uint8_t result;
+    uint8_t result = 0x00;
     
     if (serialPort == -1)
     {
         DEBUG_LOG(WARNING, __FUNCTION__, "Port %s has not been opened.", portName.c_str());
-        return -1;
+        return result;
     }
     
     if (read(serialPort, &result, 1) != 1)
     {
-        return -1;
+        DEBUG_LOG(WARNING, __FUNCTION__, "Failed to read byte from port %s.", portName.c_str());
     }
     
     return result;
@@ -220,11 +220,16 @@ DecodedPacket* Serial::receivePacket()
         buffer = readChar();
     } while (buffer != PACKET_FLAG);
     
+    printf("Received packet bytes:\n");
+                                
     uint16_t i = 0;
     do {
+        printf("0x%02X ", buffer);
+        if (i > 0 && (i+1)%16 == 0) printf("\n");
         temp[i++] = buffer;
         buffer = readChar();
-    } while (buffer != PACKET_FLAG && buffer != -1);
+    } while (buffer != PACKET_FLAG);
+    printf("0x%02X\n", PACKET_FLAG);
     
     temp[i++] = buffer;
     flushRemaining();
@@ -251,9 +256,16 @@ void Serial::sendPacket(EncodedPacket packet)
         return;
     }
     
-    uint16_t numBytes = packet.getPacketSize();
+    uint16_t numBytes = packet.getSize();
     uint8_t packetBytes[numBytes];
-    packet.getPacketBytes(packetBytes);
+    packet.getBytes(packetBytes);
+    
+    printf("Sending bytes:\n");
+    for (uint16_t i = 0; i < numBytes; i++) {
+        printf("0x%02X ", packetBytes[i]);
+        if (i > 0 && (i+1)%16 == 0) printf("\n");
+    }
+    printf("\n");
     
     write(serialPort, packetBytes, numBytes);
     flush();

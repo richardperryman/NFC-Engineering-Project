@@ -163,7 +163,7 @@ static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConne
         for (uint8_t i = 0; i < modules->size(); i++)
         {
             AuthenticationModule* module = modules->at(i);
-            printf("-- Polling device %s\n", module->getID());
+            printf("-- polling %s\n", module->getID());
             
             if (module->getToken())
             {
@@ -243,6 +243,7 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
         }
         else
         {
+            printf("Packet opcode: %04X\n", response->getOpcode());
             if (response->getOpcode() != OPCODE_DATA)
             {
                 if (response->getOpcode() == OPCODE_ERROR)
@@ -258,11 +259,11 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
             }
             else
             {
-                uint8_t responseData[response->getDataSize()];
-                response->getData(responseData);
+                uint8_t responseData[response->getSize()];
+                response->getBytes(responseData);
             
                 DEBUG_LOG(INFO, __FUNCTION__, "Found module with ID: %s", responseData);
-                std::string* id = new std::string((const char*)responseData, response->getDataSize());
+                std::string* id = new std::string((const char*)responseData, response->getSize());
                 modules->push_back(new AuthenticationModule(*id, usb));
             
                 // Send ACK back
