@@ -2,15 +2,18 @@
     <string name="app_name">SBACS</string>
     <string name="service_name">SBACS_NFC_SERVICE</string>
     <string name="service_description">An NFC Host-based card emulation service for the SBACS system</string>
-    <string name="enter_user_name">Enter your user name</string>
-    <string name="result_hint">Results...</string>
+    <string name="enter_user_name">User Name</string>
+    <string name="enter_password">Password</string>
     <string name="ping_server">Ping Server</string>
     <string name="get_users">Get Users</string>
-    <string name="get_locks">Get Locks</string>
+    <string name="manage_authenticators">Manage Authenticators</string>
+    <string name="manage_identities">Manage Identities</string>
+    <string name="manage_locks">Manage Locks</string>
     <string name="login">Login</string>
     <string name="sbacs_url">http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/</string>
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>
     <string name="auth_table_name">authenticators</string>
     <string name="registration_table_name">access/management</string>
+    <string name="title_activity_lock">LockActivity</string>
 </resources>

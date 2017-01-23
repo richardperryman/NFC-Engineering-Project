@@ -8,8 +8,16 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/get_locks"
-        android:onClick="getLocks"/>
+        android:text="@string/manage_authenticators"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_identities"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/manage_locks"
+        android:onClick="manageLocks"/>
     <ListView android:id="@+id/list_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

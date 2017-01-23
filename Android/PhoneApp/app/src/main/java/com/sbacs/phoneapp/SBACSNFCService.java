@@ -29,10 +29,6 @@ public class SBACSNFCService extends HostApduService {
     public void onCreate() {
         // Can be used to send data to the app
         broadcaster = LocalBroadcastManager.getInstance(this);
-        // Just for testing
-        Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
-        notifyIntent.putExtra(SBACS_MESSAGE, "Test message");
-        broadcaster.sendBroadcast(notifyIntent);
     }
 
     @Override
@@ -55,11 +51,18 @@ public class SBACSNFCService extends HostApduService {
         byte[] result = Arrays.copyOfRange(data_message, Math.min(bytes_sent, data_message.length),
                 Math.min(bytes_sent + length, data_message.length));
         bytes_sent += result.length;
+
         return result;
     }
 
     @Override
     public void onDeactivated(int reason) {
         bytes_sent = 0;
+    }
+
+    private void sendDebugString(String message) {
+        Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
+        notifyIntent.putExtra(SBACS_MESSAGE, message);
+        broadcaster.sendBroadcast(notifyIntent);
     }
 }

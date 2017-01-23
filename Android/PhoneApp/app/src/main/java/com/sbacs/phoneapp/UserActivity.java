@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
+    public final static String USER_ID = "com.SBACS.app.USER_ID";
     public final static String USER_NFC_AUTH = "com.SBACS.app.NFC_AUTHENTICATOR";
 
     private int user_id;
@@ -84,47 +85,6 @@ public class UserActivity extends AppCompatActivity {
         };
     }
 
-    private Response.Listener<String> registrationResponseListener() {
-        final Context currentContext = this;
-        ListView view = (ListView) findViewById(R.id.list_results);
-        final ArrayAdapter<String> adapter = (ArrayAdapter<String>) view.getAdapter();
-        return new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                adapter.clear();
-                if (response == null || response.equals("")) {
-                    adapter.add("You don't have any locks");
-                    return;
-                }
-                String[] registrations = response.split("\n");
-                RequestQueue queue = Volley.newRequestQueue(currentContext);
-                Response.Listener<String> lockResponseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        adapter.add(response);
-                    }
-                };
-
-                for (String registration : registrations) {
-                    int lock_id;
-                    try {
-                        // Probably shouldn't be hardcoded
-                        lock_id = Integer.parseInt(registration.split("\\s+")[1]);
-                    } catch (NumberFormatException e) {
-                        // Should probably handle this better
-                        continue;
-                    }
-                    String url = getResources().getString(R.string.sbacs_url) +
-                            getResources().getString(R.string.lock_table_name) +
-                            "?lock_id=" + lock_id;
-                    StringRequest request = new StringRequest(Request.Method.GET, url, lockResponseListener,
-                            genericErrorListener());
-                    queue.add(request);
-                }
-            }
-        };
-    }
-
     private Response.Listener<JSONArray> serviceResponseListener() {
         final Context currentContext = this;
         return new Response.Listener<JSONArray>() {
@@ -158,13 +118,9 @@ public class UserActivity extends AppCompatActivity {
         };
     }
 
-    public void getLocks(View view) {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getResources().getString(R.string.sbacs_url) +
-                getResources().getString(R.string.registration_table_name) +
-                "?user_id=" + user_id;
-        StringRequest request = new StringRequest(Request.Method.GET, url, registrationResponseListener(),
-                genericErrorListener());
-        queue.add(request);
+    public void manageLocks(View view) {
+        Intent lockIntent = new Intent(this, LockActivity.class);
+        lockIntent.putExtra(USER_ID, user_id);
+        startActivity(lockIntent);
     }
 }
