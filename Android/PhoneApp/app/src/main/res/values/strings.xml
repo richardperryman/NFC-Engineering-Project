@@ -15,5 +15,5 @@
     <string name="lock_table_name">locks</string>
     <string name="auth_table_name">authenticators</string>
     <string name="registration_table_name">access/management</string>
-    <string name="title_activity_lock">LockActivity</string>
+    <string name="title_activity_lock">Lock Management</string>
 </resources>

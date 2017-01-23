@@ -43,6 +43,8 @@ public class UserActivity extends AppCompatActivity {
         Intent intent = getIntent();
         user_id = intent.getIntExtra(MainActivity.USER_ID, -1);
 
+        // Doesn't fail if service isn't runnning (returns false)
+        stopService(new Intent(this, SBACSNFCService.class));
         RequestQueue queue = Volley.newRequestQueue(this);
         // HORRIBLY WRONG
         String url = getResources().getString(R.string.sbacs_url) +

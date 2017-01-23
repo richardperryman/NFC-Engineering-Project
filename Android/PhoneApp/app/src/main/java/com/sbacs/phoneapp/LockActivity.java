@@ -31,8 +31,8 @@ public class LockActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.lock_toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.lock_toolbar);
+        //setSupportActionBar(toolbar);
 
         user_id = getIntent().getIntExtra(UserActivity.USER_ID, -1);
 
