@@ -12,6 +12,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -37,8 +38,8 @@ public class LockActivity extends AppCompatActivity {
         user_id = getIntent().getIntExtra(UserActivity.USER_ID, -1);
 
         final ListView view = (ListView) findViewById(R.id.lock_list);
-        List<String> resultsList = new ArrayList<>();
-        view.setAdapter(new ArrayAdapter<>(this, R.layout.adapter_text_view, resultsList));
+        List<Lock> locksList = new ArrayList<>();
+        view.setAdapter(new LockAdapter(this, locksList));
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = getResources().getString(R.string.sbacs_url) +
@@ -53,20 +54,33 @@ public class LockActivity extends AppCompatActivity {
     private Response.Listener<JSONArray> registrationResponseListener() {
         final Context currentContext = this;
         ListView view = (ListView) findViewById(R.id.lock_list);
-        final ArrayAdapter<String> adapter = (ArrayAdapter<String>) view.getAdapter();
+        final LockAdapter adapter = (LockAdapter) view.getAdapter();
         return new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 adapter.clear();
                 if (response == null || response.length() < 1) {
-                    adapter.add("You don't have any locks");
+                    // Todo better handling
                     return;
                 }
                 RequestQueue queue = Volley.newRequestQueue(currentContext);
-                Response.Listener<String> lockResponseListener = new Response.Listener<String>() {
+                Response.Listener<JSONArray> lockResponseListener = new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
-                        adapter.add(response);
+                    public void onResponse(JSONArray response) {
+                        if (response.length() < 1) {
+                            // Todo better error logging
+                            return;
+                        }
+                        try {
+                            JSONObject result = response.getJSONObject(0);
+                            int id = result.getInt("Lock_Id");
+                            String name = result.getString("Name");
+                            String owner = result.getString("BelongsTo");
+                            Lock lock = new Lock(id, name, owner);
+                            adapter.add(lock);
+                        } catch (JSONException e) {
+                            // Todo better error handling
+                        }
                     }
                 };
 
@@ -90,7 +104,7 @@ public class LockActivity extends AppCompatActivity {
                     String url = getResources().getString(R.string.sbacs_url) +
                             getResources().getString(R.string.lock_table_name) +
                             "?lock_id=" + lock_id;
-                    StringRequest request = new StringRequest(Request.Method.GET, url, lockResponseListener,
+                    JsonArrayRequest request = new JsonArrayRequest(url, lockResponseListener,
                             genericErrorListener());
                     queue.add(request);
                 }

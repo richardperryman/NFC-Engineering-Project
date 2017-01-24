@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <!--><android.support.v7.widget.Toolbar
+    <!-- Consider switching to toolbars later?>
+    <android.support.v7.widget.Toolbar
         android:id="@+id/lock_toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"

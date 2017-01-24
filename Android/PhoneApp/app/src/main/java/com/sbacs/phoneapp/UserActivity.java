@@ -57,7 +57,6 @@ public class UserActivity extends AppCompatActivity {
 
         final ListView view = (ListView) findViewById(R.id.list_results);
         List<String> resultsList = new ArrayList<>();
-        resultsList.add("Nothing to see here");
         view.setAdapter(new ArrayAdapter<>(this, R.layout.adapter_text_view, resultsList));
 
         receiver = new BroadcastReceiver() {
