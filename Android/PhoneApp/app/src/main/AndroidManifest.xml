@@ -22,16 +22,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserActivity"></activity>
+        <activity android:name=".UserActivity" />
         <!-- I think exported should be false, but the example used true -->
-        <service android:name=".SBACSNFCService" android:exported="true"
-            android:permission="android.permission.BIND_NFC_SERVICE" >
+        <service
+            android:name=".SBACSNFCService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>
                 <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
             </intent-filter>
-            <meta-data android:name="android.nfc.cardemulation.host_apdu_service"
-                android:resource="@xml/sbacs_nfc_service"/>
+
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/sbacs_nfc_service" />
         </service>
+
+        <activity
+            android:name=".LockActivity"
+            android:label="@string/title_activity_lock"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
