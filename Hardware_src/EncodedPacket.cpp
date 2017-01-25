@@ -9,9 +9,9 @@ EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber) : Pac
 EncodedPacket::EncodedPacket(packet_opcode_t opcode, uint16_t blockNumber,  uint8_t* data, uint16_t dataLen) : Packet(opcode, blockNumber)
 {
     #ifndef ARDUINO
-    uint16_t dataLimit = std::min((int)dataLen, MAX_ENCODED_BYTES);
+    uint16_t dataLimit = std::min((int)dataLen, MAX_DECODED_BYTES);
     #else
-    uint16_t dataLimit = min(dataLen, MAX_ENCODED_BYTES);
+    uint16_t dataLimit = min(dataLen, MAX_DECODED_BYTES);
     #endif
     this->dataLen = encodeData(data, dataLimit);
 }
@@ -26,7 +26,7 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 	uint16_t readIndex = 0;
 	uint16_t writeIndex = 1;
 	uint16_t codeIndex = 0;
-    uint8_t code = 0x01;
+    uint8_t code = 0x00;
 	
 	while (readIndex < dataLen)
 	{
@@ -34,7 +34,7 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 		if (decodedData[readIndex] == PACKET_FLAG)
 		{
 			encodedData[codeIndex] = code;
-			code = 0x01;
+			code = 0x00;
 			codeIndex = writeIndex++;
 			readIndex++;
 		}
@@ -43,14 +43,14 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 			encodedData[writeIndex++] = decodedData[readIndex++];
 			code++;
             
-            // Skip the packet flag while counting
+            // Skip the packet flag when counting
             if (code == PACKET_FLAG) code++;
 			
 			// Reset after hitting 254 bytes read
 			else if (code == 0xFF)
 			{
 				encodedData[codeIndex] = code;
-				code = 0x01;
+				code = 0x00;
 				codeIndex = writeIndex++;
 			}
 		}

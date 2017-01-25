@@ -1,13 +1,14 @@
 # Compiler stuff
 CC = g++
 #CC = arm-linux-gnueabi-g++
-DEBUG = -DDEBUG
+DEBUG = -g -DDEBUG
+TEST = -DTEST
 INCLUDE = ./include
 LDFLAGS = $(shell pkg-config --libs libcurl) $(shell pkg-config --libs json-c)
-CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c -g
+CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c
 
 # File stuff
-EXECUTABLE = GPIOTest
+EXECUTABLE = SBACSProc.exe
 OBJECTS = main.o Packet.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o AuthenticationModule.o Debug.o
 RM = rm -f *.o
 
@@ -15,6 +16,8 @@ default : $(EXECUTABLE)
 
 debug : CFLAGS += $(DEBUG)
 debug : $(EXECUTABLE)
+
+test : 
 
 clean :
 	$(RM) *~ $(EXECUTABLE)

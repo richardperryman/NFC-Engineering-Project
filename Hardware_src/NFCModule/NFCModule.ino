@@ -13,26 +13,28 @@
 
 #define MAX_TOKEN_LENGTH 255
 
-PN532_SPI pn532spi(SPI, PN532_SS);
-PN532 nfc(pn532spi);
-
 class NFCModule : public AuthenticationModule {
+private:
+  PN532_SPI* pn532spi;
+  PN532* nfc;
 public:
   NFCModule()
   : AuthenticationModule("nfc", 4)
   {
+    pn532spi = new PN532_SPI(SPI, PN532_SS);
+    nfc = new PN532(*pn532spi);
   }
 
   bool startup() {
     bool error = false;
 
     Serial.begin(115200);
-    nfc.begin();
+    nfc->begin();
 
-    if (!nfc.getFirmwareVersion()) {
+    if (!nfc->getFirmwareVersion()) {
       error = true;
     } else {
-      nfc.SAMConfig();
+      nfc->SAMConfig();
       error = AuthenticationModule::startup();
     }
 
@@ -48,7 +50,7 @@ public:
   uint16_t getData(uint8_t* buff, uint16_t bufferLen)
   {
     uint16_t bytesWritten = 0;
-    bool success = nfc.inListPassiveTarget();
+    bool success = nfc->inListPassiveTarget();
     
     if (success) {
       uint8_t initMsg[] = { 0x00, /* CLA */
@@ -63,14 +65,14 @@ public:
         uint8_t data[MAX_TOKEN_LENGTH];
         uint8_t dataLen = MAX_TOKEN_LENGTH;
 
-        if (success = nfc.inDataExchange(initMsg, sizeof(initMsg), data, &dataLen)) {
+        if (success = nfc->inDataExchange(initMsg, sizeof(initMsg), data, &dataLen)) {
           uint16_t j = 0;
           for (; j < dataLen && (bytesWritten + j) < bufferLen; j++) {
             buff[bytesWritten + j] = data[j];
             //Serial.print("buff[");
             //Serial.print(bytesWritten + j);
             //Serial.print("] = ");
-            //Serial.println(data[j], HEX);
+            //Serial.println(data[j]);
           }
 
           bytesWritten += j;

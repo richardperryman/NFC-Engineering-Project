@@ -219,17 +219,12 @@ DecodedPacket* Serial::receivePacket()
     do {
         buffer = readChar();
     } while (buffer != PACKET_FLAG);
-    
-    printf("Received packet bytes:\n");
                                 
     uint16_t i = 0;
     do {
-        printf("0x%02X ", buffer);
-        if (i > 0 && (i+1)%16 == 0) printf("\n");
         temp[i++] = buffer;
         buffer = readChar();
     } while (buffer != PACKET_FLAG);
-    printf("0x%02X\n", PACKET_FLAG);
     
     temp[i++] = buffer;
     flushRemaining();
@@ -259,13 +254,6 @@ void Serial::sendPacket(EncodedPacket packet)
     uint16_t numBytes = packet.getSize();
     uint8_t packetBytes[numBytes];
     packet.getBytes(packetBytes);
-    
-    printf("Sending bytes:\n");
-    for (uint16_t i = 0; i < numBytes; i++) {
-        printf("0x%02X ", packetBytes[i]);
-        if (i > 0 && (i+1)%16 == 0) printf("\n");
-    }
-    printf("\n");
     
     write(serialPort, packetBytes, numBytes);
     flush();

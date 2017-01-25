@@ -163,7 +163,6 @@ static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConne
         for (uint8_t i = 0; i < modules->size(); i++)
         {
             AuthenticationModule* module = modules->at(i);
-            printf("-- polling %s\n", module->getID());
             
             if (module->getToken())
             {
@@ -188,6 +187,8 @@ static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConne
                 counting = false;
                 counter = 50;
                 tokenCount = 0;
+                
+                for (uint16_t j = 0; j < modules->size(); j++) modules->at(i)->clearToken();
             }
             
             if (counting) counter--;
@@ -243,7 +244,6 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
         }
         else
         {
-            printf("Packet opcode: %04X\n", response->getOpcode());
             if (response->getOpcode() != OPCODE_DATA)
             {
                 if (response->getOpcode() == OPCODE_ERROR)

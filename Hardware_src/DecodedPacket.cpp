@@ -6,7 +6,8 @@ DecodedPacket::DecodedPacket(uint8_t* data, uint16_t dataLen) : Packet((packet_o
     if (dataLen > 6) // For DATA/ERROR packet
     {
         // Subtract 6 from total data length (2 flag bytes, 2 bytes for opcode, 2 bytes for block number)
-        this->dataLen = decodeData(data+5, dataLen-6);
+        uint8_t offset = 1 + PACKET_OPCODE_T_SIZE + sizeof(this->getBlockNumber());
+        this->dataLen = decodeData(&data[offset], dataLen-offset-1);
     }
     else // For SETUP/REQ/ACK packet
     {
@@ -29,9 +30,9 @@ uint16_t DecodedPacket::decodeData(uint8_t* encodedData, uint16_t dataLen)
     while (readIndex < dataLen-1)
     {
         code = encodedData[readIndex];
-        if (code > PACKET_FLAG) code--;
+        if (code < PACKET_FLAG) code++;
         
-        if (readIndex + code > dataLen && code != 0x01)
+        if (readIndex + code > dataLen+1 && code != 0x01)
         {
             return 0;
         }

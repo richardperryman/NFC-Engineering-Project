@@ -42,8 +42,6 @@ bool AuthenticationModule::getToken()
                 uint16_t currentDataPacket = 0x0000;
                 delete(requestPacket);
                 
-                DEBUG_LOG(INFO, __FUNCTION__, "Expecting %d data packets from module %s.", numDataPackets, this->id.c_str());
-                
                 bool error = false;
                 for (; currentDataPacket < numDataPackets + 1 && !error; currentDataPacket++)
                 {
@@ -70,7 +68,6 @@ bool AuthenticationModule::getToken()
                             }
                             else
                             {
-                                DEBUG_LOG(INFO, __FUNCTION__, "Received data packet of length %d", data->getSize());
                                 
                                 if ((dataLen + data->getSize()) > MAX_TOKEN_SIZE)
                                 {
@@ -79,7 +76,7 @@ bool AuthenticationModule::getToken()
                                 }
                                 
                                 int i = 0;
-                                for (; (i + dataLen) < data->getSize(); i++) {
+                                for (; i < data->getSize() && (i + dataLen) < MAX_TOKEN_SIZE; i++) {
                                     destination[i + dataLen] = data->getByteAt(i);
                                 }
                             

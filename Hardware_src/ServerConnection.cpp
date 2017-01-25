@@ -1,5 +1,6 @@
-// DATA SHOULD NOW BE A LIST OF BYTES (DECIMAL VALUES I GUESS)
-
+// REMOVE THE SPACES IN THE BUFFER STRING
+// WRITE A FUNCTION TO PARSE IT AND MODIFY IT
+// e.g. [3,5]
 
 #include <ServerConnection.h>
 
@@ -9,6 +10,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 #include <iomanip>
 #include <json-c/json.h>
@@ -44,6 +46,7 @@ int8_t ServerConnection::verifyConnection()
         DEBUG_LOG(WARNING, __FUNCTION__, "Server %s does not appear to be online. Message: %s\n", this->getURL(), curl_easy_strerror(res));
         result = -1;
     } else {
+        DEBUG_LOG(INFO, __FUNCTION__, "Reached %s successfully.", this->getURL());
         result = 0;
     }
     curl_easy_cleanup(curl);
@@ -102,6 +105,14 @@ int8_t processResult(CURL* session)
     }
 }
 
+static
+std::string* removeSpaces(const char* json)
+{
+    std::string* str = new std::string(json);
+    str->erase( remove(str->begin(), str->end(), ' '), str->end() );
+    return str;
+}
+
 int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<AuthenticationModule*>* modules)
 {
     // cURL stuff
@@ -137,7 +148,6 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
     queryString << "&lock_key=";
     queryString << lock_key;
     url = url + queryString.str();
-    DEBUG_LOG(INFO, __FUNCTION__, "Using URL: %s", url.c_str());
 
     // Generate JSON data for module : token info
     json = json_object_new_array();
@@ -147,23 +157,24 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
         if (module->hasToken())
         {
             json_object* token;
+            json_object* buffer;
             json_object* data;
 
             token = json_object_new_object();
+            buffer = json_object_new_object();
             data = json_object_new_array();
             json_object_object_add(token, "type", json_object_new_string(module->getID()));
+            json_object_object_add(buffer, "type", json_object_new_string("Buffer"));
             for (uint16_t i = 0; i < module->getTokenSize(); i++)
             {
                 json_object_array_add(data, json_object_new_int(module->getTokenByteAt(i)));
             }
-            json_object_object_add(token, "value", data);
-            //json_object_object_add(token, "value", json_object_new_string(module->getTokenString()));
+            json_object_object_add(buffer, "data", data);
+            std::string* value = removeSpaces(json_object_to_json_string(buffer));
+            json_object_object_add(token, "value", json_object_new_string(value->c_str()));
             json_object_array_add(json, token);
-            
-            module->clearToken();
         }        
     }
-    DEBUG_LOG(INFO, __FUNCTION__, "Post body: %s", json_object_to_json_string(json));
 
     FILE *devnull = fopen("/dev/null", "w+");
     
