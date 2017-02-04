@@ -1,0 +1,284 @@
+% Carleton University SCE 4th Year Project thesis style
+% University of Ottawa MSc thesis style -- modifications to the report style
+% modification of suthesis style of Stanford University
+% Example of use:
+    \documentclass[12pt]{report}
+    \usepackage{amsmath,amssymb,amsthm}
+    \usepackage{SCE4YPTemplate}
+    \usepackage{graphicx}
+    \usepackage{url}
+
+    \begin{document}
+    \title{How to Write Report\\
+ 	    With Two Line Titles}
+    \author{John Henry Candidate, Jane Candidate}
+	    % Remember to use your titles
+	    % Use \copyrightyear{1885} to force a particular year
+	    % for the copyright statement.
+     \copyrightfalse % do not produce a separate copyright page
+		    % otherwise use \copyrighttrue
+%    \figurespagefalse % do not produce a separate figures page
+%    \tablespagefalse  % do not produce a separate tables page
+
+% Here you insert the stuff that comes before the preface
+% Each preface section is contained in a \prefacesection and starts on a
+% new page.  These are numbered using Roman numerals.
+% If there are no such pages, do not remove the \beforepreface command
+% since it creates the title page.
+    \beforepreface
+
+%=================================================================================
+
+    \prefacesection{Abstract}
+	This report tells you all you need to know about something.
+
+%=================================================================================
+
+    \prefacesection{Acknowledgements}
+	I would like to thank my supervisor, anyone who paid me money, gave me
+	equipment, etc.
+
+%=================================================================================
+
+    \prefaceTOC   % to print the Table of Contents
+    \prefaceLOF   % to print the List of Figures
+    \prefaceLOT   % to print the List of Tables
+
+%=================================================================================
+		            
+    \prefacesection{List of Abbreviations}
+    
+	\begin{tabular}[t]{l@{\hspace*{2cm}}l}
+      VoIP & Voice over Internet protocol \\
+      MRI & Magnetic resonance imaging \\
+    \end{tabular}
+
+%=================================================================================
+
+\endpreface
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   Now you proceed in report style with chapters, sections, etc.
+
+\chapter{Introduction}
+
+Give an introduction to your project.  This might include:
+\begin{itemize}
+  \item Motivation for your project
+  \item Problem you are trying to solve
+  \item Scope of your project
+  \item Organization of your report
+\end{itemize}
+You should tune this appropriately for what best suits your project.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{The Engineering Project}
+
+%=================================================================================
+
+\section{Health and Safety}
+
+Using the Health and Safety Guide posted on the course webpage, students will use this section to explain how they addressed the issues of safety and health in the system that they built for their project.
+
+%=================================================================================
+
+\section{Engineering Professionalism}
+
+Using their course experience of ECOR 4995 Professional Practice, students should demonstrate how their professional responsibilities were met by the goals of their project and/or during the performance of their project. 
+
+%=================================================================================
+
+\section{Project Management}
+
+One of the goals of the engineering project is real experience in working on a long-term team project.  Students should explain what project management techniques or processes were used to coordinate, manage and perform their project.
+
+%=================================================================================
+
+\section{Individual Contributions}
+
+This section should carefully itemize the individual contributions of each team member. Project contributions should identify which components of work were done by each individual.  Report contributions should list the author of each major section of this report.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Project Contributions}
+
+Give the individual contributions of the each team member towards the project.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Report Contributions}
+
+Give the individual contributions of the each team member towards writing the
+final report.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Background Literature Review}
+
+%=================================================================================
+
+\section{A Few \LaTeX\ Examples}
+
+You can reference great written works like this \cite{ABC} or
+others like this \cite{XYZ}.
+
+%=================================================================================
+
+\section {Mathematical Equations}
+Simple equations, like $x^y$ or $x_n = \sqrt{a + b}$ can be typeset right
+in the text line by enclosing them in a pair of single dollar sign symbols.
+Don't forget that if you want a real dollar sign in your text, like \$2000,
+you have to use the \verb+\$+ command.
+
+An example equation is
+\begin{equation} \label{E:myfirst}
+A = B
+\end{equation}
+This was equation \eqref{E:myfirst}.
+
+A more complicated equation should be typeset in {\em displayed math\/} mode,
+like this:
+\[
+z \left( 1 \ +\ \sqrt{\omega_{i+1} + \zeta -\frac{x+1}{\Theta +1} y + 1} 
+\ \right)
+\ \ \ =\ \ \ 1
+\]
+The "equation" environment displays your equations, and automatically
+numbers them consecutively within your document, like this:
+\begin{equation}
+\left[
+{\bf X} + {\rm a} \ \geq\ 
+\underline{\hat a} \sum_i^N \lim_{x \rightarrow k} \delta C
+\right]
+\end{equation}
+
+
+Other environments exist, like the "align" environment.  For instance,
+the {\em unitary} Fourier transform pair is given as
+\begin{align}
+X(j\Omega) &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} x(t) e^{-j\Omega t} dt\\
+x(t) &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} X(j\Omega) e^{j\Omega t} d\Omega
+\end{align}
+
+Here is a matrix:
+$$
+\left[ \begin{matrix} 1 & 2 \\ 3 & 4 \end{matrix} \right]
+$$
+
+
+Possible useful text environments could include the following.
+
+\begin{lemma} 
+This is a lemma.
+\end{lemma}
+
+\begin{theorem} \label{T:my1}
+This is a theorem.
+\end{theorem}
+
+
+\begin{proof}
+This is the proof of Theorem~\ref{T:my1}.
+\end{proof}
+
+
+\begin{definition}
+This is a definition.
+\end{definition}
+
+\begin{notation}
+This is some notation.
+\end{notation}
+
+%=================================================================================
+
+\section{Example Figure}
+
+An example figure grabbed from the Carleton University webpage (\url{http://www.carleton.ca}) is shown in Fig.~\ref{fig-culogo}.
+  \begin{figure}[hbt]
+   \begin{center}
+     \includegraphics{cu_logo.png}
+   \end{center}
+  \caption{Carleton University logo.}
+  \label{fig-culogo}
+  \end{figure}
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\chapter{Your Implementation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\chapter{Experimental Results}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Conclusions}
+
+I conclude that my project is awesome.  Hey look at this table.
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|c|ccc|r|}
+	\hline
+$k$ &  $x_1^k$    &   $x_2^k$  & $x_3^k$   & remarks  \\
+	\hline
+0   & -0.3 & 0.6 & 0.7  &  \\
+1   & 0.47102965 & 0.04883157 & -0.53345964  & *\\
+2   & 0.49988691 & 0.00228830 & -0.52246185 & $s_3$ \\
+3   & 0.49999976 & 0.00005380 & -0.52365600  & \\
+4   & 0.5 & 0.00000307 & -0.52359743  & $\epsilon < 10^{-5}$ \\
+7   & 0.5 & 0 & -0.52359878  & $\epsilon < \xi $ \\
+	\hline
+\end{tabular}
+\caption{This is a great table.}
+\label{greatTable}
+\end{center}
+\end{table}
+
+Isn't Table~\ref{greatTable} really nice?  This next one is nice too.
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|l||l|l||l|l|}
+\hline
+ &\multicolumn{2}{l|}{Singular}&\multicolumn{2}{l|}{Plural}\\
+\cline{2-5}
+ &English&\textbf{Gaeilge}&English&\textbf{Gaeilge}\\
+\hline\hline
+1st Person&at me&\textbf{agam}&at us&\textbf{againn}\\
+2nd Person&at you&\textbf{agat}&at you&\textbf{agaibh}\\
+3rd Person&at him&\textbf{aige}&at them&\textbf{acu}\\
+ &at her&\textbf{aici}& & \\
+\hline
+\end{tabular}
+\caption{Another nice table.}
+\end{center}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\bibname}{References}
+\begin{thebibliography}{AAA}
+\bibitem{ABC} T. Me and R. You, "A great result," {\em Wonderful Journal}, vol. 5, no. 9,
+	      pp. 1--11, 1998.
+\bibitem{XYZ} J. Him and K. Her, "An even better result that you won't believe," {\em Best Journal Ever}, vol. 4, no. 8, pp. 55--66, 2002.
+\end{thebibliography}
+% If you have your general bibliography in a separate file mybib
+% and you wish to use the plain style (see BIBTeX)
+%    \bibliographystyle{cacm}
+%    \bibliography{mybib}
+    \addcontentsline{toc}{chapter}{\bibname}
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Add appendices now.
+\appendix
+
+\chapter{Extra Simulation Results}
+
+\chapter{Review of Linear Algebra}
+
+\end{document}
