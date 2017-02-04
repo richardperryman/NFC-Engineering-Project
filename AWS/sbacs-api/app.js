@@ -19,6 +19,7 @@ var accessHandler = require('./controllers/accessController.js');
 var identityHandler = require('./controllers/identityController.js');
 var authenticatorHandler = require('./controllers/authenticatorController.js');
 var lockHandler = require('./controllers/lockController.js');
+var loginHandler = require('./controllers/loginController.js');
 
 function serverRequest(req, res) {
 	var parsedRequest = url.parse(req.url, true);
@@ -35,6 +36,8 @@ function serverRequest(req, res) {
 		accessHandler.handleRequest(req,res,db_helper);
 	} else if (parsedRequest.pathname === '/access/management'){
 		accessManagementHandler.handleRequest(req,res,db_helper);
+	} else if (parsedRequest.pathname === '/login'){
+		loginHandler(req,res);
 	} else {
 		res.writeHead(200);
 		res.write('Generic response');
