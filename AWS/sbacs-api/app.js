@@ -50,3 +50,13 @@ server.listen(port);
 // Put a friendly message on the terminal
 console.log('Server running at http://127.0.0.1:' + port + '/');
 
+var https = require('https');
+var securePort = process.env.HTTPS_PORT || 443;
+
+var secureServer = https.createServer(secureRequest);
+
+function secureRequest(req,res){
+	res.writeHead(200);
+	res.write('Secure response');
+	res.end();
+}

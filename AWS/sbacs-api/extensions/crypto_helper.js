@@ -12,6 +12,10 @@ encryptedAuth : function(secret, salt) {
 	}
 	this.salt = salt;
 	this.secret = crypto.pbkdf2Sync(secret, this.salt, iterations, secret_length, hashAlgorithm);
+},
+
+getSalt : function () {
+	return generateSalt();
 }
 
 };

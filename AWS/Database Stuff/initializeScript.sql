@@ -49,3 +49,13 @@ CREATE TABLE Registrations(
 );
 
 
+CREATE TABLE UserKeys(
+	Key_Id int NOT NULL auto_increment,
+	User_Id int,
+	Key_Value varchar(255),
+	ExpirationTime TIMESTAMP,
+	PRIMARY KEY (Key_Id),
+	FOREIGN KEY (User_Id) REFERENCES Users(User_Id)
+);
+
+
