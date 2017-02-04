@@ -6,6 +6,7 @@ const QUERY_POST = 'UPDATE sbacsDb.Locks SET Name = ?, BelongsTo = ? WHERE Lock_
 
 var url = require('url');
 var mysql = require('mysql');
+var auth_helper = require('../extensions/auth_helper.js');
 
 var db;
 
@@ -16,20 +17,30 @@ handleRequest : function(req,res,db_helper) {
 	
 	db = db_helper;
 	
-	if(req.method === 'GET'){
-		handleGet(req,res);
-	} else if (req.method === 'POST') {
-		handlePost(req,res);
-	} else if (req.method === 'PUT') {
-		handlePut(req,res);
-	} else if (req.method === 'DELETE') {
-		handleDelete(req,res);
-	} else {
-		// Change to 405, with Allow header later
-		res.writeHead(500);
-		res.write('Method not supported');
-		res.end();
-	}
+	auth_helper.authenticate(req,function(authenticated){
+		if(authenticated){
+			if(req.method === 'GET'){
+				handleGet(req,res);
+			} else if (req.method === 'POST') {
+				handlePost(req,res);
+			} else if (req.method === 'PUT') {
+				handlePut(req,res);
+			} else if (req.method === 'DELETE') {
+				handleDelete(req,res);
+			} else {
+				// Change to 405, with Allow header later
+				res.writeHead(500);
+				res.write('Method not supported');
+				res.end();
+			}
+		} else {
+			res.writeHead(401);
+			res.write('Authentication invalid or not provided');
+			res.end();
+		}
+	});
+	
+	
 }
 
 };
