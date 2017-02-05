@@ -2,6 +2,7 @@
 const QUERY_USER_PASSWORD = 'SELECT u.User_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Users as u, sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Identities as i WHERE ita.Auth_Id = a.Auth_Id AND ita.Identity_Id = i.Identity_Id AND i.User_Id = u.User_Id AND u.Name = ?';
 
 var url = require('url');
+var mysql = require('mysql');
 var auth_helper = require('../extensions/auth_helper.js');
 var crypt = require('../extensions/crypto_helper.js');
 
@@ -50,14 +51,19 @@ function handlePost(req,res){
 					res.end();
 				} else {
 					var hashedGiven = new crypt.encryptedAuth(login.password,expectedPassword.salt);
-					if(hashedGiven.toString() == expectedPassword.value){
-						var key = auth_helper.getUserKey(expectedPassword.id);
-						if(key == undefined){
-							key = generateKey(expectedPassword.id);
-						}
-						res.writeHead(200);
-						res.write(key);
-						res.end();
+					if(hashedGiven.secret.toString() == expectedPassword.value){
+						auth_helper.getUserKey(expectedPassword.id,function(key){
+							if(key == undefined){
+								key = auth_helper.generateUserKey(expectedPassword.id);
+							} else {
+								// Print expiry time (TODO: remove this)
+								console.log('Key expires at: ' + key.expiry);
+								key = key.value;
+							}
+							res.writeHead(200);
+							res.write(key);
+							res.end();
+						});
 					} else {
 						res.writeHead(401);
 						res.write('Invalid Username/password');

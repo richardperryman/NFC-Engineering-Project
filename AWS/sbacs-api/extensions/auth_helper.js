@@ -1,8 +1,8 @@
 // How long until keys expire
-var EXPIRY_TIME = 20; // TODO: make 20 minutes by default
+var EXPIRY_TIME = 1200000; // 20 minutes by default (in milliseconds)
 var QUERY_KEY = 'SELECT * FROM sbacsDb.UserKeys WHERE User_Id = ?';
 var QUERY_DELETE_KEY = 'DELETE FROM sbacsDb.UserKeys WHERE Key_Id = ?';
-var QUERY_SAVE_KEY = 'INSERT INTO sbacsDb.UserKeys (Key_Value,User_Id,ExpirationTime) VALUES (?,?,?)';
+var QUERY_SAVE_KEY = 'INSERT INTO sbacsDb.UserKeys (User_Id, Key_Value, ExpirationTime) VALUES (?, ?, ?)';
 
 var db = require('../extensions/db_helper.js');
 var crypt = require('../extensions/crypto_helper.js');
@@ -79,8 +79,8 @@ generateUserKey : function(user_id){
 	var key = crypt.getSalt();
 	
 	// Save to db
-	var expirationTime = new Date(new Date.getTime() + EXPIRY_TIME);
-	var inserts = [key,user_id,expirationTime];
+	var expirationTime = new Date(Date.now() + EXPIRY_TIME);
+	var inserts = [user_id,key,expirationTime];
 	var queryString = mysql.format(QUERY_SAVE_KEY,inserts);
 	db.performQuery(queryString, function(err,rows,fields){});
 	
@@ -93,7 +93,7 @@ generateUserKey : function(user_id){
 
 function hasExpired(key){
 	// Check if key has expired
-	var currentTime = new Date.getTime();
+	var currentTime = Date.now();
 	if(currentTime >= key.expiry){
 		return true;
 	} else {

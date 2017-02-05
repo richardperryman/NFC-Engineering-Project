@@ -37,7 +37,7 @@ function serverRequest(req, res) {
 	} else if (parsedRequest.pathname === '/access/management'){
 		accessManagementHandler.handleRequest(req,res,db_helper);
 	} else if (parsedRequest.pathname === '/login'){
-		loginHandler(req,res);
+		loginHandler.handleRequest(req,res,db_helper);
 	} else {
 		res.writeHead(200);
 		res.write('Generic response');
