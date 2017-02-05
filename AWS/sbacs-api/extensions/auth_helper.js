@@ -4,8 +4,8 @@ var QUERY_KEY = 'SELECT * FROM sbacsDb.UserKeys WHERE User_Id = ?';
 var QUERY_DELETE_KEY = 'DELETE FROM sbacsDb.UserKeys WHERE Key_Id = ?';
 var QUERY_SAVE_KEY = 'INSERT INTO sbacsDb.UserKeys (Key_Value,User_Id,ExpirationTime) VALUES (?,?,?)';
 
-var db = require('db_helper.js');
-var crypt = require('crypto_helper.js');
+var db = require('../extensions/db_helper.js');
+var crypt = require('../extensions/crypto_helper.js');
 var mysql = require('mysql');
 
 module.exports = {
@@ -71,7 +71,7 @@ getUserKey : function(user_id,callback){
 			return callback();
 		}
 	});
-}
+},
 
 // Generates a key for a user, returns the key
 // Also saves it to the db
