@@ -26,6 +26,7 @@ import java.util.List;
 public class LockActivity extends AppCompatActivity {
 
     private int user_id;
+    private String auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class LockActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
 
         user_id = getIntent().getIntExtra(UserActivity.USER_ID, -1);
+        auth = getIntent().getStringExtra(UserActivity.HMAC_AUTH);
 
         final ListView view = (ListView) findViewById(R.id.lock_list);
         List<Lock> locksList = new ArrayList<>();
@@ -46,7 +48,13 @@ public class LockActivity extends AppCompatActivity {
                 getResources().getString(R.string.registration_table_name) +
                 "?user_id=" + user_id;
         JsonArrayRequest request = new JsonArrayRequest(url, registrationResponseListener(),
-                genericErrorListener());
+                genericErrorListener())
+                {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        return HMAC.GetHMACHeaders(user_id, "", auth);
+                    }
+                };
         queue.add(request);
 
     }
@@ -105,7 +113,12 @@ public class LockActivity extends AppCompatActivity {
                             getResources().getString(R.string.lock_table_name) +
                             "?lock_id=" + lock_id;
                     JsonArrayRequest request = new JsonArrayRequest(url, lockResponseListener,
-                            genericErrorListener());
+                            genericErrorListener()){
+                                @Override
+                                public Map<String, String> getHeaders() throws AuthFailureError {
+                                    return HMAC.GetHMACHeaders(user_id, "", auth);
+                                }
+                            };
                     queue.add(request);
                 }
             }

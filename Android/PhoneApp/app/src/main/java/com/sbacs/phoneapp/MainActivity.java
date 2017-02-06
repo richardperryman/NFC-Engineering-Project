@@ -19,6 +19,7 @@ import com.android.volley.toolbox.Volley;
 
 public class MainActivity extends AppCompatActivity {
     public final static String USER_ID = "com.SBACS.app.USER_ID";
+    public final static String HMAC_AUTH = "com.SBACS.app.HMAC_AUTH";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +45,16 @@ public class MainActivity extends AppCompatActivity {
                 getResources().getString(R.string.user_table_name) +
                 "?name=" + user_name;
         final Context currentContext = this;
-        Response.Listener<JSONArray> loginResponseListener = new Response.Listener<JSONArray>() {
+        Response.Listener<JSONObject> loginResponseListener = new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 int user_id;
+                String auth = "";
                 try {
-                    JSONObject user = response.getJSONObject(0);
+                    String user = response.getString("user");
+                    auth = response.getString("key");
                     //TODO Constants
-                    user_id = Integer.parseInt(user.getString("User_Id"));
+                    user_id = Integer.parseInt(user);
                 } catch (NumberFormatException e) {
                     user_id = -1;
                 } catch (JSONException e) {
@@ -61,10 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent loginIntent = new Intent(currentContext, UserActivity.class);
                 loginIntent.putExtra(USER_ID, user_id);
+                loginIntent.putExtra(HMAC_AUTH, auth);
                 startActivity(loginIntent);
             }
         };
-        JsonArrayRequest request = new JsonArrayRequest(url, loginResponseListener,
+        JsonObjectRequest  request = new JsonObjectRequest (Request.Method.GET, url, loginResponseListener,
                 genericErrorListener(results));
         queue.add(request);
     }

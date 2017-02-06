@@ -18,13 +18,20 @@ public class HMACHelper {
     private static final int iterations = 100000;
     private static final int secret_length = 255 * 8; // Secret length is in bits
 
-    public static String QueryString(int userId, String body, String key) {
-        String secret = SecretString(body, key);
+    public static Map<String, String> GetHMACHeaders(int userId, String body, String key) {
+        String secret;
+        Map <String, String> result = new HashMap<String, String>();
+        
         try {
-            return "hmac-user=" + userId + "&hmac-content=" + URLEncoder.encode(secret, "UTF-16");
+            secret = URLEncoder.encode(SecretString(body, key), "UTF-16");
         } catch (UnsupportedEncodingException e) {
-            return "";
+            secret = "";
         }
+        
+        result.add("hmac-user", userId.toString());
+        result.add("hmac-content", secret);
+        
+        return result;
     }
 
     public static String SecretString(String body, String key){
