@@ -1,10 +1,15 @@
 package com.sbacs.phoneapp.HMAC;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -28,13 +33,25 @@ public class HMACHelper {
             secret = "";
         }
         
-        result.add("hmac-user", userId.toString());
-        result.add("hmac-content", secret);
+        result.put("hmac-user", "" + userId);
+        result.put("hmac-content", secret);
         
         return result;
     }
 
-    public static String SecretString(String body, String key){
+    public static byte[] HMACLoginBody(String username, String password) {
+        JSONObject body = new JSONObject();
+        try {
+            body.put("username", username);
+            body.put("password", password);
+        } catch (JSONException e) {
+            // Uhhh do something?
+        }
+
+        return body.toString().getBytes();
+    }
+
+    private static String SecretString(String body, String key){
         // Should probably add code to force UTF-16
         SecretKeyFactory skf;
         KeySpec spec;

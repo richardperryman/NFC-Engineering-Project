@@ -29,9 +29,11 @@ import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
     public final static String USER_ID = "com.SBACS.app.USER_ID";
+    public final static String HMAC_AUTH = "com.SBACS.app.HMAC_AUTH";
     public final static String USER_NFC_AUTH = "com.SBACS.app.NFC_AUTHENTICATOR";
 
     private int user_id;
+    private String auth;
 
     private BroadcastReceiver receiver;
 
@@ -42,6 +44,7 @@ public class UserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         user_id = intent.getIntExtra(MainActivity.USER_ID, -1);
+        auth = intent.getStringExtra(MainActivity.HMAC_AUTH);
 
         // Doesn't fail if service isn't runnning (returns false)
         stopService(new Intent(this, SBACSNFCService.class));
@@ -122,6 +125,7 @@ public class UserActivity extends AppCompatActivity {
     public void manageLocks(View view) {
         Intent lockIntent = new Intent(this, LockActivity.class);
         lockIntent.putExtra(USER_ID, user_id);
+        lockIntent.putExtra(HMAC_AUTH, auth);
         startActivity(lockIntent);
     }
 }

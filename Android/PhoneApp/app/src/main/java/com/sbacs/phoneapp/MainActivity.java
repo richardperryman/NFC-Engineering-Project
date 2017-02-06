@@ -1,5 +1,6 @@
 package com.sbacs.phoneapp;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +12,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.sbacs.phoneapp.HMAC.HMACHelper;
 
 public class MainActivity extends AppCompatActivity {
     public final static String USER_ID = "com.SBACS.app.USER_ID";
@@ -38,12 +43,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View view) {
         TextView results = (TextView) findViewById(R.id.result_message);
-        String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
+        final String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
+        final String password = ((TextView) findViewById(R.id.password)).getText().toString();
 
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = getResources().getString(R.string.sbacs_url) +
-                getResources().getString(R.string.user_table_name) +
-                "?name=" + user_name;
+                getResources().getString(R.string.login_endpoint);
         final Context currentContext = this;
         Response.Listener<JSONObject> loginResponseListener = new Response.Listener<JSONObject>() {
             @Override
@@ -68,8 +73,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(loginIntent);
             }
         };
-        JsonObjectRequest  request = new JsonObjectRequest (Request.Method.GET, url, loginResponseListener,
-                genericErrorListener(results));
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, loginResponseListener,
+                genericErrorListener(results))
+        {
+            @Override
+            public byte[] getBody() {
+                return HMACHelper.HMACLoginBody(user_name, password);
+            }
+        };
         queue.add(request);
     }
 }
