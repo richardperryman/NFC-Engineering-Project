@@ -60,8 +60,9 @@ function handlePost(req,res){
 								console.log('Key expires at: ' + key.expiry);
 								key = key.value;
 							}
+							key = {user:expectedPassword.id,key:key};
 							res.writeHead(200);
-							res.write(key);
+							res.write(JSON.stringify(key));
 							res.end();
 						});
 					} else {
