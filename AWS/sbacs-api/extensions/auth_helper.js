@@ -36,7 +36,7 @@ authenticate : function(req,callback){
 			var hashedInfo = new crypt.encryptedAuth(body,key.value);
 			
 			// Compare to hashedGiven
-			if(hashedGiven.toString == hashedInfo.secret.toString()){
+			if(hashedGiven.toString() == hashedInfo.secret.toString()){
 				return callback(true);
 			}
 		});

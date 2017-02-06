@@ -15,7 +15,8 @@ encryptedAuth : function(secret, salt) {
 },
 
 getSalt : function () {
-	return generateSalt();
+	var buffer = crypto.randomBytes(salt_length);
+	return buffer.toString('ascii');
 }
 
 };
