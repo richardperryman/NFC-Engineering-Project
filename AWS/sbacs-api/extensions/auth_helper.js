@@ -14,18 +14,17 @@ module.exports = {
 // Returns true if they are authenticated, false otherwise
 authenticate : function(req,callback){
 	// Extract needed information
-	var user_id = req.headers.hmac-user;
-	var hashedGiven = req.headers.hmac-content;
+	var user_id = req.headers['hmac-user'];
+	var hashedGiven = decodeURI(req.headers['hmac-content']);
 	if(user_id == undefined || hashedGiven == undefined){
 		return callback(false);
 	}
 	
 	// Get existing key
-	getUserKey(user_id, function(key){
+	module.exports.getUserKey(user_id, function(key){
 		if(key == undefined || key.value == undefined || hasExpired(key)){
 			return callback(false);
 		}
-		
 		// Use key to hash the message body
 		var body = [];
 		req.on('data', function(chunk) {
@@ -34,10 +33,11 @@ authenticate : function(req,callback){
 			body = Buffer.concat(body).toString();
 			// Hash the body using key
 			var hashedInfo = new crypt.encryptedAuth(body,key.value);
-			
 			// Compare to hashedGiven
 			if(hashedGiven.toString() == hashedInfo.secret.toString()){
 				return callback(true);
+			} else {
+				return callback(false);
 			}
 		});
 	
