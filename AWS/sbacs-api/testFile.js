@@ -1,7 +1,7 @@
 var request = require('request');
 var crypt = require('./extensions/crypto_helper.js');
 
-var hashedBody = (new crypt.encryptedAuth('','test')).secret;
+var hashedBody = (new crypt.encryptedAuth('',Buffer.from('test'))).secret;
 console.log(hashedBody);
 
 var encodedHmac = encodeURI(hashedBody.toString());
@@ -13,7 +13,7 @@ var headers = {
 };
 
 var options = {
-	url : 'http://127.0.0.1:3000/authenticators',
+	url : 'http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/authenticators',
 	method : 'GET',
 	headers : headers
 };
