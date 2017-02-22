@@ -33,7 +33,7 @@ public class UserActivity extends AppCompatActivity {
     public final static String USER_NFC_AUTH = "com.SBACS.app.NFC_AUTHENTICATOR";
 
     private int user_id;
-    private String auth;
+    private byte[] auth;
 
     private BroadcastReceiver receiver;
 
@@ -44,19 +44,14 @@ public class UserActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         user_id = intent.getIntExtra(MainActivity.USER_ID, -1);
-        auth = intent.getStringExtra(MainActivity.HMAC_AUTH);
+        auth = intent.getByteArrayExtra(MainActivity.HMAC_AUTH);
 
-        // Doesn't fail if service isn't runnning (returns false)
+        // Doesn't fail if service isn't running (returns false)
         stopService(new Intent(this, SBACSNFCService.class));
-        RequestQueue queue = Volley.newRequestQueue(this);
-        // HORRIBLY WRONG
-        String url = getResources().getString(R.string.sbacs_url) +
-                getResources().getString(R.string.auth_table_name) +
-                "?user_id=" + user_id;
 
-        JsonArrayRequest request = new JsonArrayRequest(url, serviceResponseListener(),
-                genericErrorListener());
-        queue.add(request);
+        Intent serviceIntent = new Intent(this, SBACSNFCService.class);
+        serviceIntent.putExtra(UserActivity.USER_NFC_AUTH, auth);
+        startService(serviceIntent);
 
         final ListView view = (ListView) findViewById(R.id.list_results);
         List<String> resultsList = new ArrayList<>();
@@ -85,39 +80,6 @@ public class UserActivity extends AppCompatActivity {
                 ArrayAdapter<String> adapter = (ArrayAdapter<String>) view.getAdapter();
                 adapter.clear();
                 adapter.add(error.getMessage());
-            }
-        };
-    }
-
-    private Response.Listener<JSONArray> serviceResponseListener() {
-        final Context currentContext = this;
-        return new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                ListView view = (ListView) findViewById(R.id.list_results);
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) view.getAdapter();
-                // This currently ties the service to this window being open... this should probably not be the case
-                Intent serviceIntent = new Intent(currentContext, SBACSNFCService.class);
-                for (int i=0; i<response.length(); i++) {
-                    try {
-                        JSONObject auth = response.getJSONObject(i);
-                        // TODO move these things to constants
-                        if ("password".equalsIgnoreCase((String) auth.get("AuthType"))) {
-                            JSONArray key = auth.getJSONObject("AuthKey").getJSONArray("data");
-                            byte[] key_bytes = new byte[key.length()];
-                            for (int index=0; index<key.length(); index++) {
-                                key_bytes[index] = (byte) key.getInt(index);
-                            }
-                            serviceIntent.putExtra(UserActivity.USER_NFC_AUTH, key_bytes);
-                            currentContext.startService(serviceIntent);
-                            break;
-
-                        }
-                    } catch (JSONException e) {
-                        // TODO better error handling
-                    }
-                }
-
             }
         };
     }
