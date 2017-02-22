@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const iterations = 100000;
+const iterations = 10000;
 const secret_length = 255;
 const salt_length = 255;
 const hashAlgorithm = 'sha256';
@@ -15,15 +15,14 @@ encryptedAuth : function(secret, salt) {
 },
 
 getSalt : function () {
-	var buffer = crypto.randomBytes(salt_length);
-	return buffer.toString('ascii');
+	return generateSalt();
 }
 
 };
 
 function generateSalt() {
 	var buffer = crypto.randomBytes(salt_length);
-	return buffer.toString();
+	return buffer;
 }
 
 

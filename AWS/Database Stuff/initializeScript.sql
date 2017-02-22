@@ -19,7 +19,7 @@ CREATE TABLE Authenticators(
 	Auth_Id int NOT NULL auto_increment,
 	AuthType varchar(255) NOT NULL,
 	AuthKey varbinary(255) NOT NULL,
-	AuthSalt varchar(255) NOT NULL,
+	AuthSalt varbinary(255) NOT NULL,
 	PRIMARY KEY (Auth_Id)
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE Registrations(
 CREATE TABLE UserKeys(
 	Key_Id int NOT NULL auto_increment,
 	User_Id int,
-	Key_Value varchar(255),
+	Key_Value varbinary(255),
 	ExpirationTime TIMESTAMP,
 	PRIMARY KEY (Key_Id),
 	FOREIGN KEY (User_Id) REFERENCES Users(User_Id)

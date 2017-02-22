@@ -19,8 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.sbacs.phoneapp.HMAC.HMACHelper;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     public final static String USER_ID = "com.SBACS.app.USER_ID";
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        TextView results = (TextView) findViewById(R.id.result_message);
+        final TextView results = (TextView) findViewById(R.id.result_message);
         final String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
         final String password = ((TextView) findViewById(R.id.password)).getText().toString();
 
@@ -50,30 +53,41 @@ public class MainActivity extends AppCompatActivity {
         String url = getResources().getString(R.string.sbacs_url) +
                 getResources().getString(R.string.login_endpoint);
         final Context currentContext = this;
-        Response.Listener<JSONObject> loginResponseListener = new Response.Listener<JSONObject>() {
+        Response.Listener<String> loginResponseListener = new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(String response) {
                 int user_id;
-                String auth = "";
+                byte[] auth;
                 try {
-                    String user = response.getString("user");
-                    auth = response.getString("key");
+                    JSONObject responseObject = new JSONObject(response);
+                    String user = responseObject.getString("user");
+                    JSONArray authValues = responseObject.getJSONObject("key").getJSONArray("data");
+                    auth = new byte[authValues.length()];
+                    for(int i = 0; i < authValues.length(); i++) {
+                        auth[i] = (byte) authValues.getInt(i);
+                    }
                     //TODO Constants
                     user_id = Integer.parseInt(user);
                 } catch (NumberFormatException e) {
                     user_id = -1;
+                    auth = new byte[]{};
                 } catch (JSONException e) {
                     // TODO better handling
                     user_id = -1;
+                    auth = new byte[]{};
                 }
 
-                Intent loginIntent = new Intent(currentContext, UserActivity.class);
-                loginIntent.putExtra(USER_ID, user_id);
-                loginIntent.putExtra(HMAC_AUTH, auth);
-                startActivity(loginIntent);
+                if (user_id > -1 && auth.length < 1) {
+                    Intent loginIntent = new Intent(currentContext, UserActivity.class);
+                    loginIntent.putExtra(USER_ID, user_id);
+                    loginIntent.putExtra(HMAC_AUTH, auth);
+                    startActivity(loginIntent);
+                } else {
+                    results.setText("An error occurred with response:\n" + response);
+                }
             }
         };
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null, loginResponseListener,
+        StringRequest request = new StringRequest(Request.Method.POST, url, loginResponseListener,
                 genericErrorListener(results))
         {
             @Override

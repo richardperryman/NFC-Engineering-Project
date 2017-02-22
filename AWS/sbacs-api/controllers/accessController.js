@@ -105,8 +105,6 @@ function handlePost(req,res){
 			}).on('end', function () {
 				body = Buffer.concat(body).toString();
 				
-				// TODO: Print body
-				console.log('Body: ' + body);
 				
 				var given_auth = extractAuthenticatorsFromBody(body);
 				// Check given and needed authenticators
@@ -195,7 +193,7 @@ function checkAuthForId(given,needed,id){
 		// check that the given list contains it
 	for(var i=0;i<needed.length;i++){
 		var neededAuth = needed[i];
-		if(id == neededAuth.id){
+		if(id == neededAuth.id && neededAuth.type.toLowerCase() != 'password'){
 			if(!checkGivenContains(given,neededAuth)){
 				return false;
 			}
