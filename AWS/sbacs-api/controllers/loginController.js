@@ -1,10 +1,11 @@
 
-const QUERY_USER_PASSWORD = 'SELECT u.User_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Users as u, sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Identities as i WHERE ita.Auth_Id = a.Auth_Id AND ita.Identity_Id = i.Identity_Id AND i.User_Id = u.User_Id AND u.Name = ?';
+const QUERY_USER_PASSWORD = 'SELECT u.User_Id, ita.Identity_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Users as u, sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Identities as i WHERE ita.Auth_Id = a.Auth_Id AND ita.Identity_Id = i.Identity_Id AND i.User_Id = u.User_Id AND u.Name = ?';
 
 var url = require('url');
 var mysql = require('mysql');
 var auth_helper = require('../extensions/auth_helper.js');
 var crypt = require('../extensions/crypto_helper.js');
+var request = require('request');
 
 var db;
 
@@ -64,6 +65,8 @@ function handlePost(req,res){
 							res.writeHead(200);
 							res.write(JSON.stringify(key));
 							res.end();
+							// Set nfc authenticator to key 
+							saveNfcKey(key.key,expectedPassword.identity);
 						});
 					} else {
 						res.writeHead(401);
@@ -84,10 +87,50 @@ function handlePost(req,res){
 
 }
 
+// key contains {user,key}
+function saveNfcKey(key,identity_id){
+	// Make PUT request to /authenticators to save key
+	var query = '?authType=nfc&identity_id=';
+	query += identity_id;
+//	var headers = {
+//		'hmac-user' : '10outta13'
+//	};
+	var urlString = ('http://127.0.0.1:3000/authenticators'+query);
+	console.log(urlString);
+/*	var options = {
+		url : urlString,
+		method : 'PUT',
+		headers : headers,
+		form: key
+	};
+
+	request(options,function(err,res,body){
+		console.log(err);
+		console.log(body);
+		console.log(res.statusCode);
+	}); */
+	var http = require('http');
+	var options = {
+	  hostname: '127.0.0.1',
+	  port: 3000,
+	  path: ('/authenticators' + query),
+	  method: 'PUT',
+	  headers: {
+		  'hmac-user': '10outta13',
+	  }
+	};
+	var req = http.request(options, function(res) {
+
+	});
+	// write data to request body
+	req.write(JSON.stringify(key));
+	req.end();
+}
+
 // Returns the expected password as {id:val,type:val,value:val,salt:val}
 function findPassword(rows){
 	for(var i=0;i<rows.length;i++){
-		var auth = {id:rows[i]['User_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt']};
+		var auth = {id:rows[i]['User_Id'],identity:rows[i]['Identity_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt']};
 		if(auth.type == 'Password' || auth.type == 'password'){
 			return auth;
 		}

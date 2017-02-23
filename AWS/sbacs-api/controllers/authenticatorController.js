@@ -3,6 +3,7 @@ const QUERY_GET_WITH_AUTH = 'SELECT * FROM sbacsDb.Authenticators WHERE Auth_Id 
 const QUERY_GET_WITH_IDENTITY = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.IdentityToAuth as i, sbacsDb.Authenticators as a WHERE i.Identity_Id = ? AND i.Auth_Id = a.Auth_Id';
 const QUERY_GET_WITH_USER = 'SELECT a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Identities AS i, sbacsDb.IdentityToAuth as ita, sbacsDb.Authenticators as a WHERE i.User_Id = ? AND i.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
 const QUERY_PUT = 'INSERT INTO sbacsDb.Authenticators (AuthType, AuthKey, AuthSalt) VALUES (?, ?, ?)';
+const QUERY_UPDATE = 'UPDATE sbacsDb.Authenticators SET AuthKey=?,AuthSalt=? WHERE Auth_Id = ?';
 const QUERY_PUT_IDENTITY = 'INSERT INTO sbacsDb.IdentityToAuth (Identity_Id, Auth_Id) VALUES (?, ?)';
 const QUERY_DELETE_IDENTITY = 'DELETE FROM sbacsDb.IdentityToAuth WHERE Auth_Id = ?';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Authenticators WHERE Auth_Id = ?';
@@ -167,30 +168,69 @@ function handlePut(req,res){
 	// Prepare the query to be performed
 	var authType = parsedRequest.query['authType'];
 	var identity_id = parsedRequest.query['identity_id'];
-	req.on('data', function(chunk){
-		var authValue = chunk.toString();
-		if(authType == undefined || authValue == undefined || identity_id == undefined){
-			console.log('Invalid input');
-			res.writeHead(400);
-			res.write('Not all parameters met.');
-			res.end();
-			return;
-		}
-		// Make this an actual salt
-		var encryptedInfo = new crypt.encryptedAuth(authValue);
-		var inserts = [authType,encryptedInfo.secret,encryptedInfo.salt];
-		queryString = mysql.format(QUERY_PUT,inserts);
-		// Execute query, return needed results
-		db.performQuery(queryString, function(err,rows,fields){
-			if(!err){
-				var formattedOut = 'ID of created row: ' + rows.insertId;
-				inserts = [identity_id,rows.insertId];
-				queryString = mysql.format(QUERY_PUT_IDENTITY,inserts);
+	
+	//Check if this identity_id already has an Authenticator of this authType
+		// If it does have one, write over it, otherwise create new one
+	var exists = {val:false,id:''};
+	var identity_insert = [identity_id];
+	queryString = mysql.format(QUERY_GET_WITH_IDENTITY,identity_insert);
+	db.performQuery(queryString,function(err,rows,field){
+		if(!err){
+			var auth = [];
+			for(var i=0;i<rows.length;i++){
+				auth[i] = {id:rows[i]['Auth_Id'],type:rows[i]['AuthType']};
+				if(auth[i].type.toLowerCase() == 'nfc'){
+					exists.val = true;
+					exists.id = auth[i].id;
+				}
+			}
+			req.on('data', function(chunk){
+				var authValue = chunk.toString();
+				if(authType == undefined || authValue == undefined || identity_id == undefined){
+					console.log('Invalid input');
+					res.writeHead(400);
+					res.write('Not all parameters met.');
+					res.end();
+					return;
+				}
+				// Make this an actual salt
+				var encryptedInfo = new crypt.encryptedAuth(authValue);
+				var inserts = [authType,encryptedInfo.secret,encryptedInfo.salt];
+				if(exists.val){
+					inserts = [encryptedInfo.secret,encryptedInfo.salt,exists.id];
+					queryString = mysql.format(QUERY_UPDATE,inserts);
+					console.log('Reached exists');
+				} else {
+					queryString = mysql.format(QUERY_PUT,inserts);
+					console.log('Reached not exists');
+				}
+				// Execute query, return needed results
 				db.performQuery(queryString, function(err,rows,fields){
 					if(!err){
-						res.writeHead(200);
-						res.write(formattedOut);
-						res.end();
+						var formattedOut = 'ID of created row: ' + rows.insertId;
+						if(!exists.val){
+							inserts = [identity_id,rows.insertId];
+							queryString = mysql.format(QUERY_PUT_IDENTITY,inserts);
+							db.performQuery(queryString, function(err,rows,fields){
+								if(!err){
+									res.writeHead(200);
+									res.write(formattedOut);
+									res.end();
+								} else {
+									// Handle error
+									console.log('Error with DB');
+									res.writeHead(500);
+									res.write('Unable to complete request.');
+									res.end();
+								}
+							});
+						} else {
+							formattedOut = 'ID of created row: ' + exists.id;
+							res.writeHead(200);
+							res.write(formattedOut);
+							res.end();
+						}
+						
 					} else {
 						// Handle error
 						console.log('Error with DB');
@@ -199,15 +239,17 @@ function handlePut(req,res){
 						res.end();
 					}
 				});
-			} else {
-				// Handle error
-				console.log('Error with DB');
-				res.writeHead(500);
-				res.write('Unable to complete request.');
-				res.end();
-			}
-		});
+			});
+		} else {
+			// Handle error
+			console.log('Error with DB');
+			res.writeHead(500);
+			res.write('Unable to complete request.');
+			res.end();
+		}
 	});
+	
+	
 	
 }
 
