@@ -92,27 +92,10 @@ function saveNfcKey(key,identity_id){
 	// Make PUT request to /authenticators to save key
 	var query = '?authType=nfc&identity_id=';
 	query += identity_id;
-//	var headers = {
-//		'hmac-user' : '10outta13'
-//	};
-	var urlString = ('http://127.0.0.1:3000/authenticators'+query);
-	console.log(urlString);
-/*	var options = {
-		url : urlString,
-		method : 'PUT',
-		headers : headers,
-		form: key
-	};
-
-	request(options,function(err,res,body){
-		console.log(err);
-		console.log(body);
-		console.log(res.statusCode);
-	}); */
 	var http = require('http');
 	var options = {
 	  hostname: '127.0.0.1',
-	  port: 3000,
+	  port: 8081,
 	  path: ('/authenticators' + query),
 	  method: 'PUT',
 	  headers: {

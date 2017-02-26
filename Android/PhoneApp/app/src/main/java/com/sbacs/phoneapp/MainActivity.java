@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     auth = new byte[]{};
                 }
 
-                if (user_id > -1 && auth.length < 1) {
+                if (user_id > -1 && auth.length > 0) {
                     Intent loginIntent = new Intent(currentContext, UserActivity.class);
                     loginIntent.putExtra(USER_ID, user_id);
                     loginIntent.putExtra(HMAC_AUTH, auth);

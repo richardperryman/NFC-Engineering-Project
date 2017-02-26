@@ -1,12 +1,15 @@
 // Note that mysql.format(query, values), only works where values
 // are strings, and puts the value with single quotes around it
 
-const QUERY_GET_NEEDED_AUTH = 'SELECT r.Identity_Id, a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Registrations as r WHERE r.Lock_Id = ? AND r.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
-
+const QUERY_GET_NEEDED_AUTH = 'SELECT r.Reg_Id, r.UseCount, r.Identity_Id, a.Auth_Id, a.AuthType, a.AuthKey, a.AuthSalt FROM sbacsDb.Authenticators as a, sbacsDb.IdentityToAuth as ita, sbacsDb.Registrations as r WHERE r.Lock_Id = ? AND r.Identity_Id = ita.Identity_Id AND ita.Auth_Id = a.Auth_Id';
+const QUERY_DELETE_REG = 'DELETE FROM sbacsDb.Registrations WHERE Reg_Id=?';
+const QUERY_UPDATE_COUNT = 'UPDATE sbacsDb.Registrations SET UseCount=? WHERE Reg_Id=?';
 
 var url = require('url');
 var mysql = require('mysql');
 var crypt = require('../extensions/crypto_helper.js');
+var count = -1;
+var reg_id = -1;
 
 var db;
 
@@ -109,6 +112,10 @@ function handlePost(req,res){
 				var given_auth = extractAuthenticatorsFromBody(body);
 				// Check given and needed authenticators
 				if(checkAuth(given_auth, needed_auth)){
+					if(count > 0){
+						count--;
+						saveNewCount();
+					}
 					res.writeHead(200);
 					res.write(lock_key);
 					res.end();
@@ -126,6 +133,36 @@ function handlePost(req,res){
 			res.end();
 		}
 	});
+}
+
+function saveNewCount(){
+	if(count == 0){
+		var inserts = [reg_id];
+		var queryString = mysql.format(QUERY_DELETE_REG,inserts);
+		db.performQuery(queryString, function(err,rows,fields){
+			if(!err){
+				console.log('Expired registration deleted');
+			} else {
+				console.log('Error deleting registration');
+			}
+			count = -1;
+			reg_id = -1;
+		});
+	} else {
+		// TODO: If greater than 0, update the db's count
+		var inserts = [count,reg_id];
+		var queryString = mysql.format(QUERY_UPDATE_COUNT,inserts);
+		db.performQuery(queryString, function(err,rows,fields){
+			if(!err){
+				console.log('Updated registration count');
+			} else {
+				console.log('Error updating registration count');
+			}
+			count = -1;
+			reg_id = -1;
+		});
+		
+	}
 }
 
 // Gets the minimal set of authenticators needed for the given list
@@ -211,6 +248,8 @@ function checkGivenContains(given,neededAuth){
 		if(givenAuth.type == neededAuth.type){
 			var encryptedInfo = new crypt.encryptedAuth(givenAuth.value,neededAuth.salt);
 			if(encryptedInfo.secret.toString() == neededAuth.value){
+				count = neededAuth.count;
+				reg_id = neededAuth.reg;
 				return true;
 			}
 		}
@@ -231,7 +270,7 @@ function extractAuthenticatorsFromDb(rows,fields) {
 	// Extracts all rows of the table as is and turns it into array
 	var auth = [];
 	for(var i=0;i<rows.length;i++){
-		auth[i] = {id:rows[i]['Identity_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt']};
+		auth[i] = {id:rows[i]['Identity_Id'],type:rows[i]['AuthType'],value:rows[i]['AuthKey'],salt:rows[i]['AuthSalt'],reg:rows[i]['Reg_Id'],count:rows[i]['UseCount']};
 	}
 
 	return auth;

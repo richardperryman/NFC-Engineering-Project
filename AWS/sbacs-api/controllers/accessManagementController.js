@@ -1,7 +1,7 @@
 const QUERY_GET_LOCKS_FOR_USER = 'SELECT R.Reg_Id, R.Identity_Id, R.Lock_Id, R.ExpirationTime, Users.Name FROM sbacsDb.Registrations as R INNER JOIN sbacsDb.Identities ON R.Identity_Id = Identities.Identity_Id INNER JOIN sbacsDb.Users ON Users.User_Id = Identities.User_Id WHERE Users.User_Id = ?';
 const QUERY_GET_LOCKS_FOR_IDENTITY = 'SELECT R.Reg_Id, R.Identity_Id, R.Lock_Id, R.ExpirationTime, Identities.Name FROM sbacsDb.Registrations as R INNER JOIN sbacsDb.Identities ON R.Identity_Id = Identities.Identity_Id WHERE Identities.Identity_Id = ?';
 const QUERY_GET_USERS_FOR_LOCK = 'SELECT R.Reg_Id, R.Identity_Id, R.Lock_Id, R.ExpirationTime, Users.Name FROM sbacsDb.Registrations as R INNER JOIN sbacsDb.Identities ON R.Identity_Id = Identities.Identity_Id INNER JOIN sbacsDb.Users ON Users.User_Id = Identities.User_Id WHERE R.Lock_Id = ?';
-const QUERY_PUT = 'INSERT INTO sbacsDb.Registrations (Identity_Id, Lock_Id, ExpirationTime) VALUES (?, ?, ?)';
+const QUERY_PUT = 'INSERT INTO sbacsDb.Registrations (Identity_Id, Lock_Id, ExpirationTime, UseCount) VALUES (?, ?, ?, ?)';
 const QUERY_DELETE = 'DELETE FROM sbacsDb.Registrations WHERE Lock_Id = ? AND Identity_Id = ?';
 
 
@@ -100,7 +100,11 @@ function handlePut(req,res){
 		res.end();
 		return;
 	}
-	var inserts = [identity_id,lock_id,expirationTime];
+	var useCount = parsedRequest.query['count'];
+	if(useCount == undefined || useCount < 1){
+		useCount = -1;
+	}
+	var inserts = [identity_id,lock_id,expirationTime,useCount];
 	queryString = mysql.format(QUERY_PUT,inserts);
 	// Execute query, return needed results
 	db.performQuery(queryString, function(err,rows,fields){

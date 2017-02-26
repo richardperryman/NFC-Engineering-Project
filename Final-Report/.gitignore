@@ -1,0 +1,12 @@
+# Exclude unwanted TeX files
+
+**/*.aux
+**/*.bbl
+**/*.bib
+**/*.blg
+**/*.lof
+**/*.log
+**/*.lot
+**/*.synctex.gz
+**/*.toc
+**/*.run.xml

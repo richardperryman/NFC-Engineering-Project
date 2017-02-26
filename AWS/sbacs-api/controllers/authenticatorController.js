@@ -179,7 +179,7 @@ function handlePut(req,res){
 			var auth = [];
 			for(var i=0;i<rows.length;i++){
 				auth[i] = {id:rows[i]['Auth_Id'],type:rows[i]['AuthType']};
-				if(auth[i].type.toLowerCase() == 'nfc'){
+				if(auth[i].type.toLowerCase() == authType){
 					exists.val = true;
 					exists.id = auth[i].id;
 				}

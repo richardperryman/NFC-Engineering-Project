@@ -43,6 +43,7 @@ CREATE TABLE Registrations(
 	Identity_Id int,
 	Lock_Id int,
 	ExpirationTime TIMESTAMP,
+	UseCount int,
 	PRIMARY KEY (Reg_Id),
 	FOREIGN KEY (Identity_Id) REFERENCES Identities(Identity_Id),
 	FOREIGN KEY (Lock_Id) REFERENCES Locks(Lock_Id)
