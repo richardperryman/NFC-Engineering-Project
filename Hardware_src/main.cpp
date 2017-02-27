@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <Types.h>
 #include <Serial.h>
 #include <GPIOPin.h>
@@ -22,10 +23,12 @@
 static uint32_t LOCK_ID;
 static std::string SERVER_URL;
 
-static GPIOPin* GREEN;
-static GPIOPin* BLUE;
-static GPIOPin* RED;
-// static GPIOPin* RELAY_SIGNAL;
+static GPIOPin GREEN("2");
+static GPIOPin BLUE("3");
+static GPIOPin RED("4");
+static GPIOPin RELAY_SIGNAL("21");
+
+static const char* KILL_FILE("service.KILL");
 
 static void maintenanceLoop();
 static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConnection* connection);
@@ -34,60 +37,52 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules);
 
 static void setUpLEDs()
 {
-	GREEN = new GPIOPin("2");
-	BLUE = new GPIOPin("3");
-	RED = new GPIOPin("4");
+	GREEN.exportPin();
+	BLUE.exportPin();
+	RED.exportPin();
+    RELAY_SIGNAL.exportPin();
 	
-	GREEN->exportPin();
-	BLUE->exportPin();
-	RED->exportPin();
-	
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	
-	GREEN->setOutput();
-	BLUE->setOutput();
-	RED->setOutput();
-	
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	GREEN.setOutput();
+	BLUE.setOutput();
+	RED.setOutput();
+    RELAY_SIGNAL.setOutput();
+    RELAY_SIGNAL.setValue(GPIO_HIGH);
 }
 
 static void teardown()
 {
-	GREEN->unexportPin();
-	BLUE->unexportPin();
-	RED->unexportPin();	
+	GREEN.unexportPin();
+	BLUE.unexportPin();
+	RED.unexportPin();
+    RELAY_SIGNAL.unexportPin();
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    
-    delete(GREEN);
-    delete(BLUE);
-    delete(RED);
+    remove(KILL_FILE);
 }
 
 void accessGranted()
 {
     DEBUG_LOG(INFO, __FUNCTION__, "Access granted.");
-    BLUE->setValue(GPIO_LOW);
-    GREEN->setValue(GPIO_HIGH);
-    // RELAY_SIGNAL->setValue(GPIO_HIGH);
+    BLUE.setValue(GPIO_LOW);
+    GREEN.setValue(GPIO_HIGH);
+    RELAY_SIGNAL.setValue(GPIO_LOW);
     
     std::this_thread::sleep_for(std::chrono::milliseconds(3000)); // Disengage the lock for three seconds
     
-    BLUE->setValue(GPIO_HIGH);
-    GREEN->setValue(GPIO_LOW);
-    // RELAY_SIGNAL->setValue(GPIO_LOW);
+    BLUE.setValue(GPIO_HIGH);
+    GREEN.setValue(GPIO_LOW);
+    RELAY_SIGNAL.setValue(GPIO_HIGH);
 }
 
 void accessDenied()
 {
     DEBUG_LOG(INFO, __FUNCTION__, "Access denied.");
-    BLUE->setValue(GPIO_LOW);
-    RED->setValue(GPIO_HIGH);
+    BLUE.setValue(GPIO_LOW);
+    RED.setValue(GPIO_HIGH);
     
     std::this_thread::sleep_for(std::chrono::milliseconds(2000)); // Show red for two seconds
     
-    BLUE->setValue(GPIO_HIGH);
-    RED->setValue(GPIO_LOW);
+    BLUE.setValue(GPIO_HIGH);
+    RED.setValue(GPIO_LOW);
 }
 
 int main()
@@ -115,6 +110,7 @@ int main()
             
             if (status != 0) {
                 DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
+                maintenanceLoop();
             } else if (modules.size() == 0) {
                 DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
                 maintenanceLoop();
@@ -134,26 +130,27 @@ int main()
 static int8_t readConfiguration(std::string filepath)
 {
     LOCK_ID = 0x1;
-    SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
+    //SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
     //SERVER_URL = "127.0.0.1:3000";
-    
+    SERVER_URL = "https://sbacs.click";
 	return 0;
 }
 
 static void maintenanceLoop()
 {
-    while(true)
+    while(access(KILL_FILE, F_OK) == -1)
     {
-        RED->setValue(GPIO_HIGH);
+        RED.setValue(GPIO_HIGH);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        RED->setValue(GPIO_LOW);
+        RED.setValue(GPIO_LOW);
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
 static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConnection* connection)
 {
-    while(true) // TODO: Switch this loop to check for a kill file so I can quit gracefully
+    BLUE.setValue(GPIO_HIGH);
+    while(access(KILL_FILE, F_OK) == -1)
     {
         uint16_t counter = 50;
         bool counting = false;

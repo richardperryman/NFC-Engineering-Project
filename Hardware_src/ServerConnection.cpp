@@ -183,6 +183,10 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
     curl_easy_setopt(curly, CURLOPT_POSTFIELDS, json_object_to_json_string(json));
     curl_easy_setopt(curly, CURLOPT_TIMEOUT, 5L); // Give the server 5 seconds to respond
     curl_easy_setopt(curly, CURLOPT_WRITEDATA, devnull); // Don't print the response 
+    //curl_easy_setopt(curly, CURLOPT_SSL_VERIFYPEER, 1L); // Verify the CA certificate
+    //curl_easy_setopt(curly, CURLOPT_SSL_VERIFYHOST, 1L); // Verify that the host reached matches the certificate
+    
+    DEBUG_LOG(INFO, __FUNCTION__, "Sending access request...");
     res = curl_easy_perform(curly);
     //res = CURLE_OK;
     

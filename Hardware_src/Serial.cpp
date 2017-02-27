@@ -74,6 +74,14 @@ int Serial::openPort(int baudRate)
 
     // Ignore CD signal (modem control) and enable this port as receiver
     portOptions.c_cflag |= (CLOCAL | CREAD);
+
+    // Set up input options
+    portOptions.c_iflag &= ~ICRNL;
+    portOptions.c_iflag &= ~INLCR;
+    portOptions.c_iflag &= ~IGNCR;
+    portOptions.c_iflag &= ~IUCLC;
+    portOptions.c_iflag &= ~IXON;
+    portOptions.c_iflag &= ~IXOFF;
     
     // Set up the frame information.
     portOptions.c_cflag &= ~PARENB; // No parity checking
