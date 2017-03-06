@@ -44,7 +44,7 @@ CREATE TABLE Registrations(
 	Lock_Id int,
 	ExpirationTime TIMESTAMP,
 	UseCount int,
-	IsNew boolean,
+	IsNew boolean DEFAULT TRUE,
 	PRIMARY KEY (Reg_Id),
 	FOREIGN KEY (Identity_Id) REFERENCES Identities(Identity_Id),
 	FOREIGN KEY (Lock_Id) REFERENCES Locks(Lock_Id)
