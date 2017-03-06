@@ -26,6 +26,8 @@ var notificationHandler = require('./controllers/notificationController.js');
 function serverRequest(req, res) {
 	var parsedRequest = url.parse(req.url, true);
 	
+	res.setHeader('Access-Control-Allow-Origin','*');
+	
 	if(parsedRequest.pathname === '/users'){
 		userHandler.handleRequest(req,res,db_helper);
 	} else if (parsedRequest.pathname === '/identities'){

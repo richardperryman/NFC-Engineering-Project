@@ -1,0 +1,44 @@
+<html>
+
+
+<head>
+	<script type="text/javascript">
+		function login(){
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var obj = {username:username,password:password};
+			
+			$.post({
+				url : "http://sbacs.click/login",
+				data : JSON.stringify(obj),
+				dataType : 'json',
+				success : loginSuccess
+			});
+			
+			console.log('Logging in with: ' + username + ':' + password);
+		}
+		
+		function loginSuccess(data){
+			console.log('Log in response: ' + data.key);
+			var key = data.key;
+		}
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	
+	<title>SBACS Login</title>
+</head>
+<body>
+
+	<div id="login">
+		<form>
+			Username: 
+			<input id="username" type="text"/>
+			<br/>
+			Password: 
+			<input id="password" type="password"/>
+			<br/>
+			<input type="button" value="Login" onclick="login();"/>
+		</form>
+	</div>
+</body>
+</html>
