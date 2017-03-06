@@ -21,6 +21,7 @@ var authenticatorHandler = require('./controllers/authenticatorController.js');
 var lockHandler = require('./controllers/lockController.js');
 var loginHandler = require('./controllers/loginController.js');
 var signupHandler = require('./controllers/signupController.js');
+var notificationHandler = require('./controllers/notificationController.js');
 
 function serverRequest(req, res) {
 	var parsedRequest = url.parse(req.url, true);
@@ -41,6 +42,8 @@ function serverRequest(req, res) {
 		loginHandler.handleRequest(req,res,db_helper);
 	} else if (parsedRequest.pathname === '/signup'){
 		signupHandler.handleRequest(req,res);
+	} else if (parsedRequest.pathname === '/notifications'){
+		notificationHandler.handleRequest(req,res,db_helper);
 	} else {
 		res.writeHead(200);
 		res.write('Generic response');
