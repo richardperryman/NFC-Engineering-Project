@@ -45,6 +45,8 @@
 
 %=================================================================================
 
+% For some reason, these seem to require that you run latex twice?
+
 \prefaceTOC   % to print the Table of Contents
 \prefaceLOF   % to print the List of Figures
 \prefaceLOT   % to print the List of Tables
@@ -54,17 +56,15 @@
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
-      VoIP & Voice over Internet protocol \\
-      MRI & Magnetic resonance imaging \\
+      NFC & Near Field Communication \\
+      HMAC & Keyed-hash message authentication code \\
 \end{tabular}
 
 %=================================================================================
 
 \endpreface
 	
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%   Now you proceed in report style with chapters, sections, etc.
+%=================================================================================
 
 \chapter{Introduction}
 
@@ -78,9 +78,9 @@ Give an introduction to your project.  This might include:
 You should tune this appropriately for what best suits your project.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%=================================================================================
 
-\chapter{Sensor-Based Access Control System}
+\chapter{The Engineering Project}
 
 %=================================================================================
 
@@ -119,151 +119,124 @@ Give the individual contributions of the each team member towards the project.
 Give the individual contributions of the each team member towards writing the
 final report.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%=================================================================================
 
-\chapter{Background Literature Review}
+% Consider adding Node, Android? Maybe others?
+\chapter{Technical Background}
 
 %=================================================================================
 
-\section{A Few \LaTeX\ Examples}
-
-You can reference great written works like this \cite{ABC} or
-others like this \cite{XYZ}.
+\section{NFC}
 
 %=================================================================================
 
-\section {Mathematical Equations}
-Simple equations, like $x^y$ or $x_n = \sqrt{a + b}$ can be typeset right
-in the text line by enclosing them in a pair of single dollar sign symbols.
-Don't forget that if you want a real dollar sign in your text, like \$2000,
-you have to use the \verb+\$+ command.
-
-An example equation is
-\begin{equation} \label{E:myfirst}
-A = B
-\end{equation}
-This was equation \eqref{E:myfirst}.
-
-A more complicated equation should be typeset in {\em displayed math\/} mode,
-like this:
-\[
-z \left( 1 \ +\ \sqrt{\omega_{i+1} + \zeta -\frac{x+1}{\Theta +1} y + 1} 
-\ \right)
-\ \ \ =\ \ \ 1
-\]
-The "equation" environment displays your equations, and automatically
-numbers them consecutively within your document, like this:
-\begin{equation}
-\left[
-{\bf X} + {\rm a} \ \geq\ 
-\underline{\hat a} \sum_i^N \lim_{x \rightarrow k} \delta C
-\right]
-\end{equation}
-
-
-Other environments exist, like the "align" environment.  For instance,
-the {\em unitary} Fourier transform pair is given as
-\begin{align}
-X(j\Omega) &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} x(t) e^{-j\Omega t} dt\\
-x(t) &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} X(j\Omega) e^{j\Omega t} d\Omega
-\end{align}
-
-Here is a matrix:
-$$
-\left[ \begin{matrix} 1 & 2 \\ 3 & 4 \end{matrix} \right]
-$$
-
-
-Possible useful text environments could include the following.
-
-\begin{lemma} 
-This is a lemma.
-\end{lemma}
-
-\begin{theorem} \label{T:my1}
-This is a theorem.
-\end{theorem}
-
-
-\begin{proof}
-This is the proof of Theorem~\ref{T:my1}.
-\end{proof}
-
-
-\begin{definition}
-This is a definition.
-\end{definition}
-
-\begin{notation}
-This is some notation.
-\end{notation}
+\section{Cloud Computing}
 
 %=================================================================================
 
-\section{Example Figure}
+%---------------------------------------------------------------------------------
 
-An example figure grabbed from the Carleton University webpage (\url{http://www.carleton.ca}) is shown in Fig.~\ref{fig-culogo}.
-  \begin{figure}[hbt]
-   \begin{center}
-     \includegraphics{cu_logo.png}
-   \end{center}
-  \caption{Carleton University logo.}
-  \label{fig-culogo}
-  \end{figure}
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{AWS}
 
-%\chapter{Your Implementation}
+%=================================================================================
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Security}
 
-%\chapter{Experimental Results}
+%=================================================================================
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Jess probably should rename these!
+\section{Singe-board computers}
+
+%=================================================================================
+
+%---------------------------------------------------------------------------------
+
+\subsection{Raspberry pi}
+
+%---------------------------------------------------------------------------------
+
+\subsection{Arduino} % ?
+
+%=================================================================================
+
+\chapter{Business Use Cases}
+
+%=================================================================================
+
+\section{Online Order Secure Pickup}
+
+%=================================================================================
+
+\section{Central Mail Package Pickup}
+
+%=================================================================================
+
+\section{Long Term Storage}
+
+%=================================================================================
+
+\section{Service Provider}
+
+%=================================================================================
+
+\chapter{Problem Analysis and System Design}
+
+%=================================================================================
+
+\section{Overall System Analysis}
+
+%=================================================================================
+
+\section{NFC}
+
+%=================================================================================
+
+\section{Android}
+
+%=================================================================================
+
+\section{Hardware}
+
+%=================================================================================
+
+\section{Cloud}
+
+%=================================================================================
+
+% For the physical thing - not sure if this should be here since Michel et al did basically all of this ;)
+\section{Lock Demonstration}
+
+%=================================================================================
+
+\chapter{System Implementation}
+
+%=================================================================================
+
+\section{NFC}
+
+%=================================================================================
+
+\section{Android}
+
+%=================================================================================
+
+\section{Hardware}
+
+%=================================================================================
+
+\section{Cloud}
+
+%=================================================================================
+
+\chapter{Testing and Bug Fixes}
+
+% Not really sure what to go with here
+
+%=================================================================================
 
 \chapter{Conclusions}
 
-I conclude that my project is awesome.  Hey look at this table.
-\begin{table}[htb]
-\begin{center}
-\begin{tabular}{|c|ccc|r|}
-	\hline
-$k$ &  $x_1^k$    &   $x_2^k$  & $x_3^k$   & remarks  \\
-	\hline
-0   & -0.3 & 0.6 & 0.7  &  \\
-1   & 0.47102965 & 0.04883157 & -0.53345964  & *\\
-2   & 0.49988691 & 0.00228830 & -0.52246185 & $s_3$ \\
-3   & 0.49999976 & 0.00005380 & -0.52365600  & \\
-4   & 0.5 & 0.00000307 & -0.52359743  & $\epsilon < 10^{-5}$ \\
-7   & 0.5 & 0 & -0.52359878  & $\epsilon < \xi $ \\
-	\hline
-\end{tabular}
-\caption{This is a great table.}
-\label{greatTable}
-\end{center}
-\end{table}
-
-Isn't Table~\ref{greatTable} really nice?  This next one is nice too.
-
-\begin{table}[htb]
-\begin{center}
-\begin{tabular}{|l||l|l||l|l|}
-\hline
- &\multicolumn{2}{l|}{Singular}&\multicolumn{2}{l|}{Plural}\\
-\cline{2-5}
- &English&\textbf{Gaeilge}&English&\textbf{Gaeilge}\\
-\hline\hline
-1st Person&at me&\textbf{agam}&at us&\textbf{againn}\\
-2nd Person&at you&\textbf{agat}&at you&\textbf{agaibh}\\
-3rd Person&at him&\textbf{aige}&at them&\textbf{acu}\\
- &at her&\textbf{aici}& & \\
-\hline
-\end{tabular}
-\caption{Another nice table.}
-\end{center}
-\end{table}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%=================================================================================
 
 \renewcommand{\bibname}{References}
 \begin{thebibliography}{AAA}
@@ -277,13 +250,19 @@ Isn't Table~\ref{greatTable} really nice?  This next one is nice too.
 %    \bibliography{mybib}
     \addcontentsline{toc}{chapter}{\bibname}
     
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Add appendices now.
+%=================================================================================
+
 \appendix
+
+%=================================================================================
 
 \chapter{Extra Simulation Results}
 
+%=================================================================================
+
 \chapter{Review of Linear Algebra}
+
+%=================================================================================
 
 \end{document}
