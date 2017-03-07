@@ -56,10 +56,12 @@
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
+	AID & Application IDentifier \\
 	APDU & Application Protocol Data Unit \\
 	API & Application Programming Interface \\
-	NFC & Near Field Communication \\
 	HMAC & Keyed-hash message authentication code \\
+	MVC & Model-View-Controller \\
+	NFC & Near Field Communication \\
 \end{tabular}
 
 %=================================================================================
@@ -227,7 +229,13 @@ fairly large in the interest of security, this was not feasible given the restri
 Further, active communications are easier to eavesdrop on, as discussed in the background section. We decided that these
 costs outweighed the simplicity of the Beam API, so passive communications were chosen for the implementation.
 
-% Discuss AID here? or in implementation?
+% Discuss AID here? or in implementation? Here for now I guess
+Since more than one application could potentially want to handle an NFC message, the message protocol contains a field
+called the Application IDentifier, or AID []. These AIDs are just large numbers which identify which application should
+handle the associated message. The Android operating system is responsible for delivering the APDUs to the
+appropriate application's service []. Reserving a particular AID costs money, so we decided that the probability of a
+collision ocurring when taking a public AID would be an acceptable cost for the purpose of our demonstrative
+implementation.
 
 %---------------------------------------------------------------------------------
 
@@ -252,6 +260,66 @@ that would be sent, the protocol still works, as the application will then respo
 %=================================================================================
 
 \section{Android}
+
+The Android application's goal was to provide the end users with an easy way of interacting with the SBACS system.
+Therefore the application was designed to be as simple as possible while still maintaining flexibility when dealing with
+the cloud server as well as the many potential hardware devices.
+
+%---------------------------------------------------------------------------------
+
+\subsection{User Interface}
+
+The natural decision for designing the basic workings of the application was to use the Model-View-Controller (MVC) 
+design pattern. This pattern separates the underlying data (model) from the display that the user sees (view) as well as
+the components that the user interacts with (controller). Android provides APIs to support MVC. Model objects can be
+simple objects, but view objects can subclass the View class or its more specific subclasses, and the controller
+objects can subclass the Adapter class or its subclasses.
+
+Android applications themselves should follow the patterns set out by the standards. Activity classes represent the
+pages that contain the various views and controllers that users can interact with. We decided on a design where the user
+first encouters a login Activity, which prompts them to either sign up or log in. Once the user has logged in, we
+provide a hub Activity which leads to the various other Activities in the application. These other Activities show the
+various data related to the user, such as their authenticators and identities.
+
+Communication between Activities is handled by a class provided by Android called an Intent. Intent objects contain
+information about the nature of the request to begin the new Activity. In this way, information such as the user's
+identification number could be sent from the login Activity to the hub Activity, which would allow the application to
+correctly load the information from that user when displaying the data Activities.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Notifications}
+
+The design for the notifications that would inform end users of information such as their newly available registration
+with a particular lock was based partly on decreasing load on the server. Having the server maintain a large amount of
+session information as well as spending time and memory on the timers to be able to update the user of these changes
+was thought to be too great a cost. For this reason, it seemed simpler and more effective to have the application poll
+the server at a particular access point for new information.
+
+This polling was implemented simply in the application using a service which runs in the background of the Android
+device. This service regularly hits the server at a particular endpoint designed for handling these notifications. Since
+many users may be using the application at once, it was important to consider the performance of the endpoint's code.
+The endpoint returns information valuable to the application for display in the notification. The notifications make use
+of Android notification's ability to launch an Acticity with an Intent to take the user to the appropriate Activity
+associated with the notification.
+
+%---------------------------------------------------------------------------------
+
+\subsection{NFC Handler}
+
+% Provide ref to section?
+As mentioned earlier, the NFC communication method that we decided on used host-based card emulation. Android provides
+and API to accomplish these communications, through the HostApduService class []. This class provides a framework for
+creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
+communications, while also providing overrideable methods to determine what data should be sent based on the incoming
+message.
+
+Services also take an Intent object to determine their purpose. This feature was used to have the login Activity start
+the service with the correct key information for a user's NFC authenticator. This way, the data sent could be overridden
+with the user's secret key value. Since passive NFC communications are difficult to eavesdrop on, this was thought to be
+a safe method of conveying the secret key to the lock without requiring too much data to be sent over the slow NFC
+physical links. This passing of information of course was also configured to follow the protocol designed above for NFC
+communications.
 
 %=================================================================================
 
