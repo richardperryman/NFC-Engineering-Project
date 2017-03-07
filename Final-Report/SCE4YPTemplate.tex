@@ -56,8 +56,10 @@
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
-      NFC & Near Field Communication \\
-      HMAC & Keyed-hash message authentication code \\
+	APDU & Application Protocol Data Unit \\
+	API & Application Programming Interface \\
+	NFC & Near Field Communication \\
+	HMAC & Keyed-hash message authentication code \\
 \end{tabular}
 
 %=================================================================================
@@ -188,6 +190,64 @@ final report.
 %=================================================================================
 
 \section{NFC}
+
+Determining how NFC communication should take place required analysis of two hardware systems: NFC card readers, as well
+as mobile devices. The most desirable protocol would be able to handle the widest variety of available hardwares for
+the two devices. The performance considerations between modes was fairly minimal, so preference was placed on the
+portability of the solution.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Card Readers}
+
+% Todo: sources
+Since NFC cards are primarily designed for NFC communications, there were few restrictions that stemmed from potential
+choices in card reader. Since NFC communications are specified by the ISO, most cards support enough protocols that any
+decision on our part would be very likely to be supported by any card that would be desirable for any other reason.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Mobile Devices}
+
+The two most popular operating systems for mobile devices are iOS and Android []. Since iOS devices have NFC disabled
+for everything except Apple Pay[], the only option that remained was Android. Apple devices would represent a large
+part of the potential market, so alternatives to NFC would have to be considered.
+
+Among Android devices, there exist devices which have hardware support for NFC communications, and those which rely on
+host-based card emulation. Devices with hardware support have a component called a Secure Element which performs all of
+the communication with the external NFC terminal. Later, applications can query this element to determine the status of
+the transaction, as well as other data. Devices which use host-based card emulation use a software implementation of
+secure elements. Since host-based card emulation is done through software, it will run on all Android devices running
+version 4.4 or greater[], which represents over 99\% of all devices currently in use.
+
+% Find out which protocol we actually use!
+Android offers an API called Beam which is the only way Anndroid devices can use NFC in active mode []. Beam,
+however, does not support sending more than one message between devices. Since the information we are sending can be
+fairly large in the interest of security, this was not feasible given the restrictions of the NFC protocols we used.
+Further, active communications are easier to eavesdrop on, as discussed in the background section. We decided that these
+costs outweighed the simplicity of the Beam API, so passive communications were chosen for the implementation.
+
+% Discuss AID here? or in implementation?
+
+%---------------------------------------------------------------------------------
+
+\subsection{Protocol}
+
+Since our NFC communications may require more data than can be fit within an Application Protocol Data Units (APDUs), we
+required a protocol which would handle segmenting and recombining the message. APDUs are defined in ISO 7816-4 [] and are
+the units used by ISO 14443-4 [], which describes the transmission protocol used by NFC devices. They are restricted to
+256 bytes, including headers.
+
+% Todo, some fact checking
+To work around this, the hardware device connected to the shield maintains a buffer. Under ISO 14443-4, messages can be
+reliably transferred, so managing this buffer is the main consideration of our protocol. The hardware determines the
+maximum amount of data that can be stored in one APDU, and fills in this value into the length field of the APDU that it
+sends to the Android device. Then, the Android application responds with the minimum of that much data,  and all of the
+remaining data that it has to send. Once the hardware receives an amonut of data less than the potential maximum, it
+deactivates the connection. In the event that the data from the Android application fits exactly into the last message
+that would be sent, the protocol still works, as the application will then respond with zero data bytes.
+
+% Todo: MSC / FSMs?
 
 %=================================================================================
 
