@@ -4,8 +4,11 @@
 % Example of use:
 \documentclass[12pt]{report}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{SCE4YPTemplate}
 \usepackage{graphicx}
+%Forces figures to appear within a section, if more specific placement is needed go to:
+% http://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with
+\usepackage[section]{placeins}
+\usepackage{SCE4YPTemplate}
 \usepackage{url}
 
     
@@ -167,9 +170,49 @@ final report.
 
 \chapter{Business Use Cases}
 
+Design for our system began with considering use cases that could be handled by our system. This way, we could be sure
+to only design features that would prove useful to some potential users, while also making sure that we don't miss any
+features that are necessary. These use cases would also provide benefit to demonstrating our system, in that stepping
+through a sample use case would show the value of the system to people without them requiring a strong technical
+background.
+
+We primarily focused on the four use cases that follow. These were outlined in our initial proposal and have remained
+largely unchanged since then. They draw inspiration from situations that we either encountered ourselves or found
+through common knowledge and research. Online shopping seemed like a ripe market for technology like the SBACS, and
+mail delivery seemed that it followed a fairly similar system. Long term storage facilities also seemed as though they
+would benefit from abstracting away the idea of keys. Once we had considered these use cases, we found that several of
+the problems that they shared could be solved by a company which provided SBACS as a service.
+
 %=================================================================================
 
 \section{Online Order Secure Pickup}
+
+With online shopping becoming more popular [], the hassle of being physically present to shop in stores 
+could be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
+using a SBACS-secured storage container. After a customer's order has been confirmed by the store to be packed 
+and ready for pick-up, a store employee could create a link between their customer and the storage container that holds
+that user's purchases. When the customer arrives at the store to pick up their items, 
+they can gain access to the storage container assigned to them by using the authentication methods that they had
+previously provided as the components of their identity. Once the customer has provided these authentication units
+correctly, the link between their identity and the storage container is broken. This way, the user won't be able to
+inappropriately access the storage container again, and a new link could be made for a different customer.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
+	\caption{Online Order Secure Pickup Use Case Diagram}
+	\label{fig:online-order-secure-pickup-use-case}
+\end{figure}
+
+A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
+fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
+break via brute force than a 6-digit PIN []. In addition, with the entire process of shopping being 
+expedited, customers will spend less time in stores and parking lots, leading to less congestion due to vehicle 
+traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
+they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. Customers
+with impairments can perform their shopping online using their accessibility software, such as text-to-speech, instead 
+of calling the store to request that an employee retrieve their goods. When the customer receives confirmation of their 
+order and authentication tokens, they can access their assigned SBACS-secured locker in the store themselves, using 
+their usual aids instead of occupying a store employee's time.
 
 %=================================================================================
 
