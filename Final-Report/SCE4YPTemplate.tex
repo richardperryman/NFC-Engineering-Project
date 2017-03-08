@@ -189,6 +189,25 @@ final report.
 
 \section{Overall System Analysis}
 
+The requirements of our system from the use cases described above lead us to a simple outline for the entire system.
+The main component of the system would be the cloud server, which would store information regarding users, locks, and
+the relationships between them. The lock hardware would need to be able to securely accept data from the user, and
+securely send that data to the server for verification. Since handling electronic security can be difficult to do
+manually, having an application that handles much of the busy work would greatly help users interact with the system.
+
+% Not sure if this belongs here
+One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
+reason, the idea of a key was split into two parts: an authenticator, and an identity. Users would be able to create
+many authenticators, which were things like a password, or a PIN. These then could be combined into an identity, which
+would be used to open a particular lock. This allowed making identies that reuse the same authenticator, and reusing
+identities for different locks.
+
+Another goal of the system was to provide additional behaviour on top of just being able to unlock particular locks.
+This extra behaviour was captured in the notion of a registration, which ties one lock to one identity. Through the
+registration, we were able to implement notifications to the user as well as streaming of the lock's contents.
+
+% Add picture of database stuff?
+
 %=================================================================================
 
 \section{NFC}
