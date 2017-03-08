@@ -1,5 +1,6 @@
 <html>
 <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script type="text/javascript">
 		var key;
 		var userId;
@@ -17,7 +18,7 @@
 			var obj = {username:username,password:password};
 			
 			$.post({
-				url : "http://sbacs.click/login",
+				url : '/login',
 				data : JSON.stringify(obj),
 				dataType : 'json',
 				success : loginSuccess
@@ -43,7 +44,7 @@
 			// Make request to access/management endpoint
 			var query = '?user_id=' + userId;
 			$.get({
-				url : ("http://sbacs.click/access/management" + query),
+				url : ('/access/management' + query),
 				dataType : 'json',
 				success : getRegSuccess,
 				headers : {'hmac-user':'10outta13'}
@@ -62,12 +63,11 @@
 			request.setRequestHeader('hmac-user','10outta13');
 		}
 	</script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	
 	<title>SBACS Login</title>
 </head>
 <body>
-	
+	<!-- Login information. On get registrations, hide this part -->
 	<div id="login">
 		<form>
 			Username: 
@@ -79,6 +79,14 @@
 			<input type="button" value="Login" onclick="login();"/>
 			<input type="button" value="Get Registrations" onclick="getRegistrations()"/>
 		</form>
+	</div>
+	
+	<!-- Registrations information. Onstart, hide this part 
+		Show it after selecting get registration-->
+	<div id="registrations" hidden="true">
+		<table>
+			<tr><th>Lock Id</th><th>Identity Id</th></tr>
+		</table>
 	</div>
 </body>
 </html>

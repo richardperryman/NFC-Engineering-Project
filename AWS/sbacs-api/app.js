@@ -26,8 +26,6 @@ var notificationHandler = require('./controllers/notificationController.js');
 function serverRequest(req, res) {
 	var parsedRequest = url.parse(req.url, true);
 	
-	res.setHeader('Access-Control-Allow-Origin','*');
-	
 	if(parsedRequest.pathname === '/users'){
 		userHandler.handleRequest(req,res,db_helper);
 	} else if (parsedRequest.pathname === '/identities'){
@@ -46,6 +44,12 @@ function serverRequest(req, res) {
 		signupHandler.handleRequest(req,res);
 	} else if (parsedRequest.pathname === '/notifications'){
 		notificationHandler.handleRequest(req,res,db_helper);
+	} else if (parsedRequest.pathname === '/'){
+		// Serve index.html
+		var page = fs.readFileSync('./static/index.html');
+		res.writeHead(200);
+		res.write(page);
+		res.end();
 	} else {
 		res.writeHead(200);
 		res.write('Generic response');
