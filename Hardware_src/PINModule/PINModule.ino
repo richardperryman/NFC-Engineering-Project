@@ -26,7 +26,7 @@ class PINModule : public AuthenticationModule {
     
   public:
     PINModule()
-    : AuthenticationModule("PIN", 3)
+    : AuthenticationModule("PIN", 4)
     {
       keypad = new Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
     }
@@ -71,7 +71,6 @@ bool error = false;
 
 void setup() {
   error = pinModule.startup();
-  Serial.println("Hello world!");
 }
 
 void loop() {

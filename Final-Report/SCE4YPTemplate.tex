@@ -4,14 +4,29 @@
 % Example of use:
 \documentclass[12pt]{report}
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage[nottoc,numbib]{tocbibind}
 \usepackage{graphicx}
 %Forces figures to appear within a section, if more specific placement is needed go to:
 % http://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with
 \usepackage[section]{placeins}
 \usepackage{SCE4YPTemplate}
+\usepackage{graphicx}
 \usepackage{url}
+\usepackage[
+	backend=bibtex,
+	natbib=true,
+	style=numeric,
+	sorting=none
+]{biblatex}
+\usepackage[scientific-notation=true, binary-units=true]{siunitx}
+\sisetup{per-mode=fraction}%
+\sisetup{scientific-notation=false}%
 
-    
+\makeatletter
+\def\blx@maxline{77}
+\makeatother
+
+\bibliography{report}
 
 \begin{document}
 \title{SYSC4907 Project: \\ Sensor-Based Access Control System}
@@ -45,6 +60,10 @@
 \prefacesection{Acknowledgements}
 	I would like to thank my supervisor, anyone who paid me money, gave me
 	equipment, etc.
+    % Supervisors
+    % Jennifer Wolters, for giving us some free money
+    % Nagui Mikhail, for soldering stuff for Jess
+    % Michel and Normand Leroux, for their carpentry work on the demo unit
 
 %=================================================================================
 
@@ -95,7 +114,20 @@ You should tune this appropriately for what best suits your project.
 
 \section{Health and Safety}
 
-Using the Health and Safety Guide posted on the course webpage, students will use this section to explain how they addressed the issues of safety and health in the system that they built for their project.
+The main health and safety concern for this project was ensuring the safe preparation of circuits for the hardware 
+component. The change of bodily harm due to electric shock was possible, as the highest-risk component of the project 
+drew $\SI{350}{\milli\ampere}$ of current at 12V direct current. Since $\SI{350}{\milli\ampere}$ sits between the 
+$\SI{60}{\milli\ampere}$ threshold for severe pain, and the $\SI{500}{\milli\ampere}$ threshold for possible heart
+fibrillation~\autocite{CURRENTDANGER}, the following standards were enforced to mitigate safety risks when handling the 
+electrical components:
+\begin{itemize}
+    \item The workspace and components were kept dry at all times
+    \item Participants ensured they were sufficiently grounded before handling components
+    \item Ground pins were connected first, to ensure any charged components would discharge
+    \item Components' wiring was not altered while the system was powered on
+\end{itemize}
+% J - ask if health and safety for construction of the demo unit is necessary here
+% (it probably is)
 
 %=================================================================================
 
@@ -153,18 +185,22 @@ final report.
 
 %=================================================================================
 
-% Jess probably should rename these!
-\section{Singe-board computers}
-
-%=================================================================================
+\section{Single-Board Computers and Microcontrollers}
 
 %---------------------------------------------------------------------------------
 
-\subsection{Raspberry pi}
+\subsection{Raspberry Pi}
+
+The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
+design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
+level. However, its accessible price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
+used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over ten million 
+units [CITATION], with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
+% One more paragraph here
 
 %---------------------------------------------------------------------------------
 
-\subsection{Arduino} % ?
+\subsection{Arduino}
 
 %=================================================================================
 
@@ -389,6 +425,50 @@ communications.
 
 \section{Hardware}
 
+%---------------------------------------------------------------------------------
+
+\subsection{Core Circuit Design}
+
+Design of the system core began by laying out the requirements for the core:
+\begin{itemize}
+    \item There should be LEDs to indicate the status of the system, and to notify the user of the results of their 
+    access attempt
+    \item There must be an electrically-powered lock, and a means to digitally alter its status
+    \item The core must run a process where all authentication data will be passed, and this process must communicate 
+    to the server over the internet
+    \item The core must have USB ports, to support having modules 
+\end{itemize}
+
+Talk about solenoid kickback current here - some math would be cool
+
+INSERT FIGURE OF PI CIRCUIT HERE
+
+%---------------------------------------------------------------------------------
+
+\subsection{Authentication Modules}
+
+In the planning stages of the project, it was planned that the authentication modules would communicate with a central 
+single-board microcontroller, such as a Arduino, which would be deemed a "communication board." This communication board
+would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
+removing that overhead from the central computer. Once all of the authentication data was gathered, the board would send 
+the data over a USB connection to the Rasperry Pi. However, this design was tossed in favor of connecting each module to  
+the Raspberry Pi directly, for multiple reasons:
+\begin{enumerate}
+    \item The Arduino, as well as most other microcontrollers in the hobby market, can only communicate over I2C;
+    \item There is only one pair of pins reserved for I2C on most microcontrollers, meaning there can only be one 
+    "slave" for each "master" communication board (refer to pinout here);
+    \item Connecting all of the authentication modules over USB allowed for more expandability than the "communication
+    board" would have.
+\end{enumerate}
+
+Maybe add a figure of the Arduino pinout here?
+
+Thus, the idea of using I2C communcation was scrapped, in favour of simply connecting 
+
+\subsubsection{NFC Module}
+
+PN532, words
+
 %=================================================================================
 
 \section{Cloud}
@@ -461,33 +541,17 @@ security breach. In addition, the number of iterations and the resulting length 
 
 \chapter{Conclusions}
 
-%=================================================================================
-
-\renewcommand{\bibname}{References}
-\begin{thebibliography}{AAA}
-\bibitem{ABC} T. Me and R. You, "A great result," {\em Wonderful Journal}, vol. 5, no. 9,
-	      pp. 1--11, 1998.
-\bibitem{XYZ} J. Him and K. Her, "An even better result that you won't believe," {\em Best Journal Ever}, vol. 4, no. 8, pp. 55--66, 2002.
-\end{thebibliography}
-% If you have your general bibliography in a separate file mybib
-% and you wish to use the plain style (see BIBTeX)
-%    \bibliographystyle{cacm}
-%    \bibliography{mybib}
-    \addcontentsline{toc}{chapter}{\bibname}
-    
-
-%=================================================================================
+%=================================================================================   
 
 \appendix
 
 %=================================================================================
 
-\chapter{Extra Simulation Results}
+\chapter{Sample Appendix}
 
 %=================================================================================
 
-\chapter{Review of Linear Algebra}
-
-%=================================================================================
+\addcontentsline{toc}{chapter}{Bibliography} % Need this so it appears in the ToC
+\printbibliography
 
 \end{document}
