@@ -500,6 +500,129 @@ This simplified the development of communication modules considerably.
 
 \section{Cloud}
 
+\subsection{Amazon Web Servies}
+
+% Double check my reference
+
+Amazon Web Services (AWS) provides a platform to host various cloud services,
+including web servers and data storage options~\autocite{AMAZONWEBSERVICES}. In this
+project, Amazon Web Services was chosen to host the web server and the database. This
+decision was made because the platform is versatile and easy to use, providing a great level of
+control where needed but also handling the complicated configuration details automatically.
+AWS also provides these services for free within a trial period of one year, making it an even
+more attractive choice for a project with limited lifetime. To host the web server, the choice of
+programming language and technology, as well as the choice of operating system to run the
+server, are left to the user. Similarly, the database technology is a choice of the user, making
+AWS a very flexible platform to work with. Amazon Web Services also provides some other
+very helpful features, such as domain name services, SSL certificate management, and various
+security configuration details to protect the web server and our data. We chose to use AWS
+because of the variety of services that were offered that provide everything we needed to
+effectively host our web server for this project.
+
+\subsection{Representational State Transer}
+
+% Double check my reference
+% Reference the Front Controller section (once written)
+
+The Representational State Transfer (REST) architectural style ~\autocite{RESTARCHSTYLE} was chosen to be used
+for our web server. The main principle of REST that we adhered to is the idea of a stateless
+server in the client-server relationship. This means that the server does not store any session
+information; enough session information must be passed from the client on each request to
+identify the necessary information for the request. The benefit of this for the server is that less
+information is stored on the server, so less time will be spent contacting the database to
+determine session information. Another feature of REST is the idea of a uniform interface. This
+helps to keep the system simple by relying on identifiers to specify which resource or service is
+needed at the time. The path and the query string in the URL are examples of identifiers that
+specify which endpoint or service is being requested. The web server for this project has this
+uniform interface as all HTTP requests go to a single Front Controller, which
+then determines based on the identifiers the appropriate handler of the request.
+
+\subsection{JavaScript Object Notation}
+
+% Double check my reference (page 7, section 1)
+
+In order to send information between the client and the server, a standard format for
+representing the data is necessary. We have chosen to use JavaScript Object Notation (JSON) to
+serve this purpose. “JSON is a lightweight, text-based, language-independent data interchange
+format” ~\autocite{JSONREF}. JSON provides an easy way of transferring data that is flexible and has support
+from many programming languages, making it a very good choice for our project, where
+different components will be using different technologies and built in different languages. It is
+also very lightweight in terms of its grammar, having very few elements that allow for many
+different types of data, keeping the parsing easy which can help to improve response time.
+
+\subsection{Node.js}
+
+% Properly reference the AWS section
+
+As mentioned above, Amazon Web Services allows for web
+servers written in many languages, leaving the choice of language to the user. In our case we
+decided to use Node.js to write our server code. This language was chosen because it is able to
+run on multiple operating systems and does not require many tools for effective development.
+The ability to run on multiple operating systems is very useful to test our code in different ways,
+and leaves us with flexibility of which operating system to host the server with. In the early
+stages of the project, we considered using C\# with the .NET framework to build the web server,
+as some members of the group had experience working with this particular technology in the past
+for a similar purpose. After some discussion, it was decided that in order to effectively develop
+the application in C\# tools would be needed that are not available on the computers at school,
+which would limit our ability to work on the server. This is a major reason that we decided on
+Node.js, since it can be very effectively developed using only simple text editors, then can be
+executed quickly, without needing to install any build tools. This portability made it very easy to
+work on the code in the same development environment whether we were at school or at home.
+
+\subsection{MySQL}
+
+To store data that is needed by our system, we decided to use a relational database. All
+members of the group have taken at least one course that has talked about relational databases, so
+we all had at least some basic understanding of this type of database. MySQL was chosen
+because it was known to members of the group, making it easy for everyone to make queries to
+the database whenever it was needed.
+
+\subsection{Relational Database Theory}
+
+% explanation of relational theory, third normal form
+% proof of third normal form for our db here
+We follow third normal form in our database.
+
+\subsection{Authentication for Server API}
+
+% Also include SD for flow of this in detail
+% Mention the hashing algorithm used, maybe explain it
+
+Many requests to the server allow users to read, modify, and delete data, so we needed a
+way to ensure that users were identified and authenticated to allow certain requests to be
+performed. We used Hashed Message Authentication Codes (HMAC) to accomplish this goal.
+The user is able to login using their username and password, and upon successful login, they are
+provided with a key and user id. The key is then used to hash the body of subsequent messages. 
+The client must also send the user id to identify who is trying to
+make the request. When the server receives the request, it will hash the body of the message as
+well using the key that it has stored for that user. If the hashed body that is provided is the same
+as what the server gets from hashing the body, then this means that the user is authenticated. The
+provided user id is used to determine which key the server will use to hash the message, and is
+also used to determine whether or not the user is authorized to make the request they are
+attempting to make.
+
+\subsection{Storing Authenticator Data Securely}
+
+% Get reference about salting, and provide more explanation of what it is
+
+In order to protect user passwords from attacks, the database must not store the
+passwords in plain text. If the passwords are in plain text, an attacker could simply read the data
+and know the user’s password. To prevent this problem, we use salting, which allows us to store a 
+hashed version of the data, along with a salt that is
+used to generate the hashed value. To compare a given password by the user to the value that is
+stored, the server must retrieve the salt and use it to hash the given password. The hashed value
+in the database should then match the hashed given password, meaning that the user has provided
+the same password. With this technique, the data is never stored in plain text so it is less
+vulnerable to many types of attacks.
+
+\subsection{Sending Data Securely Over the Network}
+
+% Need reference and explanation of why HTTP isn't secure
+% Then reference for why HTTPS is secure
+
+HTTP is not a secure protocol. HTTPS is secure.
+
+
 %=================================================================================
 
 % For the physical thing - not sure if this should be here since Michel et al did basically all of this ;)
