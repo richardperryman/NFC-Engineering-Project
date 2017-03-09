@@ -3,6 +3,9 @@
 % modification of suthesis style of Stanford University
 % Example of use:
 \documentclass[12pt]{report}
+\usepackage{setspace}
+\doublespacing
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{graphicx}
@@ -10,7 +13,6 @@
 % http://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with
 \usepackage[section]{placeins}
 \usepackage{SCE4YPTemplate}
-\usepackage{graphicx}
 \usepackage{url}
 \usepackage[
 	backend=bibtex,
@@ -70,8 +72,8 @@
 % For some reason, these seem to require that you run latex twice?
 
 \prefaceTOC   % to print the Table of Contents
-\prefaceLOF   % to print the List of Figures
-\prefaceLOT   % to print the List of Tables
+\listoffigures   % to print the List of Figures
+\listoftables   % to print the List of Tables
 
 %=================================================================================
 		            
@@ -82,6 +84,7 @@
 	APDU & Application Protocol Data Unit \\
 	API & Application Programming Interface \\
 	HMAC & Keyed-Hash Message Authentication Code \\
+    IO & Input/Output \\
 	JSON & JavaScript Object Notation \\
 	MVC & Model-View-Controller \\
 	NFC & Near Field Communication \\
@@ -116,10 +119,9 @@ You should tune this appropriately for what best suits your project.
 
 The main health and safety concern for this project was ensuring the safe preparation of circuits for the hardware 
 component. The change of bodily harm due to electric shock was possible, as the highest-risk component of the project 
-drew $\SI{350}{\milli\ampere}$ of current at 12V direct current. Since $\SI{350}{\milli\ampere}$ sits between the 
-$\SI{60}{\milli\ampere}$ threshold for severe pain, and the $\SI{500}{\milli\ampere}$ threshold for possible heart
-fibrillation~\autocite{CURRENTDANGER}, the following standards were enforced to mitigate safety risks when handling the 
-electrical components:
+drew $\SI{650}{\milli\ampere}$ of current at 12V direct current. Since $\SI{650}{\milli\ampere}$ is above the 
+$\SI{500}{\milli\ampere}$ threshold for possible heart fibrillation~\autocite{CURRENTDANGER}, the following standards
+were enforced to mitigate safety risks when handling the electrical components:
 \begin{itemize}
     \item The workspace and components were kept dry at all times
     \item Participants ensured they were sufficiently grounded before handling components
@@ -187,6 +189,8 @@ final report.
 
 \section{Single-Board Computers and Microcontrollers}
 
+Insert blurb about what is a single-board thingamabob
+
 %---------------------------------------------------------------------------------
 
 \subsection{Raspberry Pi}
@@ -201,6 +205,8 @@ units [CITATION], with models ranging from the 5 USD Raspberry Pi Zero, to the 3
 %---------------------------------------------------------------------------------
 
 \subsection{Arduino}
+
+
 
 %=================================================================================
 
@@ -423,11 +429,13 @@ communications.
 
 %=================================================================================
 
-\section{Hardware}
+\section{Lock Hardware}
+
+Based 
 
 %---------------------------------------------------------------------------------
 
-\subsection{Core Circuit Design}
+\subsection{Core Circuit}
 
 Design of the system core began by laying out the requirements for the core:
 \begin{itemize}
@@ -436,38 +444,57 @@ Design of the system core began by laying out the requirements for the core:
     \item There must be an electrically-powered lock, and a means to digitally alter its status
     \item The core must run a process where all authentication data will be passed, and this process must communicate 
     to the server over the internet
-    \item The core must have USB ports, to support having modules 
+    \item The core must have USB ports, to support having modules send authentication data to the core
 \end{itemize}
 
-Talk about solenoid kickback current here - some math would be cool
+Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout.
 
-INSERT FIGURE OF PI CIRCUIT HERE
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/hardware_block}
+	\caption{Hardware Block Diagram}
+	\label{fig:hardware-block}
+\end{figure}
+
+%---------------------------------------------------------------------------------
+
+\subsection{Core Software}
+
+
 
 %---------------------------------------------------------------------------------
 
 \subsection{Authentication Modules}
 
-In the planning stages of the project, it was planned that the authentication modules would communicate with a central 
+To meet the requirement of having a modular framework that supports multiple authentication methods, modules that 
+perform the gathering of authentication data can be attached to the system, to increase the authentication options. As 
+a result, multiple design patterns emerged immediately in the design of the software for the modules. Interfacing with 
+the system core woud be the same across all authentication modules, so only the method used to gather authentication 
+data is unique to each module. Two design patterns can be extracted from this statement: an Adapter pattern, where the 
+Adaptee provides the interfaces necessary for communicating with the core, and a Template method for handling the 
+authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
+necessary for the means of authentication.
+
+Talk about actors-boundaries-controllers-entities here
+
+In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
 single-board microcontroller, such as a Arduino, which would be deemed a "communication board." This communication board
 would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
 removing that overhead from the central computer. Once all of the authentication data was gathered, the board would send 
-the data over a USB connection to the Rasperry Pi. However, this design was tossed in favor of connecting each module to  
-the Raspberry Pi directly, for multiple reasons:
+the data over a USB connection to the central computer. However, this design was tossed, for multiple reasons:
 \begin{enumerate}
-    \item The Arduino, as well as most other microcontrollers in the hobby market, can only communicate over I2C;
+    \item The Arduino, as well as most other microcontrollers in the hobby market, can only communicate with another 
+    Arduino over I2C;
     \item There is only one pair of pins reserved for I2C on most microcontrollers, meaning there can only be one 
     "slave" for each "master" communication board (refer to pinout here);
-    \item Connecting all of the authentication modules over USB allowed for more expandability than the "communication
+    \item Connecting all of the authentication modules over USB allowed for far more modularity than the "communication
     board" would have.
 \end{enumerate}
 
 Maybe add a figure of the Arduino pinout here?
 
-Thus, the idea of using I2C communcation was scrapped, in favour of simply connecting 
+Thus, the idea of using I2C communcation was scrapped, in favour of simply connecting each module to the core over USB. 
+This simplified the development of communication modules considerably.
 
-\subsubsection{NFC Module}
-
-PN532, words
 
 %=================================================================================
 
@@ -477,6 +504,8 @@ PN532, words
 
 % For the physical thing - not sure if this should be here since Michel et al did basically all of this ;)
 \section{Lock Demonstration}
+
+This chapter will be about the design and construction of the demo unit used at the poster fair
 
 %=================================================================================
 
@@ -526,6 +555,79 @@ security breach. In addition, the number of iterations and the resulting length 
 %=================================================================================
 
 \section{Hardware}
+
+The hardware portion of the project consisted of two major portions: the 
+
+Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. While 
+the single-board microcontrollers considered had optional boards which could add Wifi or Ethernet capabilities, they 
+would not have been a sufficient solution to run the core process, as they were lacking a sufficient number of USB 
+ports, and the overhead for implementing the core would have been too high. Because the microcontrollers do not run an 
+operating system, 
+
+A Raspberry Pi was ultimately selected as the computer to run the core process. The Pi 3 Model B has four USB ports, 
+built-in Wifi capability, and forty pins for general-purpose IO (GPIO). These hardware features made the Raspberry Pi the best 
+out-of-the-box solution to run the core process.
+
+\subsection{Lock Control Circuit}
+
+The next design problem to consider was the means to control the status of the electric lock. The simplest locks 
+available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
+to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the power to the 
+lock, with the switching being driven by one of the Raspberry Pi's GPIO pins. There were two options considered for 
+this:
+
+1- Transistor/diode circuit
+
+This circuit would use a TIP120 Darlington transistor, coupled with a 1N4004 flyback diode, to drive the lock. The circuit is 
+demonstrated in figure NEXT.
+
+Figure of circuit
+
+Some heat-related math for the transistor:
+The power law for a single voltage drop is $ P = IV = I^2R $. A transistor can be treated as two voltage drops, one 
+from base to emitter ($ V_{BE} $), and another from collector to emitter ($ V_{CE} $), resulting in the power dissipated
+by a transistor being given by:
+$$ P = V_{BE}I_B + V_{CE}I_C $$
+Since $ I_B \ll I_C $ when the lock circuit is active, the $ V_{BE}I_B $ term is negligible in this case, so the power
+dissipated by the transistor is given by:
+$$ P = V_{CE}I_C $$
+At steady state, the voltage drop from the solenoid is negligible, as $ \frac{di}{dt} $ is zero, resulting in $ V = 
+L\frac{di}{dt} = 0 $. This means that the voltage drop across the transistor, from emitter to collector, is 12V. Given
+that the solenoid draws $\SI{650}{\milli\ampere}$ of current, the power across the transistor is:
+$$ P = \SI{12}{\volt} \times \SI{650}{\milli\ampere} $$
+$$ P = \SI{7.8}{\watt} $$
+This power dissipation is quite significant in comparison to, for example, the resistors in the LED circuit, which at 
+most will dissipate about $\SI{50}{\milli\watt}$. (n.b. should I put the math behind this in an appendix?) A heat 
+dissipation mechanism would be necessary to ensure that the system does not heat up dangerously while in operation, 
+which may not be practical in a real-life scenario. Secure systems should be completely enclosed, as a fan would 
+introduce a point of physical access to the system.
+
+Insert some more math and talk about the flyback diode to deal with the voltage spike - take the lock to a DOE lab at 
+some point and measure the voltage spike when 12V DC is applied, to see what the minimum RB breakdown voltage should be
+
+2- Relay circuit
+
+Internally, a relay is very similar to the transistor/diode circuit, with a mechanical switch added. The relay itself 
+has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC} $), ground (GND), and an input signal 
+(IN). The outputs are a normally-closed terminal (NC), a common terminal (CO), and a normally-open terminal (NO). The 
+circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/relay_circuit}
+	\caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
+	\label{fig:relay-circuit-diagram}
+\end{figure}
+
+What separates the relay from a transistor/diode circuit is that it uses a solenoid internally to flip a mechanical 
+switch. When the IN signal is low (0 volts), the switch short-circuits the "normally closed" connection, allowing
+current to flow from the NC terminal to the CO terminal. The NO terminal is open-circuited, so no current will flow.
+When the IN signal is high (5 volts), the solenoid inside the relay generates a magnetic field, which causes the switch 
+to instead short-circuit the "normally open" connection, allowing current to flow from the NO terminal to the CO 
+terminal, while the NC terminal is open-circuited. 
+
+\subsection{Lock Control Software}
+
+\subsection{Authentication Modules}
 
 %=================================================================================
 
