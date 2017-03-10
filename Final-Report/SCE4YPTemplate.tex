@@ -7,12 +7,12 @@
 \doublespacing
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage[nottoc,numbib]{tocbibind}
 \usepackage{graphicx}
 %Forces figures to appear within a section, if more specific placement is needed go to:
 % http://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with
 \usepackage[section]{placeins}
 \usepackage{SCE4YPTemplate}
+\usepackage[nottoc,numbib]{tocbibind}
 \usepackage{url}
 \usepackage[
 	backend=bibtex,
@@ -37,9 +37,7 @@
     Jessica Morris,
     Richard Perryman
 }
-	    % Remember to use your titles
-	    % Use \copyrightyear{1885} to force a particular year
-	    % for the copyright statement.
+
 \copyrightfalse % do not produce a separate copyright page
 		    % otherwise use \copyrighttrue
 %    \figurespagefalse % do not produce a separate figures page
@@ -60,12 +58,15 @@
 %=================================================================================
 
 \prefacesection{Acknowledgements}
-	I would like to thank my supervisor, anyone who paid me money, gave me
-	equipment, etc.
-    % Supervisors
-    % Jennifer Wolters, for giving us some free money
-    % Nagui Mikhail, for soldering stuff for Jess
-    % Michel and Normand Leroux, for their carpentry work on the demo unit
+	(To be fleshed out more after the first draft)
+    We would like to thank:
+    \begin{itemize}
+    \item Our supervisors, professors Shikharesh Majumdar and Chung-Horng Lung
+    \item Jenna Noseworthy and Madeline Ibrahim from the SCE office
+    \item Jennifer Wolters (from the Capstone Design fund)
+    \item Nagui Mikhail, for soldering lock the hardware
+    \item Michel and Normand Leroux, for their construction work on the demo unit for the poster fair
+    \end{itemize}
 
 %=================================================================================
 
@@ -84,7 +85,8 @@
 	APDU & Application Protocol Data Unit \\
 	API & Application Programming Interface \\
 	HMAC & Keyed-Hash Message Authentication Code \\
-	IO & Input/Output \\
+    I2C & Inter-Integrated Circuit \\
+    IO & Input/Output \\
 	JSON & JavaScript Object Notation \\
 	MVC & Model-View-Controller \\
 	NFC & Near Field Communication \\
@@ -135,32 +137,88 @@ were enforced to mitigate safety risks when handling the electrical components:
 
 \section{Engineering Professionalism}
 
-Using their course experience of ECOR 4995 Professional Practice, students should demonstrate how their professional responsibilities were met by the goals of their project and/or during the performance of their project. 
+\begin{itemize}
+    \item Teammates were respectful towards one another
+    \item Referencing other peoples' works
+    \item Acknowledging help from others
+    \item Considered diverse viewpoints in developing the project
+    \item Considered the ethical ramifications of handling personal information and other secure data
+\end{itemize}
 
 %=================================================================================
 
 \section{Project Management}
 
-One of the goals of the engineering project is real experience in working on a long-term team project.  Students should explain what project management techniques or processes were used to coordinate, manage and perform their project.
+This project was sufficiently complicated, that we decided that project management was a necessary tool to facilitate 
+the success of the project. We used Github to manage various issues and tasks, as well as for a central 
+version-controlled repository. We held weekly meetings to follow the Agile development methodology, doing one-week 
+sprints. In these meetings, we demonstrated to each other and our supervisors our progress during the sprint. In our 
+project proposal, we planned a timeline that we used to gauge our overall progress. When we fell behind on our planned 
+timeline, we isolated areas of work that needed to be accelerated to get back on track. Responsibilities for the 
+project were divided evenly among the three team members to balance the work load, and effectively make use of each 
+member's time and specialisations. To facilitate system integration, we held informal meetings where we collaborated on 
+our work.
+
+(n.b. we will include the Gantt chart from the proposal here)
 
 %=================================================================================
 
 \section{Individual Contributions}
 
-This section should carefully itemize the individual contributions of each team member. Project contributions should identify which components of work were done by each individual.  Report contributions should list the author of each major section of this report.
+This section will summarise the contributions each team member made to the project, and to this report.
 
 %---------------------------------------------------------------------------------
 
 \subsection{Project Contributions}
 
-Give the individual contributions of the each team member towards the project.
+Jessica's contributions:
+\begin{itemize}
+\item Designed lock circuit, lock control software, and authentication modules
+\item Implemented lock circuit, lock control software, and authentication modules
+\item Collaborated on the design of the NFC protocol
+\end{itemize}
+
+Richard's contributions:
+\begin{itemize}
+\item Designed the Android application
+\item Implemented Android application
+\item Collaborated on the design of the NFC protocol
+\item Collaborated on HMAC design and implementation
+\end{itemize}
+
+Craig's contributions:
+\begin{itemize}
+\item Designed web server and database
+\item Implemented web server and database
+\item Collaborated on HMAC design and implementation
+\end{itemize}
+
+As a group, we collaborated on system integration, and integration testing.
 
 %---------------------------------------------------------------------------------
 
 \subsection{Report Contributions}
 
-Give the individual contributions of the each team member towards writing the
-final report.
+Jessica's contributions:
+\begin{itemize}
+\item Section 3.4
+\item Section 5.4
+\item Section 6.2
+\end{itemize}
+
+Richard's contributions:
+\begin{itemize}
+\item Section 5.1, 5.2, 5.3
+\item Section 6.1
+\end{itemize}
+
+Craig's contributions:
+\begin{itemize}
+\item Section 5.5
+\item Section 6.3
+\end{itemize}
+
+All members collaborated on sections 2 and 4.
 
 %=================================================================================
 
@@ -189,7 +247,14 @@ final report.
 
 \section{Single-Board Computers and Microcontrollers}
 
-Insert blurb about what is a single-board thingamabob
+A single-board computer, or SOC, incorporate all of the elements necessary for a functional 
+computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
+(SOMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
+circuit board. The main distinction between SOCs and SOMs is the same as that between computers and microcontrollers. A 
+computer is a general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware 
+features to support the more intense computing needs of a user. A microcontroller is designed specifically for one 
+purpose, such as powering an alarm clock. As such, it does not require a significant amount of memory, processing 
+power, or electricity to perform its task.
 
 %---------------------------------------------------------------------------------
 
@@ -260,13 +325,103 @@ their usual aids instead of occupying a store employee's time.
 
 \section{Central Mail Package Pickup}
 
+Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only 
+operate during standard work hours, while many people that need to accept the delivery will not be home. In these cases 
+where packages cannot be stored in a mail box, and cannot be accepted by the recipient, these packages often go to an office 
+of the delivery service. The recipient must then go to pick up their package at the office. This is counter-productive, 
+as the customer has paid for the delivery, and now they are forced to go out of their way to get their item, which has not 
+been delivered to their desired location.
+
+In some places, Canada Post already has community mailboxes, which have a box for larger parcels. The problem with this
+is that it is only usable for parcels that are being delivered with Canada Post, but there are other parcel delivery
+services as well that are unable to make use of this. This community mailbox also uses a physical key to open this box,
+where they leave the key in the customer's normal mailbox, then they use that key to open the parcel box, then they must 
+return the key by dropping it in a mail delivery slot. This involves the need for the physical keys, and requires staff to
+physically find the keys for the parcel box among the other mail that is in the delivery slot. The Sensor-Based Access 
+Control System would eliminate the need for these physical keys, and would allow more delivery services to make use of
+the same boxes, ensuring that it is most convenient for the customers.
+
+This system could be used to access parcel boxes, which would allow the delivery to be placed in a box that would fit 
+the parcel. These boxes could be set up in an area where they are close to many customers, allowing them to quickly 
+pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
+customer, then place the parcel in the box. Then the customer could be notified through the application that there is a 
+parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
+box, and receive their package.
+
+Throughout this process, the system could make use of the registrations that have been set up for the central mail
+box. The user set up as the deliverer would be able to send notifications to the system on the status of the package, allowing
+the recipient user to better know when their package would arrive. Further, the system could be configured such that the
+system would notify the user when the package had not been picked up after a certain time had elapsed since it was
+dropped off. This information could also be exposed to the people who manage the central mail box, allowing them to
+determine the status of their boxes, informing them of potential problems, such as a package that has been languishing
+for too long in the same box. If the package is not picked up after a given amount of time, the system would notify the
+customer that the package will no longer be available to be picked up, and alternate options will be given. This would
+also lead to an expiry of the customer's registration to the box, so they will no longer be able to open the box.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
+	\caption{Central Mail Package Pickup Use Case Diagram}
+	\label{fig:central-mail-use-case-diagram}
+\end{figure}
+
 %=================================================================================
 
 \section{Long Term Storage}
 
+The Sensor-Based Access Control System also has applications for long term storage companies, such as Dymon. For these 
+companies, the system could be viewed as an overall manager of customer storage. The system's registrations can be used 
+to provide additional services for specific storage spaces. The system will also expose much of the administrative 
+tasks that the company will need to provide.
+
+The system, using its multiple step authentication, would allow the company to advertise greater security. Along with
+similar methods to those described in the above use cases, the system could be configured to require biometrics, such
+as fingerprints or facial recognition, as a form of authentication. By combining these metrics, the system would greatly
+reduce the potential for attack by strengthening the potential failure points of the identification process.
+
+Once a customer has a storage space reserved and has set up their identification, the registration could be configured
+to expose additional features. An example feature would be a live video stream of the contents of the storage space.
+This would allow the customer to verify that the contents of the space had been correctly stored, for example after
+requesting that the company switch their locker.
+
+Another additional feature would be the option to log items that are stored in the storage space. Through the system, the
+customer would be able to note which items they are adding or removing from the storage space, which would later allow the
+customer to remotely access a list of the items in the storage space, so they do not have to remember all of the contents.
+This provides a different view of the stored contents on top of the video stream mentioned above. This list could also be
+searchable or contain images of the items, to make the list easier to use.
+
+The system would also provide the ability to dynamically give certain users access to the storage room. This would allow
+a storage room to be communally owned by the members of a conglomerate, for example a company. This would ease the
+process by which multiple people may access the storage space while also ensuring that control of the storage was held
+centrally. More privileged users would be able to allow temporary access to less privileged users for a given time
+period. All of the attemped authentications could also be logged and made available to certain users, creating a
+reliable paper trail.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
+	\caption{Long Term Storage Use Case Diagram}
+	\label{fig:long-term-storage-pickup-use-case-diagram}
+\end{figure}
+
 %=================================================================================
 
 \section{Service Provider}
+
+Since one of the main goals of the Sensor-Based Access Control System is to allow for a user to share their identities
+between different locks, a logical application of the system is a service provider. A service provider could sell the
+installation and management of the information technology parts of the system to other companies that might want to
+make use of it, such as Walmart or Dymon mentioned above.
+
+This would benefit the end users as they would be able to share their identities amongst the service providers' various
+customers. This would allow someone to sign up for a locker at Walmart, and later reuse all the work that they did to
+set that up to unlock their central mail box or their home. This shared identity would allow people to remember fewer
+passwords and generally have fewer physical keys.
+
+Customers purchasing the services for the SBACS would save any technical work associated with installing the system.
+The service provider would be able to manage the databases, servers and any customer complaints or feedback. Providers
+would also take care of sharing end user identities, which would even further increase how much time end users could save,
+as they would only be required to set up one account with the service provider instead of one account per company.
+This incentivizes companies to make use of a service provider, as it makes the resulting system more attractive to
+potential customers as well as reducing the overall cost of setting up the system.
 
 %=================================================================================
 
@@ -431,13 +586,11 @@ communications.
 
 \section{Lock Hardware}
 
-Based 
-
 %---------------------------------------------------------------------------------
 
-\subsection{Core Circuit}
+\subsection{Lock Control Circuit}
 
-Design of the system core began by laying out the requirements for the core:
+Design of the lock control circuit, the core of the system, began by determining its requirements:
 \begin{itemize}
     \item There should be LEDs to indicate the status of the system, and to notify the user of the results of their 
     access attempt
@@ -447,7 +600,8 @@ Design of the system core began by laying out the requirements for the core:
     \item The core must have USB ports, to support having modules send authentication data to the core
 \end{itemize}
 
-Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout.
+Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout. Note that the specific 
+electrical elements used in each block are discussed in section~\ref{section:lock-control-circuit-implementation}.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{Diagrams/hardware_block}
@@ -457,9 +611,20 @@ Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the cor
 
 %---------------------------------------------------------------------------------
 
-\subsection{Core Software}
+\subsection{Lock Control Software}
 
+As mentioned in the requirements stated in the previous section, the lock control software should manage the status
+LEDs, the lock, and handle incoming authentication data and server interactions. Since the first three elements listed 
+are hardware-related operations, creating a layer of abstraction between the between the hardware and the core process 
+would increase the cohesion of the design, and prove simpler to implement. This resulted in the first three possible 
+classes for the lock control software: one for the abstraction of the LEDs, one for the abstraction of the lock control 
+circuit, and one for the abstraction of the hardware interface used for communicating with the authentication modules. 
+Since USB is widely used and simple to implement, USB was chosen as the means to connect the modules.
 
+Continuing on with dividing the various responsibilities of the lock control software into subclasses, two more emerge 
+from the remaining requirements: one class to poll the authentication modules, which will take advantage of the 
+hardware abstraction of the hardware interface, and one class to handle server communication. Figure NEXT is a block 
+diagram of the architecture of the lock software.
 
 %---------------------------------------------------------------------------------
 
@@ -474,7 +639,18 @@ Adaptee provides the interfaces necessary for communicating with the core, and a
 authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
 necessary for the means of authentication.
 
-Talk about actors-boundaries-controllers-entities here
+With an Adapter pattern in place to handle the creation of various types of authentication module, there also needed to 
+be a pattern to handle the general flow of data, which starts with user entry, and ends with transmission to the system
+core. The Entity-Controller-Boundary pattern was a natural fit for this situation, and as shown in 
+figure~\ref{fig:modules-ecb}, the first draft of the authentication module software only required one of each 
+stereotype in the pattern, as the software did not need to be complex. The Authenticator object would be passed over 
+USB to a controller in the central process.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/modules_ecb}
+	\caption{Authentication Modules Pattern Draft}
+	\label{fig:modules-ecb}
+\end{figure}
 
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
 single-board microcontroller, such as a Arduino, which would be deemed a "communication board." This communication board
@@ -490,11 +666,11 @@ the data over a USB connection to the central computer. However, this design was
     board" would have.
 \end{enumerate}
 
-Maybe add a figure of the Arduino pinout here?
-
-Thus, the idea of using I2C communcation was scrapped, in favour of simply connecting each module to the core over USB. 
-This simplified the development of communication modules considerably.
-
+Thus, the design changed, in particular to accommodate the final point. Authentication modules would send 
+authenticators directly to the core system over USB, with no middle board required. This simplified the design 
+considerably, as the behaviour of the authentication modules did not need to change at all, and the responsibilities 
+of the communication board were offloaded to the system core. Overall, this design would require fewer 
+microcontrollers, while still meeting the requirements.
 
 %=================================================================================
 
@@ -708,7 +884,10 @@ layout.
 
 \section{Hardware}
 
-The hardware portion of the project consisted of two major portions: the 
+The hardware portion of the project consisted of three components: the lock control circuit, the lock control software, 
+and the authentication modules.
+
+\subsection{Lock Control Circuit} \label{section:lock-control-circuit-implementation}
 
 Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. While 
 the single-board microcontrollers considered had optional boards which could add Wifi or Ethernet capabilities, they 
@@ -730,10 +909,12 @@ this:
 
 1- Transistor/diode circuit
 
-This circuit would use a TIP120 Darlington transistor, coupled with a 1N4004 flyback diode, to drive the lock. The circuit is 
-demonstrated in figure NEXT.
+This circuit would use a TIP120 Darlington transistor, coupled with a 1N4004 flyback diode, to drive the lock. This 
+circuit is demonstrated in figure X.
 
-Figure of circuit
+Todo: Make the figure of the transistor/diode circuit in Fritzing
+
+The major issue with this circuit is that 
 
 Some heat-related math for the transistor:
 The power law for a single voltage drop is $ P = IV = I^2R $. A transistor can be treated as two voltage drops, one 
@@ -777,9 +958,23 @@ When the IN signal is high (5 volts), the solenoid inside the relay generates a 
 to instead short-circuit the "normally open" connection, allowing current to flow from the NO terminal to the CO 
 terminal, while the NC terminal is open-circuited. 
 
+The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
+	\caption{Lock Control Circuit}
+	\label{fig:lock-control-circuit-diagram}
+\end{figure}
+
 \subsection{Lock Control Software}
 
+% To realize the design outlined in section
+
 \subsection{Authentication Modules}
+
+\subsubsection{NFC Module}
+
+\subsubsection{PIN Module}
 
 %=================================================================================
 
@@ -908,6 +1103,17 @@ waiting and more time processing information.
 \chapter{Testing and Bug Fixes}
 
 % Not really sure what to go with here
+Points to mention in this chapter:
+\begin{itemize}
+    \item Our biggest bug - issues with sending bytes "in the raw" using JSON
+    \item Limitation on the number of bytes in NFC data exchanges using the PN532 shield
+    \item The many struggles of serial communication (e.g. the Serial Monitor in the Arduino IDE, certain input flags 
+    on a port would be enabled by default on some machines but not others)
+\end{itemize}
+
+\section{Bugs}
+
+\subsection{Issues with Serial Communcation}
 
 %=================================================================================
 
