@@ -84,7 +84,7 @@
 	APDU & Application Protocol Data Unit \\
 	API & Application Programming Interface \\
 	HMAC & Keyed-Hash Message Authentication Code \\
-    IO & Input/Output \\
+	IO & Input/Output \\
 	JSON & JavaScript Object Notation \\
 	MVC & Model-View-Controller \\
 	NFC & Near Field Communication \\
@@ -645,6 +645,8 @@ documents, and gradle build files. Android studio was selected since it seemed t
 Android application, and didn't have any negatives with respect to our requirements. Gradle was chosen as the build
 tool as it is naturally integrated with Android studio.
 
+%---------------------------------------------------------------------------------
+
 \subsection{Server Interfacing}
 
 Connections to the server were managed through the android Volley API. Volley provides a simple interface over which
@@ -657,6 +659,8 @@ classes have just a few relatively simple methods, anonymous classes were used i
 handling the parsing shoudl be done as safely as possible, so all responses were first parsed simply as Strings. Then,
 the response was attempted to be parsed as a JSON object of the type expected from the server. If that parsing failed,
 the message was instead considered a error, and handled from there.
+
+%---------------------------------------------------------------------------------
 
 \subsection{HMAC}
 
@@ -676,6 +680,22 @@ of the Password-Based Key Derivation Function algorithm using SHA256 to be avail
 workaround for this added requirement would have been to implement the algorithm (specified in RFC 2898 with test
 vectors in RFC 6070) ourselves, however doing so is known to be quite dangerous as any minor error could result in a
 security breach. In addition, the number of iterations and the resulting length also had to be kept as the same value.
+
+%---------------------------------------------------------------------------------
+
+\subsection{Entity Representation}
+
+The application needed to be able to display data to the user that came from the server and database. These data are
+represented in the MVC design of the application. Since the database is relational, the model classes that represent
+the constructs stored in the database, such as identities, authenticators, locks, and registrations, were all passive
+entity classes whose only real role was to contain data.
+
+Each kind of data that was of interest to the user was given its own Activity, which is similar to the notion of a page
+in a web application. These Activities were all primarily composed of a ListView object, which displays a list of data.
+This list was configured with an Adapter class which extends the general ArrayAdapter<T> class. These adapters were
+used to convert the model classes into a view. The adapter classes were composed of an XML file which described the
+layout of the view, as well as a java class which provided the methods by which the data could be used to fill in the
+layout.
 
 %=================================================================================
 
