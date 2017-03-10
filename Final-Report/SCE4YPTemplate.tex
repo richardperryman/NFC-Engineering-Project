@@ -583,7 +583,7 @@ the database whenever it was needed.
 
 % explanation of relational theory, third normal form
 % proof of third normal form for our db here
-We follow third normal form in our database.
+We follow third normal form in our database. The proof and description of what that is will go here.
 
 \subsection{Authentication for Server API}
 
@@ -623,6 +623,13 @@ vulnerable to many types of attacks.
 % Then reference for why HTTPS is secure
 
 HTTP is not a secure protocol. HTTPS is secure.
+
+
+\subsection{Design Patterns}
+
+%TODO: Consider having a higher level section for this, as I think it is important
+
+Diagrams and descriptions of how certain design patterns were used will go here.
 
 
 %=================================================================================
@@ -782,7 +789,119 @@ terminal, while the NC terminal is open-circuited.
 
 %TODO: Generally developed using Notepad++, Postman to test it
 
-%TODO: Then add my problems/solutions section, once ready
+% My problems/solutions section
+% TODO: Reference relevant sections of earlier part throughout this section (AWS, HTTPS, Database stuff)
+\subsection{Learning to Use Amazon Web Services}
+
+Amazon Web Services provides all the hosting that we needed for this project, so it was a
+natural choice for us to use. When we started, we followed some basic tutorials to get a sample
+web application running, that would return a static HTML page on all HTTP requests. The first
+major challenge came from attempting to modify this sample application. First, we had to find
+the code of the sample application, as it was not given in any location that we thought to look on
+AWS. Eventually we found the code and modified it, then building and testing it locally to
+ensure that the code was correct. Then we had to deploy this new code, which proved to be
+harder than expected. The process is not complicated once it is known, but the wording was
+confusing in the instructions, so it took a few tries to get it working. Once we had this process
+figured out, we were able to easily write our own code and the process of updating our hosted
+server was easy.
+
+The next challenge in learning AWS came from the database. Since we needed a
+persistent data storage, and had decided on a relational database, we decided to set up our
+database using AWS as well, which allowed us to keep all hosted services in one place. Initially,
+we created the database from the management console of our hosted web application. This made
+it easy to get a database setup and working with our server in very little time, but we soon
+realized that it was tied to the web application, and could not exist without the web application.
+This was not ideal, since the database should be able to exist separately, so we ended up deleting
+that database, and hosting one from the relational database manager on AWS. This kept it
+completely separate from the server, but still usable by the server. Another challenge was
+introduced when we tried to access the database directly, to initially build the tables and data,
+and to have the ability to query it later on. We were not all able to access the database, and we
+were unsure why, since we all were using the same tools, with the same settings to do it.
+Eventually we discovered that the database itself has settings to allow certain IP addresses to
+access it directly. We all agreed that this was a very smart feature, but we simply did not realize
+it existed at first. Once we discovered this, we were able to add the IP addresses of our
+computers as we needed to, but left the general public unable to access our database, keeping it
+secure.
+
+We also had to learn more about how AWS handles SSL certificates and domain names,
+so that we could use HTTPS instead of HTTP to transfer user information securely. We realized
+we would need a domain name for certain features of our system, so we used AWS to purchase
+our domain name, and then to route requests to that domain name to our hosted server. This was
+not very complicated, but still had some learning to get it done correctly, and involved some
+change to configuration files on our server that we did not know existed up to that point. The
+specific troubles with SSL Certificates will be explained in more detail in the following section.
+
+\subsection{SSL Certificates}
+
+%TODO: Reference section in 5.5 about HTTPS and SSL stuff
+
+In order to send requests over HTTPS instead of HTTP, SSL Certificates are needed.
+These provide an extra layer of security to ensure that only the sending and receiving parties are
+aware of the content of the message.
+SSL Certificates were a challenge to understand and work with, as none of us had much
+knowledge about them before. Certificates must be signed in order for them to be considered
+valid. This signing can be done by a developer, but the certificate must be explicitly declared as
+valid on each device that will have contact with the server over HTTPS in this case. This would
+be very hard to manage and is not practical for an application with many users. In order for most
+devices to know by default that it should be accepted, the certificates must be signed by a
+Certificate Authority. The Certificate Authorities are known to browsers and let the devices know
+that the destination can be trusted.
+
+For our project it was decided that it would be easier for everyone if the certificates were
+signed by a Certificate Authority, to keep things simple. Unfortunately, this process can take
+time to get approved, and there is still some configuration to be managed by the server to work
+correctly. AWS handles many of these complications, and also handles the generation and
+signing of the certificates, but in order to do this, a domain name must be owned. Using AWS for
+this was the best option we found for this problem, so we bought a domain name, and we were
+able to get the SSL Certificates, and had HTTPS working quickly after that.
+
+
+\subsection{Issues with String Encodings}
+% More than just server issue, but problem was on server
+
+When the database was first built, we decided to store authentication data as strings. This
+was chosen because we found strings easy to work with, and most HTTP libraries had support
+for sending data as strings. During the integration phase of the project, we started having trouble
+with authentication, where the data that was retrieved from the server by the phone was then sent
+to the lock controller and then sent back to the server for validation. The server was receiving
+different data than it was initially sending, so all requests to unlock were being denied. After
+debugging at different points in the system, we came to the conclusion that the encoding of
+strings was not the same across the languages and technologies we were using, so the data was
+not the same when it reached the server again.
+
+To solve this problem, we changed the data types stored by the database to be binary data
+rather than strings. This eliminated the problem of encoding, since binary data is simply binary
+regardless of the platform or technology being used. We realized that it would have made more
+sense to go with a binary data type in the beginning, but we did not anticipate the problems with
+encoding initially. This problem took a long time to identify, and was the largest delay in our
+integration phase of the project.
+
+
+\subsection{Improving Response Time}
+
+The system needs to respond quickly to inputs from the user in order to provide the best
+user experience. One limiting factor of this response time is the communication with the cloud
+server. Sending a request over the network is very slow relative to other actions in the system, so
+the response from the server must be as quick as possible to minimize the delay. In order to keep
+this fast, the main goal of the server is to have a response sent as early as possible to the user.
+Many actions are dependent on one another, but in a few cases the response can be sent to the
+user before all the actions associated with the request have actually finished. For example, when
+a user logs in, the server must check that they have provided sufficient authentication to be
+logged in. Once this has been validated, the user is considered to be logged in. At this point, the
+server sends a key to the user that is valid for a limited time, which is used by the Android
+application to provide NFC authentication, and is also used in the authentication on subsequent
+requests to the server. After this key is sent back to the user, the server must still save this key if
+it is newly created, and must save the key as the NFC authenticator for the user. Since these
+actions can happen after the key is sent, the response will be returned faster.
+
+Another limiting factor in the speed of server response is contact with the database. This
+can be slow, as the database may have a large amount of information to go through. To solve this
+problem, the server sends as few queries as possible, that will collect all the information that is
+needed for the request, but will not retrieve data that is unnecessary. Less queries to the database
+keeps the delay in sending and receiving responses low, allowing the server to spend less time
+waiting and more time processing information.
+
+
 
 %=================================================================================
 
