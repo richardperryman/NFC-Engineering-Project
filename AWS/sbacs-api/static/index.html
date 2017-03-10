@@ -52,11 +52,23 @@
 		}
 		
 		function getRegSuccess(data){
+			// Show the reg table and hide the login section
+			$('#login').hide();
+			$('#registrations').show();
+			// Build and display the registrations
 			var regs = [];
 			for(var i=0;i<data.length;i++){
-				regs[i] = data[i]['Reg_Id'];
+				regs[i] = {regId:data[i]['Reg_Id'],lockId:data[i]['Lock_Id'],identityId:data[i]['Identity_Id']};
+				displayRegistration(regs[i]);
 			}
-			console.log(regs.toString());
+		}
+		
+		function displayRegistration(reg){
+			// Build the tr
+			var row = '<tr><td>' + reg.regId + '</td><td>' + reg.lockId + '</td><td>'
+				+ reg.identityId + '</td></tr>';
+			// Append the tr to table (#registrations table)
+			$('#registrations table').append(row);
 		}
 		
 		function setHeaders(request,body){
@@ -81,11 +93,12 @@
 		</form>
 	</div>
 	
-	<!-- Registrations information. Onstart, hide this part 
+	<!-- Registrations information. On start, hide this part 
 		Show it after selecting get registration-->
 	<div id="registrations" hidden="true">
 		<table>
-			<tr><th>Lock Id</th><th>Identity Id</th></tr>
+			<tr><th>Registration Id</th><th>Lock Id</th><th>Identity Id</th></tr>
+			
 		</table>
 	</div>
 </body>
