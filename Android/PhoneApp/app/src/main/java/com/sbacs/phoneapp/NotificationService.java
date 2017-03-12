@@ -123,7 +123,7 @@ public class NotificationService extends Service {
         intent.putExtra(UserActivity.USER_ID, user_id);
         intent.putExtra(UserActivity.HMAC_AUTH, auth.getBytes());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class); // Here?
+        stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(intent);
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(

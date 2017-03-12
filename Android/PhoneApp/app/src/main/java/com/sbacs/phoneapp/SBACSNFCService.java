@@ -35,10 +35,11 @@ public class SBACSNFCService extends HostApduService {
     public byte[] processCommandApdu(byte[] apdu, Bundle extras) {
         // If this becomes expensive use another thread and use sendResponseApdu()
 
+        /*
         Intent notifyIntent = new Intent(SBACS_NOTIFICATION);
         notifyIntent.putExtra(SBACS_MESSAGE, String.valueOf(bytes_sent));
         broadcaster.sendBroadcast(notifyIntent);
-
+        */
         int length = apdu[apdu.length - 1];
         if (length == 1) {
             bytes_sent = 0;

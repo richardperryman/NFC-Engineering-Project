@@ -64,13 +64,20 @@ public class UserActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(SBACSNFCService.SBACS_NOTIFICATION));
     }
 
+    public void logout(View view) {
+        stopService(new Intent(this, SBACSNFCService.class));
+        stopService(new Intent(this, NotificationService.class));
+
+        Intent logoutIntent = new Intent(this, MainActivity.class);
+        startActivity(logoutIntent);
+    }
+
     public void manageLocks(View view) {
         Intent lockIntent = new Intent(this, LockActivity.class);
         lockIntent.putExtra(USER_ID, user_id);
         lockIntent.putExtra(HMAC_AUTH, auth);
         startActivity(lockIntent);
     }
-
 
     public void manageRegistrations(View view) {
         Intent registrationIntent = new Intent(this, RegistrationActivity.class);

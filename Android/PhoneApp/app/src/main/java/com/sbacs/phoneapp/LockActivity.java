@@ -1,8 +1,10 @@
 package com.sbacs.phoneapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
@@ -58,6 +60,13 @@ public class LockActivity extends AppCompatActivity {
                 };
         queue.add(request);
 
+    }
+
+    public void back(View view) {
+        Intent intent = new Intent(this, UserActivity.class);
+        intent.putExtra(MainActivity.USER_ID, user_id);
+        intent.putExtra(MainActivity.HMAC_AUTH, auth.getBytes());
+        startActivity(intent);
     }
 
     private Response.Listener<JSONArray> registrationResponseListener() {

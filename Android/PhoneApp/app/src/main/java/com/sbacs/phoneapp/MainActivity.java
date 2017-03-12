@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.ViewAnimator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,16 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    private Response.ErrorListener genericErrorListener(final TextView view) {
-        return new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                view.setText(error.getMessage());
-            }
-        };
-    }
-
     public void login(View view) {
+        showProgress();
         final TextView results = (TextView) findViewById(R.id.result_message);
         final String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
         final String password = ((TextView) findViewById(R.id.password)).getText().toString();
@@ -68,11 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //TODO Constants
                     user_id = Integer.parseInt(user);
-                } catch (NumberFormatException e) {
-                    user_id = -1;
-                    auth = new byte[]{};
-                } catch (JSONException e) {
-                    // TODO better handling
+                } catch (NumberFormatException | JSONException e) {
                     user_id = -1;
                     auth = new byte[]{};
                 }
@@ -82,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
                     loginIntent.putExtra(USER_ID, user_id);
                     loginIntent.putExtra(HMAC_AUTH, auth);
                     startActivity(loginIntent);
+                    endProgress();
                 } else {
+                    endProgress();
                     results.setText("An error occurred while logging in:\n" + response);
                 }
             }
@@ -99,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signUp(final View view) {
+        showProgress();
+
         final TextView results = (TextView) findViewById(R.id.result_message);
         final String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
         final String password = ((TextView) findViewById(R.id.password)).getText().toString();
@@ -106,13 +100,14 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = getResources().getString(R.string.sbacs_url) +
                 getResources().getString(R.string.sign_up_endpoint);
-        final Context currentContext = this;
+
         Response.Listener<String> signupResponseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (response.equals("User created successfully")) {
                     login(view);
                 } else {
+                    endProgress();
                     results.setText("An error occurred while signing up:\n" + response);
                 }
             }
@@ -126,5 +121,25 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         queue.add(request);
+    }
+
+    private Response.ErrorListener genericErrorListener(final TextView view) {
+        return new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                endProgress();
+                view.setText(new String(error.networkResponse.data));
+            }
+        };
+    }
+
+    private void showProgress() {
+        ViewAnimator view = (ViewAnimator) findViewById(R.id.main_view);
+        view.showNext();
+    }
+
+    private void endProgress() {
+        ViewAnimator view = (ViewAnimator) findViewById(R.id.main_view);
+        view.showPrevious();
     }
 }

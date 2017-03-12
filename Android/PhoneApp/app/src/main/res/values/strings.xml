@@ -12,6 +12,8 @@
     <string name="manage_registrations">Manage Registrations</string>
     <string name="login">Login</string>
     <string name="signUp">Sign Up</string>
+    <string name="back">Back</string>
+    <string name="logout">Logout</string>
     <string name="sbacs_url">https://sbacs.click/</string>
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>

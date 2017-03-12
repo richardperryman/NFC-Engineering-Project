@@ -1,7 +1,11 @@
 package com.sbacs.phoneapp;
 
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
@@ -55,6 +59,20 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         };
         queue.add(request);
+
+        // Clear any pending notifications about new registrations
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(0);
+
+
+    }
+
+    public void back(View view) {
+        Intent intent = new Intent(this, UserActivity.class);
+        intent.putExtra(MainActivity.USER_ID, user_id);
+        intent.putExtra(MainActivity.HMAC_AUTH, auth.getBytes());
+        startActivity(intent);
     }
 
     private Response.Listener<String> registrationResponseListener() {
