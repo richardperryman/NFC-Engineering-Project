@@ -3,21 +3,18 @@ package com.sbacs.phoneapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import com.sbacs.phoneapp.HMAC.HMACHelper;
+import com.sbacs.phoneapp.Model.Lock;
+import com.sbacs.phoneapp.View.LockAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +38,7 @@ public class LockActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
 
         user_id = getIntent().getIntExtra(UserActivity.USER_ID, -1);
-        auth = getIntent().getStringExtra(UserActivity.HMAC_AUTH);
+        auth = new String(getIntent().getByteArrayExtra(UserActivity.HMAC_AUTH));
 
         final ListView view = (ListView) findViewById(R.id.lock_list);
         List<Lock> locksList = new ArrayList<>();

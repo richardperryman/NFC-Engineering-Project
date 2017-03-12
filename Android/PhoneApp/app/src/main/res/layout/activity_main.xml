@@ -19,6 +19,11 @@
         android:layout_height="wrap_content"
         android:text="@string/login"
         android:onClick="login"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/signUp"
+        android:onClick="signUp"/>
     <TextView android:id="@+id/result_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

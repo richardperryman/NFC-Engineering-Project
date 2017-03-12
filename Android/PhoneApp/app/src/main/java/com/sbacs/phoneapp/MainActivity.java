@@ -83,11 +83,41 @@ public class MainActivity extends AppCompatActivity {
                     loginIntent.putExtra(HMAC_AUTH, auth);
                     startActivity(loginIntent);
                 } else {
-                    results.setText("An error occurred with response:\n" + response);
+                    results.setText("An error occurred while logging in:\n" + response);
                 }
             }
         };
         StringRequest request = new StringRequest(Request.Method.POST, url, loginResponseListener,
+                genericErrorListener(results))
+        {
+            @Override
+            public byte[] getBody() {
+                return HMACHelper.HMACLoginBody(user_name, password);
+            }
+        };
+        queue.add(request);
+    }
+
+    public void signUp(final View view) {
+        final TextView results = (TextView) findViewById(R.id.result_message);
+        final String user_name = ((TextView) findViewById(R.id.user_name)).getText().toString();
+        final String password = ((TextView) findViewById(R.id.password)).getText().toString();
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = getResources().getString(R.string.sbacs_url) +
+                getResources().getString(R.string.sign_up_endpoint);
+        final Context currentContext = this;
+        Response.Listener<String> signupResponseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.equals("User created successfully")) {
+                    login(view);
+                } else {
+                    results.setText("An error occurred while signing up:\n" + response);
+                }
+            }
+        };
+        StringRequest request = new StringRequest(Request.Method.POST, url, signupResponseListener,
                 genericErrorListener(results))
         {
             @Override

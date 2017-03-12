@@ -37,10 +37,16 @@
                 android:resource="@xml/sbacs_nfc_service" />
         </service>
 
+        <service
+            android:name=".NotificationService"
+            android:exported="true">
+        </service>
+
         <activity
             android:name=".LockActivity"
             android:label="@string/title_activity_lock"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".RegistrationActivity"></activity>
     </application>
 
 </manifest>

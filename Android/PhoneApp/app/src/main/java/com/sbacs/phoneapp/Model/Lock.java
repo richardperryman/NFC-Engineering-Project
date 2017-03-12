@@ -1,4 +1,4 @@
-package com.sbacs.phoneapp;
+package com.sbacs.phoneapp.Model;
 
 /**
  * Created by Richard on 2017-01-23.

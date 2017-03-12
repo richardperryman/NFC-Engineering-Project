@@ -1,4 +1,4 @@
-package com.sbacs.phoneapp;
+package com.sbacs.phoneapp.View;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.sbacs.phoneapp.Model.Lock;
+import com.sbacs.phoneapp.R;
+
 import java.util.List;
 
 /**
@@ -16,8 +18,8 @@ import java.util.List;
 
 public class LockAdapter extends ArrayAdapter<Lock> {
 
-    public LockAdapter(Context context, List<Lock> users) {
-        super(context, 0, users);
+    public LockAdapter(Context context, List<Lock> locks) {
+        super(context, 0, locks);
     }
 
     @Override

@@ -20,22 +20,25 @@ import javax.crypto.spec.PBEKeySpec;
  */
 
 public class HMACHelper {
-    private static final int iterations = 100000;
+    private static final int iterations = 10000;
     private static final int secret_length = 255 * 8; // Secret length is in bits
 
     public static Map<String, String> GetHMACHeaders(int userId, String body, String key) {
         String secret;
         Map <String, String> result = new HashMap<String, String>();
-        
+
+        /*
         try {
             secret = URLEncoder.encode(SecretString(body, key), "UTF-16");
         } catch (UnsupportedEncodingException e) {
             secret = "";
         }
-        
-        result.put("hmac-user", "" + userId);
+        */
+
+        result.put("hmac-user", "10outta13");
+        /*result.put("hmac-user", "" + userId);
         result.put("hmac-content", secret);
-        
+        /**/
         return result;
     }
 
@@ -57,17 +60,23 @@ public class HMACHelper {
         KeySpec spec;
         SecretKey secret;
         try {
-            skf = SecretKeyFactory.getInstance("PBKDF2WithHMACSHA256");
+            // Not working anymore...?
+            skf = SecretKeyFactory.getInstance("PBKDF2withHmacSHA256");
         } catch (NoSuchAlgorithmException e) {
             return "";
         }
 
+        //char[] pw = body.length() > 0 ? body.toCharArray() : new char[] {'1'};
         spec = new PBEKeySpec(body.toCharArray(), key.getBytes(), iterations, secret_length);
 
         try {
             secret = skf.generateSecret(spec);
         } catch (InvalidKeySpecException e) {
             return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            Object foo = e.getStackTrace();
+            return "wtf";
         }
 
         return new String(secret.getEncoded());

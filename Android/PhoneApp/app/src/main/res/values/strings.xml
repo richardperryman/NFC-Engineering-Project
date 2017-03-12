@@ -9,12 +9,16 @@
     <string name="manage_authenticators">Manage Authenticators</string>
     <string name="manage_identities">Manage Identities</string>
     <string name="manage_locks">Manage Locks</string>
+    <string name="manage_registrations">Manage Registrations</string>
     <string name="login">Login</string>
-    <string name="sbacs_url">http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com/</string>
+    <string name="signUp">Sign Up</string>
+    <string name="sbacs_url">https://sbacs.click/</string>
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>
     <string name="auth_table_name">authenticators</string>
     <string name="registration_table_name">access/management</string>
     <string name="login_endpoint">login</string>
+    <string name="sign_up_endpoint">signup</string>
+    <string name="notification_endpoint">notifications</string>
     <string name="title_activity_lock">Lock Management</string>
 </resources>
