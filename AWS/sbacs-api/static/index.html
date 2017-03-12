@@ -35,6 +35,26 @@
 				localStorage.setItem('key',key);
 				localStorage.setItem('userId',userId);
 			}
+			alert('Login Successful');
+		}
+		
+		function signup(){
+			var username = $('#username').val();
+			var password = $('#password').val();
+			var obj = {username:username,password:password};
+			
+			$.post({
+				url : '/signup',
+				data : JSON.stringify(obj),
+				dataType : 'json',
+				success : signupSuccess
+			});
+			
+			console.log('Signing Up with: ' + username + ':' + password);
+		}
+		
+		function signupSuccess(data){
+			alert('Sign up Successful');
 		}
 		
 		function getRegistrations(){
@@ -49,12 +69,22 @@
 				success : getRegSuccess,
 				headers : {'hmac-user':'10outta13'}
 			});
+			
+			// Display which identities belong to this user
+			displayIdentities();
 		}
+		
 		
 		function getRegSuccess(data){
 			// Show the reg table and hide the login section
 			$('#login').hide();
 			$('#registrations').show();
+			
+			// Remove old entries from the table
+			$('#registrations table').empty();
+			// Build header row
+			var row = '<tr><th>Registration Id</th><th>Lock Id</th><th>Identity Id</th></tr>';
+			$('#registrations table').append(row);
 			// Build and display the registrations
 			var regs = [];
 			for(var i=0;i<data.length;i++){
@@ -66,13 +96,71 @@
 		function displayRegistration(reg){
 			// Build the tr
 			var row = '<tr><td>' + reg.regId + '</td><td>' + reg.lockId + '</td><td>'
-				+ reg.identityId + '</td></tr>';
+				+ reg.identityId + '</td><td><button type="button" onclick="deleteReg('
+				+ reg.lockId + ',' + reg.identityId + ');">Delete</button></td></tr>';
 			// Append the tr to table (#registrations table)
 			$('#registrations table').append(row);
 		}
 		
 		function setHeaders(request,body){
 			request.setRequestHeader('hmac-user','10outta13');
+		}
+		
+		function displayIdentities(){
+			if(userId == undefined){
+				return;
+			}
+			// Make request to access/management endpoint
+			var query = '?user_id=' + userId;
+			$.get({
+				url : ('/identities' + query),
+				dataType : 'json',
+				success : getIdSuccess,
+				headers : {'hmac-user':'10outta13'}
+			});
+		}
+		
+		function getIdSuccess(data){
+			$('#registrations ul').empty();
+			for(var i=0;i<data.length;i++){
+				var row = '<li>' + data[i]['Identity_Id'] + '</li>';
+				$('#registrations ul').append(row);
+			}
+		}
+		
+		function createReg(){
+			// TODO: PUT the registration
+			var lock_id = $('#lock_id').val();
+			var identity_id = $('#identity_id').val();
+			var expirationTime = $('#expirationTime').val();
+			
+			console.log('?lock_id=' + lock_id + '&identity_id=' + 
+				identity_id + '&expirationTime=' + expirationTime);
+				
+				
+			// Make request to access/management endpoint
+			var query = '?lock_id=' + lock_id + '&identity_id=' + 
+				identity_id + '&expirationTime=' + expirationTime;
+			$.ajax({
+				type : 'PUT',
+				url : ('/access/management' + query),
+				dataType : 'json',
+				complete : function(data) {getRegistrations();},
+				headers : {'hmac-user':'10outta13'}
+			});
+		}
+		
+		function deleteReg(lockId,identityId){
+			var query = '?lock_id=' + lockId + '&identity_id=' + identityId;
+			console.log('Delete: ' + query);
+			// Delete the registration
+			$.ajax({
+				type : 'DELETE',
+				url : ('/access/management' + query),
+				dataType : 'json',
+				complete : function(data) {getRegistrations();},
+				headers : {'hmac-user':'10outta13'}
+			});
 		}
 	</script>
 	
@@ -89,6 +177,8 @@
 			<input id="password" type="password"/>
 			<br/>
 			<input type="button" value="Login" onclick="login();"/>
+			<input type="button" value="Sign Up" onclick="signup();"/>
+			<br/>
 			<input type="button" value="Get Registrations" onclick="getRegistrations()"/>
 		</form>
 	</div>
@@ -96,10 +186,29 @@
 	<!-- Registrations information. On start, hide this part 
 		Show it after selecting get registration-->
 	<div id="registrations" hidden="true">
+		<p>Identities: </p>
+		<ul></ul>
+		
+		<br/>
 		<table>
-			<tr><th>Registration Id</th><th>Lock Id</th><th>Identity Id</th></tr>
+			
 			
 		</table>
+		<br/>
+		<form>
+			Create a Registration: <br/>
+			Lock Id: 
+			<input id="lock_id" type="text"/>
+			<br/>
+			Identity Id: 
+			<input id="identity_id" type="text"/>
+			<br/>
+			Expiration Time: 
+			<input id="expirationTime" type="text" value="2038-01-19 03:14:07"/>
+			<br/>
+			<input type="button" value="Create" onclick="createReg();"/>
+		</form>
+		
 	</div>
 </body>
 </html>
