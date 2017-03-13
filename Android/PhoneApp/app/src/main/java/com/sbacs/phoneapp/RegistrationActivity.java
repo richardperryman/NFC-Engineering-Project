@@ -33,6 +33,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private int user_id;
     private String auth;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
         List<Registration> registrationList = new ArrayList<>();
         view.setAdapter(new RegistrationAdapter(this, registrationList));
 
-        RequestQueue queue = Volley.newRequestQueue(this);
+        queue = Volley.newRequestQueue(this);
         String url = getResources().getString(R.string.sbacs_url) +
                 getResources().getString(R.string.registration_table_name) +
                 "?user_id=" + user_id;
@@ -98,7 +99,79 @@ public class RegistrationActivity extends AppCompatActivity {
                         continue;
                     }
                     adapter.add(registration);
+
+                    String url = getResources().getString(R.string.sbacs_url) +
+                            getResources().getString(R.string.identities_endpoint) +
+                            "?identities_id=" + registration.getIdentity_id();
+                    StringRequest request = new StringRequest(url, identityListener(i),
+                            genericErrorListener())
+                    {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            return HMACHelper.GetHMACHeaders(user_id, "", auth);
+                        }
+                    };
+                    queue.add(request);
+
+                    url = getResources().getString(R.string.sbacs_url) +
+                            getResources().getString(R.string.lock_table_name) +
+                            "?lock_id=" + registration.getIdentity_id();
+                    request = new StringRequest(url, lockListener(i),
+                            genericErrorListener())
+                    {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            return HMACHelper.GetHMACHeaders(user_id, "", auth);
+                        }
+                    };
+                    queue.add(request);
                 }
+            }
+        };
+    }
+
+    private Response.Listener<String> identityListener(final int position) {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String identityName;
+                try {
+                    identityName = new JSONArray(response).getJSONObject(0).getString("Name");
+                } catch (JSONException e) {
+                    return;
+                }
+
+                ListView view = (ListView) findViewById(R.id.registration_list);
+                final RegistrationAdapter adapter = (RegistrationAdapter) view.getAdapter();
+
+                Registration r = adapter.getItem(position);
+                if (r != null) {
+                    r.setIdentityName(identityName);
+                }
+                adapter.notifyDataSetChanged();
+            }
+        };
+    }
+
+    private Response.Listener<String> lockListener(final int position) {
+        return new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String lockName;
+                try {
+                    lockName = new JSONArray(response).getJSONObject(0).getString("Name");
+                } catch (JSONException e) {
+                    return;
+                }
+
+                ListView view = (ListView) findViewById(R.id.registration_list);
+                final RegistrationAdapter adapter = (RegistrationAdapter) view.getAdapter();
+
+                Registration r = adapter.getItem(position);
+                if (r != null) {
+                    r.setLockName(lockName);
+                }
+                adapter.notifyDataSetChanged();
             }
         };
     }
@@ -107,7 +180,6 @@ public class RegistrationActivity extends AppCompatActivity {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                int foo = 5;
             }
         };
     }

@@ -13,6 +13,8 @@ public class Registration {
     private int lock_id;
     private int use_count;
     private boolean is_new;
+    private String identityName;
+    private String lockName;
 
     public Registration(int id, int identity_id, int lock_id, int use_count, boolean is_new) {
         this.id = id;
@@ -26,7 +28,6 @@ public class Registration {
         id = registration.getInt("Reg_Id");
         identity_id = registration.getInt("Identity_Id");
         lock_id = registration.getInt("Lock_Id");
-        // TODO: fix server
         is_new = false;
     }
 
@@ -50,13 +51,19 @@ public class Registration {
         return is_new;
     }
 
-
-    //TODO make these get the values?
-    public String getName() {
-        return "" + identity_id;
+    public String getIdentityName() {
+        return identityName;
     }
 
-    public String getLock() {
-        return "" + lock_id;
+    public String getLockName() {
+        return lockName;
+    }
+
+    public void setIdentityName(String name) {
+        identityName = name;
+    }
+
+    public void setLockName(String name) {
+        lockName = name;
     }
 }

@@ -18,6 +18,7 @@
     <string name="user_table_name">users</string>
     <string name="lock_table_name">locks</string>
     <string name="auth_table_name">authenticators</string>
+    <string name="identities_endpoint">identities</string>
     <string name="registration_table_name">access/management</string>
     <string name="login_endpoint">login</string>
     <string name="sign_up_endpoint">signup</string>

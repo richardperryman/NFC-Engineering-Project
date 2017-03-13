@@ -32,8 +32,8 @@ public class RegistrationAdapter extends ArrayAdapter<Registration> {
         TextView identityView = (TextView) convertView.findViewById(R.id.identity_name);
         TextView lockView = (TextView) convertView.findViewById(R.id.lock_name_and_owner);
 
-        identityView .setText(reg.getName());
-        lockView.setText(reg.getLock());
+        identityView .setText(reg.getIdentityName());
+        lockView.setText(reg.getLockName());
 
         return convertView;
     }
