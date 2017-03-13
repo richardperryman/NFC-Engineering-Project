@@ -26,7 +26,7 @@ static std::string SERVER_URL;
 static GPIOPin GREEN("2");
 static GPIOPin BLUE("3");
 static GPIOPin RED("4");
-static GPIOPin RELAY_SIGNAL("21");
+static GPIOPin RELAY_SIGNAL("14");
 
 static const char* KILL_FILE("service.KILL");
 

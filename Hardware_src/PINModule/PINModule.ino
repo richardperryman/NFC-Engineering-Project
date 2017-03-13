@@ -1,4 +1,3 @@
-
 #include <Keypad.h>
 
 #include <Types.h>
@@ -33,6 +32,7 @@ class PINModule : public AuthenticationModule {
 
     bool startup() {
       pinMode(LEDPIN, OUTPUT);
+      Serial.begin(115200);
       return AuthenticationModule::startup();
     }
 
