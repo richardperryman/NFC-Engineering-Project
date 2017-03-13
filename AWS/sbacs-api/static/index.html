@@ -46,7 +46,7 @@
 			$.post({
 				url : '/signup',
 				data : JSON.stringify(obj),
-				dataType : 'json',
+				dataType : 'text',
 				success : signupSuccess
 			});
 			
@@ -79,6 +79,7 @@
 			// Show the reg table and hide the login section
 			$('#login').hide();
 			$('#registrations').show();
+			$('#authenticators').show();
 			
 			// Remove old entries from the table
 			$('#registrations table').empty();
@@ -129,7 +130,7 @@
 		}
 		
 		function createReg(){
-			// TODO: PUT the registration
+			// PUT the registration
 			var lock_id = $('#lock_id').val();
 			var identity_id = $('#identity_id').val();
 			var expirationTime = $('#expirationTime').val();
@@ -160,6 +161,26 @@
 				dataType : 'json',
 				complete : function(data) {getRegistrations();},
 				headers : {'hmac-user':'10outta13'}
+			});
+		}
+		
+		function createAuth(){
+			// PUT the authenticator
+			var identity_id = $('#identityId').val();
+			var authType = $('#authType').val();
+			var authValue = $('#authValue').val();
+
+			console.log('?&identity_id=' + identity_id + '&authType=' + authType);
+
+			// Make request to authenticators endpoint
+			var query = '?&identity_id=' + identity_id + '&authType=' + authType;
+			$.ajax({
+				type : 'PUT',
+				url : ('/authenticators' + query),
+				dataType : 'json',
+				complete : function(data) {alert('Created Authenticator')},
+				headers : {'hmac-user':'10outta13'},
+				data : authValue
 			});
 		}
 	</script>
@@ -209,6 +230,23 @@
 			<input type="button" value="Create" onclick="createReg();"/>
 		</form>
 		
+	</div>
+	<br/>
+	<br/>
+	<div id="authenticators" hidden="true">
+		<form>
+			Create an Authenticator: <br/>
+			Identity Id: 
+			<input id="identityId" type="text"/>
+			<br/>
+			Authenticator Type: 
+			<input id="authType" type="text"/>
+			<br/>
+			Value: 
+			<input id="authValue" type="password"/>
+			<br/>
+			<input type="button" value="Create" onclick="createAuth();"/>
+		</form>
 	</div>
 </body>
 </html>
