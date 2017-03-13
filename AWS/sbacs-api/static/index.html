@@ -134,14 +134,15 @@
 			var lock_id = $('#lock_id').val();
 			var identity_id = $('#identity_id').val();
 			var expirationTime = $('#expirationTime').val();
+			var count = $('#tempReg').is(':checked') ? 1 : -1;
 			
 			console.log('?lock_id=' + lock_id + '&identity_id=' + 
-				identity_id + '&expirationTime=' + expirationTime);
+				identity_id + '&expirationTime=' + expirationTime + '&count=' + count);
 				
 				
 			// Make request to access/management endpoint
 			var query = '?lock_id=' + lock_id + '&identity_id=' + 
-				identity_id + '&expirationTime=' + expirationTime;
+				identity_id + '&expirationTime=' + expirationTime + '&count=' + count;
 			$.ajax({
 				type : 'PUT',
 				url : ('/access/management' + query),
@@ -207,7 +208,9 @@
 	<!-- Registrations information. On start, hide this part 
 		Show it after selecting get registration-->
 	<div id="registrations" hidden="true">
-		<p>Identities: </p>
+		<button onclick="location.reload();">Logout</button>
+		
+		<p>Identities (by Id): </p>
 		<ul></ul>
 		
 		<br/>
@@ -226,6 +229,8 @@
 			<br/>
 			Expiration Time: 
 			<input id="expirationTime" type="text" value="2038-01-19 03:14:07"/>
+			<br/>
+			Temporary Registration?  <input type="checkbox" id="tempReg" checked/>
 			<br/>
 			<input type="button" value="Create" onclick="createReg();"/>
 		</form>
