@@ -457,7 +457,7 @@ outline for the entire system. The main component of the system would be the clo
 One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
 reason, the idea of a key was split into two parts: an authenticator, and an identity. Users would be able to create
 many authenticators, which are data like passwords, or PINs. These then could be combined into an identity, which
-would be used to open a particular lock. This allowed making identies that reuse the same authenticator, and reusing
+would be used to open a particular lock. This allowed making identities that reuse the same authenticator, and reusing
 identities for different locks.
 
 Another goal of the system was to provide additional behaviour on top of just being able to unlock particular locks.
@@ -795,12 +795,11 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
-% TODO: Reference: https://www.w3schools.com/html/html_intro.asp will span first few sentences
 % TODO: Check if I need to explain HTTP GET request
 
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
-the content of a web page. Since this language is the standard, it was a natural choice for our
+the content of a web page ~\autocite{HTMLREF}. Since this language is the standard, it was a natural choice for our
 project to have the structure and content of the web interface represented in HTML. An HTML document
 is returned by the server on an HTTP GET request to the root of the SBACS server URL, and is then
 rendered by the client's web browser.
@@ -815,27 +814,22 @@ added to certain actions performed by the user while interacting with the web pa
 we use JavaScript to dynamically modify the content of the web page and retrieve additional
 information from the server without requiring a page reload on the client side.
 
-% TODO: Need reference for varying support of JS, then for JQuery functioning across browsers
-% Reference for browser support: http://jquery.com/browser-support/
-% JQuery makes things easier reference??: http://jquery.com/
-
 JavaScript has varying levels of support across different web browsers. This introduces a problem as
 different clients will have a different user experience, and some functionality may not work for
 all clients. JQuery is a library that helps to solve this problem by providing standard functions that
-are supported by different web browsers. There is also the added benefit of having functions that
+are supported by many different web browsers ~\autocite{JQUERYSUPPORT}. There is also the added benefit
+of having functions that
 provide more functionality than the default JavaScript functions, making many operations easier on the
 programmer. For example, manipulation of the content and structure of the web page is made much simpler through
-standard JQuery functions. The support across many browsers and the added functionality make this a
+standard JQuery functions ~\autocite{JQUERYREF}. The support across many browsers and the added functionality make this a
 very desirable library to fulfill all of the needs of our web interface.
 
 \subsection{Single Page Application} \label{single-page-application}
 
-% TODO: Explain what a single page application is (need references)
-%	Then why we used it (educational experience, any benefits?)
-% SPA Reference: https://msdn.microsoft.com/en-us/magazine/dn463786.aspx (maybe quote first sentence of it)
+% Maybe quote first sentence of the reference?
 
 The web interface is designed to be a Single Page Application (SPA). A Single Page Application is
-a web application that runs on a single web page, having no HTML page reloads. This means
+a web application that runs on a single web page, having no HTML page reloads ~\autocite{SPAREF}. This means
 that there is JavaScript performing all requests to the server to retrieve new information, and the
 JavaScript is also performing the manipulation of the web page to update the content and structure.
 This style of application was chosen in order to keep the server side processing of HTML to a minimum.
@@ -878,13 +872,11 @@ attempting to make.
 
 \subsection{Storing Authenticator Data Securely} \label{storing-authenticator-data-securely}
 
-% Salting Reference: pick between: https://crackstation.net/hashing-security.htm#salt and https://learncryptography.com/hash-functions/password-salting
-
 In order to protect user passwords from attacks, the database must not store the
 passwords in plain text. If the passwords are in plain text, an attacker could simply read the data
 and know the user’s password. To prevent this problem, we use salting, which allows us to store a 
 hashed version of the data, along with a salt that is
-used to generate the hashed value. To compare a given password by the user to the value that is
+used to generate the hashed value ~\autocite{PASSWORDSALTING}. To compare a given password by the user to the value that is
 stored, the server must retrieve the salt and use it to hash the given password. The hashed value
 in the database should then match the hashed given password, meaning that the user has provided
 the same password. With this technique, the data is never stored in plain text so it is less
@@ -892,17 +884,14 @@ vulnerable to many types of attacks.
 
 \subsection{Sending Data Securely Over the Network} \label{sending-data-securely-over-the-network}
 
-% Need reference and explanation of why HTTP isn't secure
-% Then reference for why HTTPS is secure
-% HTTP vs HTTPS Reference: https://blog.mozilla.org/security/2017/01/20/communicating-the-dangers-of-non-secure-http/
-% TODO: Find reference about HTTP itself for first sentence (had trouble finding a good one so far)
+% TODO: Double check that my reference for this is correct, had two authors
 
-The Hypertext Transfer Protocol (HTTP) is the standard protocol used to send requests on the internet.
+The Hypertext Transfer Protocol (HTTP) is the standard protocol used to send requests on the internet ~\autocite{HTTPREF}.
 In many situations, these requests need to contain sensitive information, such as passwords or personal
 information about the user. Over this HTTP connection, this data cannot be sent securely, as there are
 security vulnerabilities in HTTP. In order to send this information securely, HTTPS is the common
 solution. In order to ensure the information is sent securely, there is a layer of authentication
-and encryption between the client and server for every HTTPS request that is made. This ensures that
+and encryption between the client and server for every HTTPS request that is made ~\autocite{HTTPSVSHTTP}. This ensures that
 only the sender and intended recipient are able to view and modify the contents of the message. In our
 project we have ensured the use of HTTPS wherever it is necessary to protect our sensitive information.
 
