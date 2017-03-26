@@ -466,7 +466,7 @@ registration, we were able to implement notifications to the user as well as str
 
 % Add picture of database stuff?
 
-\subsection{Architectural Patterns}
+\subsection{Architectural Patterns} \label{architectural-patterns}
 
 % TODO: A discussion of the architectural patterns used for our system
 %    (with deployment diagrams)
@@ -777,10 +777,9 @@ different types of data, keeping the parsing easy which can help to improve resp
 
 \subsection{Node.js} \label{node.js}
 
-% TODO: Properly reference the AWS section
-
-As mentioned above, Amazon Web Services allows for web
-servers written in many languages, leaving the choice of language to the user. In our case we
+Amazon Web Services allows for web
+servers written in many languages, leaving the choice of language to the user \ref{amazon-web-services}.
+In our case we
 decided to use Node.js to write our server code. This language was chosen because it is able to
 run on multiple operating systems and does not require more than one tool for effective development.
 The ability to run on multiple operating systems is very useful to test our code in different ways,
@@ -807,9 +806,7 @@ rendered by the client's web browser.
 
 \subsection{JQuery} \label{jquery}
 
-% TODO: Reference the HTML section in this first sentence
-
-The structure and content of the web interface are statically defined using HTML, but this will not
+The structure and content of the web interface are statically defined using HTML \ref{html}, but this will not
 be an interactive web page without the use of JavaScript. JavaScript allows for functionality to be
 added to certain actions performed by the user while interacting with the web page. In this project,
 we use JavaScript to dynamically modify the content of the web page and retrieve additional
@@ -1085,7 +1082,7 @@ The final layout for the lock control circuit is demonstrated in figure ~\ref{fi
 
 %=================================================================================
 
-\section{Cloud Sewrvices} \label{cloud-services}
+\section{Cloud Services} \label{cloud-services}
 
 %TODO: Talk about node http library, crypto library, url library, mysql library
 
