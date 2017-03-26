@@ -291,7 +291,8 @@ largely unchanged since then. They draw inspiration from situations that we eith
 through common knowledge and research. Online shopping seemed like a ripe market for technology like the SBACS, and
 mail delivery seemed that it followed a fairly similar system. Long term storage facilities also seemed as though they
 would benefit from abstracting away the idea of keys. Once we had considered these use cases, we found that several of
-the problems that they shared could be solved by a company which provided SBACS as a service.
+the problems that they shared could be solved by a company which provided SBACS as a service. The following subsections
+describe these use cases in more detail and provide use-case diagrams summarising them.
 
 %=================================================================================
 
@@ -307,6 +308,8 @@ previously provided as the components of their identity. Once the customer has p
 correctly, the link between their identity and the storage container is broken. This way, the user will not be able to
 inappropriately access the storage container again, and a new link could be made for a different customer. Figure~\ref
 {fig:online-order-secure-pickup-use-case} shows a use-case diagram summarising this.
+
+% Todo: add table of actors and system responses
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
@@ -433,6 +436,11 @@ potential customers as well as reducing the overall cost of setting up the syste
 %=================================================================================
 
 \chapter{Problem Analysis and System Design} \label{problem-analysis-and-system-design}
+
+This chapter describes the initial work done to plan out the overall system, before beginning the implementation work.
+The following sections highlight the main considerations and factors in our initial decisions when designing the system.
+As with all systems, some of the design was changed during implementation, which is described further in chapter~\ref
+{system-implementation}.
 
 %=================================================================================
 
@@ -751,7 +759,7 @@ different types of data, keeping the parsing easy which can help to improve resp
 As mentioned above, Amazon Web Services allows for web
 servers written in many languages, leaving the choice of language to the user. In our case we
 decided to use Node.js to write our server code. This language was chosen because it is able to
-run on multiple operating systems and does not require many tools for effective development.
+run on multiple operating systems and does not require more than one tool for effective development.
 The ability to run on multiple operating systems is very useful to test our code in different ways,
 and leaves us with flexibility of which operating system to host the server with. In the early
 stages of the project, we considered using C\# with the .NET framework to build the web server,
@@ -900,13 +908,18 @@ This chapter will be about the design and construction of the demo unit used at 
 
 \chapter{System Implementation} \label{system-implementation}
 
+This chapter describes the steps taken to implement the SBACS. The tools used along with the design patterns implemented
+are described in detail, along with any design decisions that had to be made or changed when the need became apparent.
+This chapter also outlines all of the protocols used to facilitate communication between the various devices that make
+up SBACS.
+
 %=================================================================================
 
-\section{Android Application} \label{android-application}
+\section{Android Application Development} \label{android-application-development}
 
-The Android application was developed using Android Studio exclusively, and is primarily composed of Java classes, XML
+The Android application was developed using Android Studio [] exclusively, and is primarily composed of Java classes, XML
 documents, and gradle build files. Android studio was selected since it seemed to be the natural tool for writing an
-Android application, and didn't have any negatives with respect to our requirements. Gradle was chosen as the build
+Android application, and didn't have any negatives with respect to our requirements. Gradle [] was chosen as the build
 tool as it is naturally integrated with Android studio.
 
 %---------------------------------------------------------------------------------
@@ -920,7 +933,7 @@ then creates an HTTP/HTTPS connection. The response that comes back over the con
 
 The code for handling these responses is put in a class that extends a Response.Listener of a given type. The
 Response.Listener class provides methods to handle HTTP responses. Since these classes have just a few relatively simple
-methods, anonymous classes were used in all cases. Further, we decided that handling the parsing shoudl be done as
+methods, anonymous classes were used in all cases. Further, we decided that handling the parsing should be done as
 safely as possible, so all responses were first parsed simply as Strings. Then, the response was attempted to be parsed
 as a JSON object of the type expected from the server. If that parsing failed, the message was instead considered an
 error, and handled from there.
@@ -1196,7 +1209,7 @@ Points to mention in this chapter:
 
 \section{Bugs} \label{bugs}
 
-\subsection{Issues with Serial Communcation} \label{issues-with-serial-communcation}
+\subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
 
 %=================================================================================
 
