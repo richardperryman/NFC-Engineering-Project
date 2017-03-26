@@ -353,7 +353,7 @@ the parcel. These boxes could be set up in an area where they are close to many 
 pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
 customer, then place the parcel in the box. Then the customer could be notified through the application that there is a 
 parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
-box, and receive their package. These interations are summarised in the use case diagram in Figure~\ref
+box, and receive their package. These interactions are summarised in the use case diagram in Figure~\ref
 {fig:central-mail-use-case-diagram}.
 
 Throughout this process, the system could make use of the registrations that have been set up for the central mail
@@ -391,7 +391,7 @@ Once a customer has a storage space reserved and has set up their identification
 to expose additional features. An example feature would be a live video stream of the contents of the storage space.
 This would allow the customer to verify that the contents of the space had been correctly stored, for example after
 requesting that the company switch their locker. Figure~\ref{fig:long-term-storage-pickup-use-case-diagram} shows
-a use case diagram outlining the interations to manage a long term storage facility with SBACS.
+a use case diagram outlining the interactions to manage a long term storage facility with SBACS.
 
 Another additional feature would be the option to log items that are stored in the storage space. Through the system, the
 customer would be able to note which items they are adding or removing from the storage space, which would later allow the
@@ -403,7 +403,7 @@ The system would also provide the ability to dynamically give certain users acce
 a storage room to be communally owned by the members of a conglomerate, for example a company. This would ease the
 process by which multiple people may access the storage space while also ensuring that control of the storage was held
 centrally. More privileged users would be able to allow temporary access to less privileged users for a given time
-period. All of the attemped authentications could also be logged and made available to certain users, creating a
+period. All of the attempted authentications could also be logged and made available to certain users, creating a
 reliable paper trail.
 
 \begin{figure}
@@ -418,7 +418,7 @@ reliable paper trail.
 
 Since one of the main goals of the Sensor-Based Access Control System is to allow for a user to share their identities
 between different locks, a logical application of the system is a service provider. A service provider could sell the service
-of installing and manageming the information technology parts of the system to other companies that might want to
+of installing and managing the information technology parts of the system to other companies that might want to
 make use of it, such as Walmart or Dymon mentioned above.
 
 This would benefit the end users as they would be able to share their identities amongst the service providers' various
@@ -470,6 +470,7 @@ registration, we were able to implement notifications to the user as well as str
 
 % TODO: A discussion of the architectural patterns used for our system
 %    (with deployment diagrams)
+% Maybe make each a sub section, we will see how long they are
 
 We used a Centralized Client-Server pattern, as well as a Basic Layer pattern.
 
@@ -901,8 +902,7 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 %TODO: Consider having a higher level section for this, as I think it is important
 % TODO: Find GOF book for references about patterns (4806 textbook for Front Controller pattern)
 
-% Patterns to discuss include: Front Controller, MVC, Facade, 
-% Architecture patterns: Client-Server, Basic Layer
+% Patterns to discuss include: Front Controller, MVC, Facade (sign-up), 
 % All need a class diagram or similar to prove the pattern is used
 
 Diagrams and descriptions of how certain design patterns were used will go here.
@@ -984,7 +984,7 @@ Each kind of data that was of interest to the user was given its own Activity, w
 in a web application. These Activities were all primarily composed of a ListView object, which displays a list of data.
 This list was configured with an Adapter class which extends the general ArrayAdapter<T> class. These adapters were
 used to convert the model classes into a view. The adapter classes were composed of an XML file which described the
-layout of the view, as well as a java class which provided the methods by which the data could be used to fill in the
+layout of the view, as well as a Java class which provided the methods by which the data could be used to fill in the
 layout.
 
 %=================================================================================
