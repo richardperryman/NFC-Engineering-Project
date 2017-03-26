@@ -730,7 +730,7 @@ different types of data, keeping the parsing easy which can help to improve resp
 
 \subsection{Node.js}
 
-% Properly reference the AWS section
+% TODO: Properly reference the AWS section
 
 As mentioned above, Amazon Web Services allows for web
 servers written in many languages, leaving the choice of language to the user. In our case we
@@ -746,6 +746,55 @@ which would limit our ability to work on the server. This is a major reason that
 Node.js, since it can be very effectively developed using only simple text editors, then can be
 executed quickly, without needing to install any build tools. This portability made it very easy to
 work on the code in the same development environment whether we were at school or at home.
+
+\subsection{HTML}
+
+% TODO: Reference: https://www.w3schools.com/html/html_intro.asp will span first few sentences
+% TODO: Check if I need to explain HTTP GET request
+
+Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
+structure and content of a web page through its markup. Web Browsers use an HTML document to render
+the content of a web page. Since this language is the standard, it was a natural choice for our
+project to have the structure and content of the web interface represented in HTML. An HTML document
+is returned by the server on an HTTP GET request to the root of the SBACS server URL, and is then
+rendered by the client's web browser.
+
+\subsection{JQuery}
+
+% TODO: JavaScript with JQuery was used to perform client side processing (references - JS and JQuery)
+%	JQuery specifically was chosen because of its ease of DOM manipulation and HTTP requests
+% TODO: Reference the HTML section in this first sentence
+
+The structure and content of the web interface are statically defined using HTML, but this will not
+be an interactive web page without the use of JavaScript. JavaScript allows for functionality to be
+added to certain actions performed by the user while interacting with the web page. In this project,
+we use JavaScript to dynamically modify the content of the web page and retrieve additional
+information from the server without requiring a page reload on the client side.
+
+% TODO: Need reference for varying support of JS, then for JQuery functioning across browsers
+
+JavaScript has varying levels of support across different web browsers. This introduces a problem as
+different clients will have a different user experience, and some functionality may not work for
+all clients. JQuery is a library that helps to solve this problem by providing standard functions that
+are supported by different web browsers. There is also the added benefit of having functions that
+provide more functionality than the default JavaScript functions, making many operations easier on the
+programmer. For example, manipulation of the content and structure of the web page is made much simpler through
+standard JQuery functions. The support across many browsers and the added functionality make this a
+very desirable library to fulfill all of the needs of our web interface.
+
+\subsection{Single Page Application}
+
+% TODO: Explain what a single page application is (need references)
+%	Then why we used it (educational experience, any benefits?)
+
+The web interface is designed to be a Single Page Application (SPA). A Single Page Application is
+a web application that runs on a single web page, having no HTML page reloads. This means
+that there is JavaScript performing all requests to the server to retrieve new information, and the
+JavaScript is also performing the manipulation of the web page to update the content and structure.
+This style of application was chosen in order to keep the server side processing of HTML to a minimum.
+Once the page has been returned to the client one time, there will be no more HTML processing on the
+server, as all subsequent information is requested through JavaScript. This reduces complexity on the
+server processing, as a static HTML file is always returned, and no actual processing of HTML is needed.
 
 \subsection{MySQL}
 
