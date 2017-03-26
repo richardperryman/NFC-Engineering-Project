@@ -531,14 +531,35 @@ required a protocol which would handle segmenting and recombining the message. A
 the units used by ISO 14443-4 [], which describes the transmission protocol used by NFC devices. They are restricted to
 256 bytes, including headers.
 
-% Todo, some fact checking
 To work around this, the hardware device connected to the shield maintains a buffer. Under ISO 14443-4, messages can be
 reliably transferred, so managing this buffer is the main consideration of our protocol. The hardware determines the
-maximum amount of data that can be stored in one APDU, and fills in this value into the length field of the APDU that it
+maximum amount of data that can be stored in one APDU, after filling in some mandatory fields such as the AID, and fills
+in this value into the length field of the APDU that it
 sends to the Android device. Then, the Android application responds with the minimum of that much data,  and all of the
 remaining data that it has to send. Once the hardware receives an amonut of data less than the potential maximum, it
 deactivates the connection. In the event that the data from the Android application fits exactly into the last message
-that would be sent, the protocol still works, as the application will then respond with zero data bytes.
+that would be sent, the protocol still works, as the application will then respond with zero data bytes. This process
+is visualised as a message sequence chart in figure~\ref{fig:nfc-protocol-msc}, as well as state machines in figures~\ref
+{fig:nfc-protocol-fsm-hw} and \ref{fig:nfc-protocol-fsm-app}.
+
+%todo: make smaller?
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/NFC-Diagrams/SBACS-NFC-Protocol}
+    \caption{The happy-path message sequence chart for the designed protocol}
+    \label{fig:nfc-protocol-msc}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/NFC-Diagrams/Hardware-NFC-Protocol-FSM}
+    \caption{FSM describing the hardware's implementation of the protocol}
+    \label{fig:nfc-protocol-fsm-hw}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/NFC-Diagrams/App-NFC-Protocol-FSM}
+    \caption{FSM describing the application's implementation of the protocol}
+    \label{fig:nfc-protocol-fsm-app}
+\end{figure}
 
 % Todo: MSC / FSMs?
 
@@ -593,7 +614,7 @@ associated with the notification.
 \subsection{NFC Handler} \label{nfc-handler}
 
 % Provide ref to section?
-Recall from section , the NFC communication method that we decided on used host-based card emulation. Android provides
+Recall from section~\ref{mobile-devices}, the NFC communication method that we decided on used host-based card emulation. Android provides
 an API to accomplish these communications, through the HostApduService class []. This class provides a framework for
 creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
 communications, while also providing overrideable methods to determine what data should be sent based on the incoming
