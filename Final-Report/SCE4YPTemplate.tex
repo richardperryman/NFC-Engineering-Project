@@ -15,10 +15,10 @@
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{url}
 \usepackage[
-	backend=bibtex,
-	natbib=true,
-	style=numeric,
-	sorting=none
+    backend=bibtex,
+    natbib=true,
+    style=numeric,
+    sorting=none
 ]{biblatex}
 \usepackage[scientific-notation=true, binary-units=true]{siunitx}
 \sisetup{per-mode=fraction}%
@@ -39,7 +39,7 @@
 }
 
 \copyrightfalse % do not produce a separate copyright page
-		    % otherwise use \copyrighttrue
+            % otherwise use \copyrighttrue
 %    \figurespagefalse % do not produce a separate figures page
 %    \tablespagefalse  % do not produce a separate tables page
 
@@ -53,12 +53,12 @@
 %=================================================================================
 
 \prefacesection{Abstract}
-	This report tells you all you need to know about something.
+    This report tells you all you need to know about something.
 
 %=================================================================================
 
 \prefacesection{Acknowledgements}
-	(To be fleshed out more after the first draft)
+    (To be fleshed out more after the first draft)
     We would like to thank:
     \begin{itemize}
     \item Our supervisors, professors Shikharesh Majumdar and Chung-Horng Lung
@@ -77,29 +77,32 @@
 \listoftables   % to print the List of Tables
 
 %=================================================================================
-		            
+                    
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
-	AID & Application IDentifier \\
-	APDU & Application Protocol Data Unit \\
-	API & Application Programming Interface \\
-	HMAC & Keyed-Hash Message Authentication Code \\
+    AID & Application IDentifier \\
+    APDU & Application Protocol Data Unit \\
+    API & Application Programming Interface \\
+    HMAC & Keyed-Hash Message Authentication Code \\
+	HTML & Hypertext Markup Language \\
+	HTTP & Hypertext Transfer Protocol \\
     I2C & Inter-Integrated Circuit \\
     IO & Input/Output \\
-	JSON & JavaScript Object Notation \\
-	MVC & Model-View-Controller \\
-	NFC & Near Field Communication \\
-	RFC & Request for Comments \\
+    JSON & JavaScript Object Notation \\
+    MVC & Model-View-Controller \\
+    NFC & Near Field Communication \\
+    RFC & Request for Comments \\
+    SBACS & Sensor-Based Access Control System \\
 \end{tabular}
 
 %=================================================================================
 
 \endpreface
-	
+    
 %=================================================================================
 
-\chapter{Introduction}
+\chapter{Introduction} \label{introduction}
 
 Give an introduction to your project.  This might include:
 \begin{itemize}
@@ -113,11 +116,11 @@ You should tune this appropriately for what best suits your project.
 
 %=================================================================================
 
-\chapter{The Engineering Project}
+\chapter{The Engineering Project} \label{the-engineering-project}
 
 %=================================================================================
 
-\section{Health and Safety}
+\section{Health and Safety} \label{health-and-safety}
 
 The main health and safety concern for this project was ensuring the safe preparation of circuits for the hardware 
 component. The change of bodily harm due to electric shock was possible, as the highest-risk component of the project 
@@ -135,7 +138,7 @@ were enforced to mitigate safety risks when handling the electrical components:
 
 %=================================================================================
 
-\section{Engineering Professionalism}
+\section{Engineering Professionalism} \label{engineering-professionalism}
 
 \begin{itemize}
     \item Teammates were respectful towards one another
@@ -147,7 +150,7 @@ were enforced to mitigate safety risks when handling the electrical components:
 
 %=================================================================================
 
-\section{Project Management}
+\section{Project Management} \label{project-management}
 
 This project was sufficiently complicated, that we decided that project management was a necessary tool to facilitate 
 the success of the project. We used Github to manage various issues and tasks, as well as for a central 
@@ -163,13 +166,13 @@ our work.
 
 %=================================================================================
 
-\section{Individual Contributions}
+\section{Individual Contributions} \label{individual-contributions}
 
 This section will summarise the contributions each team member made to the project, and to this report.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Project Contributions}
+\subsection{Project Contributions} \label{project-contributions}
 
 Jessica's contributions:
 \begin{itemize}
@@ -197,7 +200,7 @@ As a group, we collaborated on system integration, and integration testing.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Report Contributions}
+\subsection{Report Contributions} \label{report-contributions}
 
 Jessica's contributions:
 \begin{itemize}
@@ -223,59 +226,59 @@ All members collaborated on sections 2 and 4.
 %=================================================================================
 
 % Consider adding Node, Android? Maybe others?
-\chapter{Technical Background}
+\chapter{Technical Background} \label{technical-background}
 
 %=================================================================================
 
-\section{NFC}
+\section{NFC} \label{nfc}
 
 %=================================================================================
 
-\section{Cloud Computing}
+\section{Cloud Computing} \label{cloud-computing}
 
 %=================================================================================
 
 %---------------------------------------------------------------------------------
 
-\subsection{AWS}
+\subsection{AWS} \label{aws}
 
 %=================================================================================
 
-\section{Security}
+\section{Security} \label{security}
 
 %=================================================================================
 
-\section{Single-Board Computers and Microcontrollers}
+\section{Single-Board Computers and Microcontrollers} \label{single-board-computers-and-microcontrollers}
 
-A single-board computer, or SOC, incorporate all of the elements necessary for a functional 
+A single-board computer, or SOC, incorporates all of the elements necessary for a functional 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
 (SOMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
-circuit board. The main distinction between SOCs and SOMs is the same as that between computers and microcontrollers. A 
+circuit board. The main distinction between SOCs and SOMs is the same as that between computers and microcontrollers.
+A microcontroller is designed specifically for one  purpose, such as powering an alarm clock. Whereas, a
 computer is a general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware 
-features to support the more intense computing needs of a user. A microcontroller is designed specifically for one 
-purpose, such as powering an alarm clock. As such, it does not require a significant amount of memory, processing 
+features to support the more intense computing needs of a user. As such, it does not require a significant amount of memory, processing 
 power, or electricity to perform its task.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Raspberry Pi}
+\subsection{Raspberry Pi} \label{raspberry-pi}
 
 The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
 design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
-level. However, its accessible price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
+level. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
 used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over ten million 
 units [CITATION], with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
 % One more paragraph here
 
 %---------------------------------------------------------------------------------
 
-\subsection{Arduino}
+\subsection{Arduino} \label{arduino}
 
 
 
 %=================================================================================
 
-\chapter{Business Use Cases}
+\chapter{Business Use Cases} \label{business-use-cases}
 
 Design for our system began with considering use cases that could be handled by our system. This way, we could be sure
 to only design features that would prove useful to some potential users, while also making sure that we don't miss any
@@ -288,11 +291,12 @@ largely unchanged since then. They draw inspiration from situations that we eith
 through common knowledge and research. Online shopping seemed like a ripe market for technology like the SBACS, and
 mail delivery seemed that it followed a fairly similar system. Long term storage facilities also seemed as though they
 would benefit from abstracting away the idea of keys. Once we had considered these use cases, we found that several of
-the problems that they shared could be solved by a company which provided SBACS as a service.
+the problems that they shared could be solved by a company which provided SBACS as a service. The following subsections
+describe these use cases in more detail and provide use-case diagrams summarising them.
 
 %=================================================================================
 
-\section{Online Order Secure Pickup}
+\section{Online Order Secure Pickup} \label{online-order-secure-pickup}
 
 With online shopping becoming more popular [], the hassle of being physically present to shop in stores 
 could be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
@@ -301,13 +305,16 @@ and ready for pick-up, a store employee could create a link between their custom
 that user's purchases. When the customer arrives at the store to pick up their items, 
 they can gain access to the storage container assigned to them by using the authentication methods that they had
 previously provided as the components of their identity. Once the customer has provided these authentication units
-correctly, the link between their identity and the storage container is broken. This way, the user won't be able to
-inappropriately access the storage container again, and a new link could be made for a different customer.
+correctly, the link between their identity and the storage container is broken. This way, the user will not be able to
+inappropriately access the storage container again, and a new link could be made for a different customer. Figure~\ref
+{fig:online-order-secure-pickup-use-case} shows a use-case diagram summarising this.
+
+% Todo: add table of actors and system responses
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
-	\caption{Online Order Secure Pickup Use Case Diagram}
-	\label{fig:online-order-secure-pickup-use-case}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
+    \caption{Online Order Secure Pickup Use Case Diagram}
+    \label{fig:online-order-secure-pickup-use-case}
 \end{figure}
 
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
@@ -323,7 +330,7 @@ their usual aids instead of occupying a store employee's time.
 
 %=================================================================================
 
-\section{Central Mail Package Pickup}
+\section{Central Mail Package Pickup} \label{central-mail-package-pickup}
 
 Some parcels are too large to fit in a regular mail box, and must be delivered in person. Many delivery services only 
 operate during standard work hours, while many people that need to accept the delivery will not be home. In these cases 
@@ -346,7 +353,8 @@ the parcel. These boxes could be set up in an area where they are close to many 
 pick up their parcel without going all the way to the local office. The delivery person would grant access to the 
 customer, then place the parcel in the box. Then the customer could be notified through the application that there is a 
 parcel ready to be picked up. When the customer arrives at the box, they can use the application to open the parcel 
-box, and receive their package.
+box, and receive their package. These interations are summarised in the use case diagram in Figure~\ref
+{fig:central-mail-use-case-diagram}.
 
 Throughout this process, the system could make use of the registrations that have been set up for the central mail
 box. The user set up as the deliverer would be able to send notifications to the system on the status of the package, allowing
@@ -359,14 +367,14 @@ customer that the package will no longer be available to be picked up, and alter
 also lead to an expiry of the customer's registration to the box, so they will no longer be able to open the box.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
-	\caption{Central Mail Package Pickup Use Case Diagram}
-	\label{fig:central-mail-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
+    \caption{Central Mail Package Pickup Use Case Diagram}
+    \label{fig:central-mail-use-case-diagram}
 \end{figure}
 
 %=================================================================================
 
-\section{Long Term Storage}
+\section{Long Term Storage} \label{long-term-storage}
 
 The Sensor-Based Access Control System also has applications for long term storage companies, such as Dymon. For these 
 companies, the system could be viewed as an overall manager of customer storage. The system's registrations can be used 
@@ -374,14 +382,16 @@ to provide additional services for specific storage spaces. The system will also
 tasks that the company will need to provide.
 
 The system, using its multiple step authentication, would allow the company to advertise greater security. Along with
-similar methods to those described in the above use cases, the system could be configured to require biometrics, such
+similar methods to those described in the use cases in sections \ref{online-order-secure-pickup}, and
+\ref{central-mail-package-pickup}, the system could be configured to require biometrics, such
 as fingerprints or facial recognition, as a form of authentication. By combining these metrics, the system would greatly
 reduce the potential for attack by strengthening the potential failure points of the identification process.
 
 Once a customer has a storage space reserved and has set up their identification, the registration could be configured
 to expose additional features. An example feature would be a live video stream of the contents of the storage space.
 This would allow the customer to verify that the contents of the space had been correctly stored, for example after
-requesting that the company switch their locker.
+requesting that the company switch their locker. Figure~\ref{fig:long-term-storage-pickup-use-case-diagram} shows
+a use case diagram outlining the interations to manage a long term storage facility with SBACS.
 
 Another additional feature would be the option to log items that are stored in the storage space. Through the system, the
 customer would be able to note which items they are adding or removing from the storage space, which would later allow the
@@ -397,24 +407,24 @@ period. All of the attemped authentications could also be logged and made availa
 reliable paper trail.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
-	\caption{Long Term Storage Use Case Diagram}
-	\label{fig:long-term-storage-pickup-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
+    \caption{Long Term Storage Use Case Diagram}
+    \label{fig:long-term-storage-pickup-use-case-diagram}
 \end{figure}
 
 %=================================================================================
 
-\section{Service Provider}
+\section{Service Provider} \label{service-provider}
 
 Since one of the main goals of the Sensor-Based Access Control System is to allow for a user to share their identities
-between different locks, a logical application of the system is a service provider. A service provider could sell the
-installation and management of the information technology parts of the system to other companies that might want to
+between different locks, a logical application of the system is a service provider. A service provider could sell the service
+of installing and manageming the information technology parts of the system to other companies that might want to
 make use of it, such as Walmart or Dymon mentioned above.
 
 This would benefit the end users as they would be able to share their identities amongst the service providers' various
-customers. This would allow someone to sign up for a locker at Walmart, and later reuse all the work that they did to
-set that up to unlock their central mail box or their home. This shared identity would allow people to remember fewer
-passwords and generally have fewer physical keys.
+customers. This would allow someone to sign up for a locker at Walmart, and later reuse their SBACS identity to open
+their apartment's mail package pickup unit assuming both SBACS systems were managed by the same service provider. This
+shared identity would allow people to remember fewer passwords and generally have fewer physical keys.
 
 Customers purchasing the services for the SBACS would save any technical work associated with installing the system.
 The service provider would be able to manage the databases, servers and any customer complaints or feedback. Providers
@@ -425,22 +435,28 @@ potential customers as well as reducing the overall cost of setting up the syste
 
 %=================================================================================
 
-\chapter{Problem Analysis and System Design}
+\chapter{Problem Analysis and System Design} \label{problem-analysis-and-system-design}
+
+This chapter describes the initial work done to plan out the overall system, before beginning the implementation work.
+The following sections highlight the main considerations and factors in our initial decisions when designing the system.
+As with all systems, some of the design was changed during implementation, which is described further in chapter~\ref
+{system-implementation}.
 
 %=================================================================================
 
-\section{Overall System Analysis}
+\section{Overall System Analysis} \label{overall-system-analysis}
 
-The requirements of our system from the use cases described above lead us to a simple outline for the entire system.
-The main component of the system would be the cloud server, which would store information regarding users, locks, and
-the relationships between them. The lock hardware would need to be able to securely accept data from the user, and
-securely send that data to the server for verification. Since handling electronic security can be difficult to do
-manually, having an application that handles much of the busy work would greatly help users interact with the system.
+The requirements of our system from the use cases described in chapter~\ref{business-use-cases} lead us to a simple
+outline for the entire system. The main component of the system would be the cloud server, which would store information
+ regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
+ data from the user, and securely send that data to the server for verification. Since handling electronic security can
+ be difficult to do manually, having an application that handles much of the busy work would greatly help users interact
+ with the system.
 
 % Not sure if this belongs here
 One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
 reason, the idea of a key was split into two parts: an authenticator, and an identity. Users would be able to create
-many authenticators, which were things like a password, or a PIN. These then could be combined into an identity, which
+many authenticators, which are data like passwords, or PINs. These then could be combined into an identity, which
 would be used to open a particular lock. This allowed making identies that reuse the same authenticator, and reusing
 identities for different locks.
 
@@ -450,9 +466,16 @@ registration, we were able to implement notifications to the user as well as str
 
 % Add picture of database stuff?
 
+\subsection{Architectural Patterns}
+
+% TODO: A discussion of the architectural patterns used for our system
+%    (with deployment diagrams)
+
+We used a Centralized Client-Server pattern, as well as a Basic Layer pattern.
+
 %=================================================================================
 
-\section{NFC}
+\section{NFC Design} \label{nfc-design}
 
 Determining how NFC communication should take place required analysis of two hardware systems: NFC card readers, as well
 as mobile devices. The most desirable protocol would be able to handle the widest variety of available hardwares for
@@ -461,7 +484,7 @@ portability of the solution.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Card Readers}
+\subsection{Card Readers} \label{card-readers}
 
 % Todo: sources
 Since NFC cards are primarily designed for NFC communications, there were few restrictions that stemmed from potential
@@ -470,7 +493,7 @@ decision on our part would be very likely to be supported by any card that would
 
 %---------------------------------------------------------------------------------
 
-\subsection{Mobile Devices}
+\subsection{Mobile Devices} \label{mobile-devices}
 
 The two most popular operating systems for mobile devices are iOS and Android []. Since iOS devices have NFC disabled
 for everything except Apple Pay[], the only option that remained was Android. Apple devices would represent a large
@@ -492,15 +515,16 @@ costs outweighed the simplicity of the Beam API, so passive communications were 
 
 % Discuss AID here? or in implementation? Here for now I guess
 Since more than one application could potentially want to handle an NFC message, the message protocol contains a field
-called the Application IDentifier, or AID []. These AIDs are just large numbers which identify which application should
+called the Application IDentifier, or AID []. These AIDs are 16-byte bit patterns which identify which application should
 handle the associated message. The Android operating system is responsible for delivering the APDUs to the
-appropriate application's service []. Reserving a particular AID costs money, so we decided that the probability of a
-collision ocurring when taking a public AID would be an acceptable cost for the purpose of our demonstrative
-implementation.
+appropriate application's service []. Reserving a particular AID for national or international use requires some
+paperwork and and a fee, as per the international standards organisation []. Therefore, by not paying this fee, our
+application may happen to share an AID with another application. We found that the cost of a potential collision was
+less than the cost of reserving an AID, therefore our application uses a proprietary which we selected at random.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Protocol}
+\subsection{Protocol} \label{protocol}
 
 Since our NFC communications may require more data than can be fit within an Application Protocol Data Units (APDUs), we
 required a protocol which would handle segmenting and recombining the message. APDUs are defined in ISO 7816-4 [] and are
@@ -520,7 +544,7 @@ that would be sent, the protocol still works, as the application will then respo
 
 %=================================================================================
 
-\section{Android}
+\section{Android Application} \label{android-application}
 
 The Android application's goal was to provide the end users with an easy way of interacting with the SBACS system.
 Therefore the application was designed to be as simple as possible while still maintaining flexibility when dealing with
@@ -528,9 +552,9 @@ the cloud server as well as the many potential hardware devices.
 
 %---------------------------------------------------------------------------------
 
-\subsection{User Interface}
+\subsection{User Interface} \label{user-interface}
 
-The natural decision for designing the basic workings of the application was to use the Model-View-Controller (MVC) 
+The natural decision for designing the basic workings of the application was to use the Model-View-Controller (MVC) [] 
 design pattern. This pattern separates the underlying data (model) from the display that the user sees (view) as well as
 the components that the user interacts with (controller). Android provides APIs to support MVC. Model objects can be
 simple objects, but view objects can subclass the View class or its more specific subclasses, and the controller
@@ -549,7 +573,7 @@ correctly load the information from that user when displaying the data Activitie
 
 %---------------------------------------------------------------------------------
 
-\subsection{Notifications}
+\subsection{Notifications} \label{notifications}
 
 The design for the notifications that would inform end users of information such as their newly available registration
 with a particular lock was based partly on decreasing load on the server. Having the server maintain a large amount of
@@ -561,16 +585,16 @@ This polling was implemented simply in the application using a service which run
 device. This service regularly hits the server at a particular endpoint designed for handling these notifications. Since
 many users may be using the application at once, it was important to consider the performance of the endpoint's code.
 The endpoint returns information valuable to the application for display in the notification. The notifications make use
-of Android notification's ability to launch an Acticity with an Intent to take the user to the appropriate Activity
+of an Android notification's ability to launch an Acticity with an Intent to take the user to the appropriate Activity
 associated with the notification.
 
 %---------------------------------------------------------------------------------
 
-\subsection{NFC Handler}
+\subsection{NFC Handler} \label{nfc-handler}
 
 % Provide ref to section?
-As mentioned earlier, the NFC communication method that we decided on used host-based card emulation. Android provides
-and API to accomplish these communications, through the HostApduService class []. This class provides a framework for
+Recall from section , the NFC communication method that we decided on used host-based card emulation. Android provides
+an API to accomplish these communications, through the HostApduService class []. This class provides a framework for
 creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
 communications, while also providing overrideable methods to determine what data should be sent based on the incoming
 message.
@@ -584,11 +608,11 @@ communications.
 
 %=================================================================================
 
-\section{Lock Hardware}
+\section{Lock Hardware} \label{lock-hardware}
 
 %---------------------------------------------------------------------------------
 
-\subsection{Lock Control Circuit}
+\subsection{Lock Control Circuit Design} \label{lock-control-circuit-design}
 
 Design of the lock control circuit, the core of the system, began by determining its requirements:
 \begin{itemize}
@@ -604,14 +628,14 @@ Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the cor
 electrical elements used in each block are discussed in section~\ref{section:lock-control-circuit-implementation}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/hardware_block}
-	\caption{Hardware Block Diagram}
-	\label{fig:hardware-block}
+    \includegraphics[width=\textwidth]{Diagrams/hardware_block}
+    \caption{Hardware Block Diagram}
+    \label{fig:hardware-block}
 \end{figure}
 
 %---------------------------------------------------------------------------------
 
-\subsection{Lock Control Software}
+\subsection{Lock Control Software Design} \label{lock-control-software-design}
 
 As mentioned in the requirements stated in the previous section, the lock control software should manage the status
 LEDs, the lock, and handle incoming authentication data and server interactions. Since the first three elements listed 
@@ -623,12 +647,12 @@ Since USB is widely used and simple to implement, USB was chosen as the means to
 
 Continuing on with dividing the various responsibilities of the lock control software into subclasses, two more emerge 
 from the remaining requirements: one class to poll the authentication modules, which will take advantage of the 
-hardware abstraction of the hardware interface, and one class to handle server communication. Figure NEXT is a block 
-diagram of the architecture of the lock software.
+hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
+{fig:hardware-block} is a block diagram of the architecture of the lock software.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Authentication Modules}
+\subsection{Authentication Modules} \label{authentication-modules}
 
 To meet the requirement of having a modular framework that supports multiple authentication methods, modules that 
 perform the gathering of authentication data can be attached to the system, to increase the authentication options. As 
@@ -639,24 +663,24 @@ Adaptee provides the interfaces necessary for communicating with the core, and a
 authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
 necessary for the means of authentication.
 
-With an Adapter pattern in place to handle the creation of various types of authentication module, there also needed to 
+With an Adapter pattern in place to handle the creation of various types of authentication modules, there also needed to 
 be a pattern to handle the general flow of data, which starts with user entry, and ends with transmission to the system
 core. The Entity-Controller-Boundary pattern was a natural fit for this situation, and as shown in 
-figure~\ref{fig:modules-ecb}, the first draft of the authentication module software only required one of each 
+Figure~\ref{fig:modules-ecb}, the first draft of the authentication module software only required one of each 
 stereotype in the pattern, as the software did not need to be complex. The Authenticator object would be passed over 
 USB to a controller in the central process.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/modules_ecb}
-	\caption{Authentication Modules Pattern Draft}
-	\label{fig:modules-ecb}
+    \includegraphics[width=\textwidth]{Diagrams/modules_ecb}
+    \caption{Authentication Modules Pattern Draft}
+    \label{fig:modules-ecb}
 \end{figure}
 
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
 single-board microcontroller, such as a Arduino, which would be deemed a "communication board." This communication board
 would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
 removing that overhead from the central computer. Once all of the authentication data was gathered, the board would send 
-the data over a USB connection to the central computer. However, this design was tossed, for multiple reasons:
+the data over a USB connection to the central computer. However, this design was discarded for multiple reasons:
 \begin{enumerate}
     \item The Arduino, as well as most other microcontrollers in the hobby market, can only communicate with another 
     Arduino over I2C;
@@ -674,11 +698,11 @@ microcontrollers, while still meeting the requirements.
 
 %=================================================================================
 
-\section{Cloud}
+\section{Cloud} \label{cloud}
 
 % TODO: Resolve the comments in my section
 
-\subsection{Amazon Web Servies}
+\subsection{Amazon Web Servies} \label{amazon-web-servies}
 
 % Double check my reference
 
@@ -697,10 +721,10 @@ security configuration details to protect the web server and our data. We chose 
 because of the variety of services that were offered that provide everything we needed to
 effectively host our web server for this project.
 
-\subsection{Representational State Transer}
+\subsection{Representational State Transer} \label{representational-state-transer}
 
 % Double check my reference
-% Reference the Front Controller section (once written)
+% TODO: Reference the Front Controller section (once written)
 
 The Representational State Transfer (REST) architectural style ~\autocite{RESTARCHSTYLE} was chosen to be used
 for our web server. The main principle of REST that we adhered to is the idea of a stateless
@@ -715,7 +739,7 @@ specify which endpoint or service is being requested. The web server for this pr
 uniform interface as all HTTP requests go to a single Front Controller, which
 then determines based on the identifiers the appropriate handler of the request.
 
-\subsection{JavaScript Object Notation}
+\subsection{JavaScript Object Notation} \label{javascript-object-notation}
 
 % Double check my reference (page 7, section 1)
 
@@ -728,14 +752,14 @@ different components will be using different technologies and built in different
 also very lightweight in terms of its grammar, having very few elements that allow for many
 different types of data, keeping the parsing easy which can help to improve response time.
 
-\subsection{Node.js}
+\subsection{Node.js} \label{node.js}
 
-% Properly reference the AWS section
+% TODO: Properly reference the AWS section
 
 As mentioned above, Amazon Web Services allows for web
 servers written in many languages, leaving the choice of language to the user. In our case we
 decided to use Node.js to write our server code. This language was chosen because it is able to
-run on multiple operating systems and does not require many tools for effective development.
+run on multiple operating systems and does not require more than one tool for effective development.
 The ability to run on multiple operating systems is very useful to test our code in different ways,
 and leaves us with flexibility of which operating system to host the server with. In the early
 stages of the project, we considered using C\# with the .NET framework to build the web server,
@@ -747,7 +771,57 @@ Node.js, since it can be very effectively developed using only simple text edito
 executed quickly, without needing to install any build tools. This portability made it very easy to
 work on the code in the same development environment whether we were at school or at home.
 
-\subsection{MySQL}
+\subsection{HTML} \label{html}
+
+% TODO: Reference: https://www.w3schools.com/html/html_intro.asp will span first few sentences
+% TODO: Check if I need to explain HTTP GET request
+
+Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
+structure and content of a web page through its markup. Web Browsers use an HTML document to render
+the content of a web page. Since this language is the standard, it was a natural choice for our
+project to have the structure and content of the web interface represented in HTML. An HTML document
+is returned by the server on an HTTP GET request to the root of the SBACS server URL, and is then
+rendered by the client's web browser.
+
+\subsection{JQuery} \label{jquery}
+
+% TODO: Reference the HTML section in this first sentence
+
+The structure and content of the web interface are statically defined using HTML, but this will not
+be an interactive web page without the use of JavaScript. JavaScript allows for functionality to be
+added to certain actions performed by the user while interacting with the web page. In this project,
+we use JavaScript to dynamically modify the content of the web page and retrieve additional
+information from the server without requiring a page reload on the client side.
+
+% TODO: Need reference for varying support of JS, then for JQuery functioning across browsers
+% Reference for browser support: http://jquery.com/browser-support/
+% JQuery makes things easier reference??: http://jquery.com/
+
+JavaScript has varying levels of support across different web browsers. This introduces a problem as
+different clients will have a different user experience, and some functionality may not work for
+all clients. JQuery is a library that helps to solve this problem by providing standard functions that
+are supported by different web browsers. There is also the added benefit of having functions that
+provide more functionality than the default JavaScript functions, making many operations easier on the
+programmer. For example, manipulation of the content and structure of the web page is made much simpler through
+standard JQuery functions. The support across many browsers and the added functionality make this a
+very desirable library to fulfill all of the needs of our web interface.
+
+\subsection{Single Page Application} \label{single-page-application}
+
+% TODO: Explain what a single page application is (need references)
+%	Then why we used it (educational experience, any benefits?)
+% SPA Reference: https://msdn.microsoft.com/en-us/magazine/dn463786.aspx (maybe quote first sentence of it)
+
+The web interface is designed to be a Single Page Application (SPA). A Single Page Application is
+a web application that runs on a single web page, having no HTML page reloads. This means
+that there is JavaScript performing all requests to the server to retrieve new information, and the
+JavaScript is also performing the manipulation of the web page to update the content and structure.
+This style of application was chosen in order to keep the server side processing of HTML to a minimum.
+Once the page has been returned to the client one time, there will be no more HTML processing on the
+server, as all subsequent information is requested through JavaScript. This reduces complexity on the
+server processing, as a static HTML file is always returned, and no actual processing of HTML is needed.
+
+\subsection{MySQL} \label{mysql}
 
 To store data that is needed by our system, we decided to use a relational database. All
 members of the group have taken at least one course that has talked about relational databases, so
@@ -755,20 +829,21 @@ we all had at least some basic understanding of this type of database. MySQL was
 because it was known to members of the group, making it easy for everyone to make queries to
 the database whenever it was needed.
 
-\subsection{Relational Database Theory}
+\subsection{Relational Database Theory} \label{relational-database-theory}
 
-% explanation of relational theory, third normal form
-% proof of third normal form for our db here
+% TODO: explanation of relational theory, third normal form
+% TODO: proof of third normal form for our db here
+% Database normalization reference: https://www.tutorialspoint.com/sql/sql-rdbms-concepts.htm
 We follow third normal form in our database. The proof and description of what that is will go here.
 
-\subsection{Authentication for Server API}
+\subsection{Authentication for Server API} \label{authentication-for-server-api}
 
-% Also include SD for flow of this in detail
-% Mention the hashing algorithm used, maybe explain it
+% TODO: Also include SD for flow of this in detail
+% TODO: Maybe?: Mention the hashing algorithm used, maybe explain it
 
 Many requests to the server allow users to read, modify, and delete data, so we needed a
 way to ensure that users were identified and authenticated to allow certain requests to be
-performed. We used Hashed Message Authentication Codes (HMAC) to accomplish this goal.
+performed. We used Keyed-Hash Message Authentication Codes (HMAC) to accomplish this goal.
 The user is able to login using their username and password, and upon successful login, they are
 provided with a key and user id. The key is then used to hash the body of subsequent messages. 
 The client must also send the user id to identify who is trying to
@@ -779,9 +854,9 @@ provided user id is used to determine which key the server will use to hash the 
 also used to determine whether or not the user is authorized to make the request they are
 attempting to make.
 
-\subsection{Storing Authenticator Data Securely}
+\subsection{Storing Authenticator Data Securely} \label{storing-authenticator-data-securely}
 
-% Get reference about salting, and provide more explanation of what it is
+% Salting Reference: pick between: https://crackstation.net/hashing-security.htm#salt and https://learncryptography.com/hash-functions/password-salting
 
 In order to protect user passwords from attacks, the database must not store the
 passwords in plain text. If the passwords are in plain text, an attacker could simply read the data
@@ -793,17 +868,31 @@ in the database should then match the hashed given password, meaning that the us
 the same password. With this technique, the data is never stored in plain text so it is less
 vulnerable to many types of attacks.
 
-\subsection{Sending Data Securely Over the Network}
+\subsection{Sending Data Securely Over the Network} \label{sending-data-securely-over-the-network}
 
 % Need reference and explanation of why HTTP isn't secure
 % Then reference for why HTTPS is secure
+% HTTP vs HTTPS Reference: https://blog.mozilla.org/security/2017/01/20/communicating-the-dangers-of-non-secure-http/
+% TODO: Find reference about HTTP itself for first sentence (had trouble finding a good one so far)
 
-HTTP is not a secure protocol. HTTPS is secure.
+The Hypertext Transfer Protocol (HTTP) is the standard protocol used to send requests on the internet.
+In many situations, these requests need to contain sensitive information, such as passwords or personal
+information about the user. Over this HTTP connection, this data cannot be sent securely, as there are
+security vulnerabilities in HTTP. In order to send this information securely, HTTPS is the common
+solution. In order to ensure the information is sent securely, there is a layer of authentication
+and encryption between the client and server for every HTTPS request that is made. This ensures that
+only the sender and intended recipient are able to view and modify the contents of the message. In our
+project we have ensured the use of HTTPS wherever it is necessary to protect our sensitive information.
 
 
-\subsection{Design Patterns}
+\subsection{Design Patterns} \label{design-patterns}
 
 %TODO: Consider having a higher level section for this, as I think it is important
+% TODO: Find GOF book for references about patterns (4806 textbook for Front Controller pattern)
+
+% Patterns to discuss include: Front Controller, MVC, Facade, 
+% Architecture patterns: Client-Server, Basic Layer
+% All need a class diagram or similar to prove the pattern is used
 
 Diagrams and descriptions of how certain design patterns were used will go here.
 
@@ -811,41 +900,47 @@ Diagrams and descriptions of how certain design patterns were used will go here.
 %=================================================================================
 
 % For the physical thing - not sure if this should be here since Michel et al did basically all of this ;)
-\section{Lock Demonstration}
+\section{Lock Demonstration} \label{lock-demonstration}
 
 This chapter will be about the design and construction of the demo unit used at the poster fair
 
 %=================================================================================
 
-\chapter{System Implementation}
+\chapter{System Implementation} \label{system-implementation}
+
+This chapter describes the steps taken to implement the SBACS. The tools used along with the design patterns implemented
+are described in detail, along with any design decisions that had to be made or changed when the need became apparent.
+This chapter also outlines all of the protocols used to facilitate communication between the various devices that make
+up SBACS.
 
 %=================================================================================
 
-\section{Android}
+\section{Android Application Development} \label{android-application-development}
 
-The Android application was developed using Android Studio exclusively, and is primarily composed of Java classes, XML
+The Android application was developed using Android Studio [] exclusively, and is primarily composed of Java classes, XML
 documents, and gradle build files. Android studio was selected since it seemed to be the natural tool for writing an
-Android application, and didn't have any negatives with respect to our requirements. Gradle was chosen as the build
+Android application, and didn't have any negatives with respect to our requirements. Gradle [] was chosen as the build
 tool as it is naturally integrated with Android studio.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Server Interfacing}
+\subsection{Server Interfacing} \label{server-interfacing}
 
 Connections to the server were managed through the android Volley API. Volley provides a simple interface over which
 HTTP and HTTPS messages can be sent. Standard operation of Volley follows a simple procedure: first a RequestQueue is
 set up, and then various Requests are enqueued. These requests are then dequeued by the RequestQueue's thread, which
 then creates an HTTP/HTTPS connection. The response that comes back over the connection is handled by another thread.
 
-The code for handling these responses is put in a class that extends a Response.Listener of a given type. Since these
-classes have just a few relatively simple methods, anonymous classes were used in all cases. Further, we decided that
-handling the parsing shoudl be done as safely as possible, so all responses were first parsed simply as Strings. Then,
-the response was attempted to be parsed as a JSON object of the type expected from the server. If that parsing failed,
-the message was instead considered a error, and handled from there.
+The code for handling these responses is put in a class that extends a Response.Listener of a given type. The
+Response.Listener class provides methods to handle HTTP responses. Since these classes have just a few relatively simple
+methods, anonymous classes were used in all cases. Further, we decided that handling the parsing should be done as
+safely as possible, so all responses were first parsed simply as Strings. Then, the response was attempted to be parsed
+as a JSON object of the type expected from the server. If that parsing failed, the message was instead considered an
+error, and handled from there.
 
 %---------------------------------------------------------------------------------
 
-\subsection{HMAC}
+\subsection{HMAC} \label{hmac}
 
 Since the server used HMAC to handle security issues, the application needed to make frequent use of the headers that
 the server expected to handle authentication. For this reason, a helper class called HMACHelper, was created. This
@@ -862,11 +957,12 @@ otherwise the secret values would not match between the application and the serv
 of the Password-Based Key Derivation Function algorithm using SHA256 to be available on the Android device. The only
 workaround for this added requirement would have been to implement the algorithm (specified in RFC 2898 with test
 vectors in RFC 6070) ourselves, however doing so is known to be quite dangerous as any minor error could result in a
-security breach. In addition, the number of iterations and the resulting length also had to be kept as the same value.
+security breach. In addition, the number of iterations and the length of the resulting key had to be synchronised
+between the server and the application to ensure the values match.
 
 %---------------------------------------------------------------------------------
 
-\subsection{Entity Representation}
+\subsection{Entity Representation} \label{entity-representation}
 
 The application needed to be able to display data to the user that came from the server and database. These data are
 represented in the MVC design of the application. Since the database is relational, the model classes that represent
@@ -882,12 +978,12 @@ layout.
 
 %=================================================================================
 
-\section{Hardware}
+\section{Hardware} \label{hardware}
 
 The hardware portion of the project consisted of three components: the lock control circuit, the lock control software, 
 and the authentication modules.
 
-\subsection{Lock Control Circuit} \label{section:lock-control-circuit-implementation}
+\subsection{Lock Control Circuit Implementation} \label{section:lock-control-circuit-implementation}
 
 Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. While 
 the single-board microcontrollers considered had optional boards which could add Wifi or Ethernet capabilities, they 
@@ -899,7 +995,7 @@ A Raspberry Pi was ultimately selected as the computer to run the core process. 
 built-in Wifi capability, and forty pins for general-purpose IO (GPIO). These hardware features made the Raspberry Pi the best 
 out-of-the-box solution to run the core process.
 
-\subsection{Lock Control Circuit}
+\subsection{Lock Control Circuit} \label{lock-control-circuit}
 
 The next design problem to consider was the means to control the status of the electric lock. The simplest locks 
 available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
@@ -946,9 +1042,9 @@ has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC}
 circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/relay_circuit}
-	\caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
-	\label{fig:relay-circuit-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/relay_circuit}
+    \caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
+    \label{fig:relay-circuit-diagram}
 \end{figure}
 
 What separates the relay from a transistor/diode circuit is that it uses a solenoid internally to flip a mechanical 
@@ -961,24 +1057,24 @@ terminal, while the NC terminal is open-circuited.
 The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
-	\caption{Lock Control Circuit}
-	\label{fig:lock-control-circuit-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
+    \caption{Lock Control Circuit}
+    \label{fig:lock-control-circuit-diagram}
 \end{figure}
 
-\subsection{Lock Control Software}
+\subsection{Lock Control Software} \label{lock-control-software}
 
 % To realize the design outlined in section
 
-\subsection{Authentication Modules}
+\subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
-\subsubsection{NFC Module}
+\subsubsection{NFC Module} \label{nfc-modules}
 
-\subsubsection{PIN Module}
+\subsubsection{PIN Module} \label{pin-modules}
 
 %=================================================================================
 
-\section{Cloud}
+\section{Cloud Sewrvices} \label{cloud-services}
 
 %TODO: Talk about node http library, crypto library, url library, mysql library
 
@@ -986,7 +1082,7 @@ The final layout for the lock control circuit is demonstrated in figure ~\ref{fi
 
 % My problems/solutions section
 % TODO: Reference relevant sections of earlier part throughout this section (AWS, HTTPS, Database stuff)
-\subsection{Learning to Use Amazon Web Services}
+\subsection{Learning to Use Amazon Web Services} \label{learning-to-use-amazon-web-services}
 
 Amazon Web Services provides all the hosting that we needed for this project, so it was a
 natural choice for us to use. When we started, we followed some basic tutorials to get a sample
@@ -1026,7 +1122,7 @@ not very complicated, but still had some learning to get it done correctly, and 
 change to configuration files on our server that we did not know existed up to that point. The
 specific troubles with SSL Certificates will be explained in more detail in the following section.
 
-\subsection{SSL Certificates}
+\subsection{SSL Certificates} \label{ssl-certificates}
 
 %TODO: Reference section in 5.5 about HTTPS and SSL stuff
 
@@ -1051,7 +1147,7 @@ this was the best option we found for this problem, so we bought a domain name, 
 able to get the SSL Certificates, and had HTTPS working quickly after that.
 
 
-\subsection{Issues with String Encodings}
+\subsection{Issues with String Encodings} \label{issues-with-string-encodings}
 % More than just server issue, but problem was on server
 
 When the database was first built, we decided to store authentication data as strings. This
@@ -1072,7 +1168,7 @@ encoding initially. This problem took a long time to identify, and was the large
 integration phase of the project.
 
 
-\subsection{Improving Response Time}
+\subsection{Improving Response Time} \label{improving-response-time}
 
 The system needs to respond quickly to inputs from the user in order to provide the best
 user experience. One limiting factor of this response time is the communication with the cloud
@@ -1100,7 +1196,7 @@ waiting and more time processing information.
 
 %=================================================================================
 
-\chapter{Testing and Bug Fixes}
+\chapter{Testing and Bug Fixes} \label{testing-and-bug-fixes}
 
 % Not really sure what to go with here
 Points to mention in this chapter:
@@ -1111,25 +1207,28 @@ Points to mention in this chapter:
     on a port would be enabled by default on some machines but not others)
 \end{itemize}
 
-\section{Bugs}
+\section{Bugs} \label{bugs}
 
-\subsection{Issues with Serial Communcation}
+\subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
 
 %=================================================================================
 
-\chapter{Conclusions}
+\chapter{Conclusions} \label{conclusions}
 
 %=================================================================================   
+
+\addcontentsline{toc}{chapter}{Bibliography} % Need this so it appears in the ToC
+\printbibliography
+
+%=================================================================================
 
 \appendix
 
 %=================================================================================
 
-\chapter{Sample Appendix}
+\chapter{Sample Appendix} \label{sample-appendix}
 
-%=================================================================================
 
-\addcontentsline{toc}{chapter}{Bibliography} % Need this so it appears in the ToC
-\printbibliography
 
 \end{document}
+

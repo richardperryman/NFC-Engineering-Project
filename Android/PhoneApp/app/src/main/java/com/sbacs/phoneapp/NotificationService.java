@@ -104,7 +104,7 @@ public class NotificationService extends Service {
                 JSONObject notification = notifications.getJSONObject(0);
 
                 builder = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_sbacslogo)
+                        .setSmallIcon(R.mipmap.ic_sbacslogo_notification)
                         .setContentTitle("SBACS update")
                         .setContentText("New registration with " +
                                 notification.getString("BelongsTo"));
@@ -113,7 +113,7 @@ public class NotificationService extends Service {
             }
         } else {
             builder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_sbacslogo)
+                    .setSmallIcon(R.mipmap.ic_sbacslogo_notification)
                     .setContentTitle("SBACS update")
                     .setContentText("New registrations available");
         }

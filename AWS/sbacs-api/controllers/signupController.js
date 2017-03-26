@@ -68,7 +68,7 @@ function handlePost(req,res){
 				// Handle error
 				console.log('Error with creating User');
 				res.writeHead(500);
-				res.write('An error occurred. Likely a duplicate username');
+				res.write('This username already exists, please try another username');
 				res.end();
 			}
 		});
