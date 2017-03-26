@@ -15,10 +15,10 @@
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{url}
 \usepackage[
-	backend=bibtex,
-	natbib=true,
-	style=numeric,
-	sorting=none
+    backend=bibtex,
+    natbib=true,
+    style=numeric,
+    sorting=none
 ]{biblatex}
 \usepackage[scientific-notation=true, binary-units=true]{siunitx}
 \sisetup{per-mode=fraction}%
@@ -39,7 +39,7 @@
 }
 
 \copyrightfalse % do not produce a separate copyright page
-		    % otherwise use \copyrighttrue
+            % otherwise use \copyrighttrue
 %    \figurespagefalse % do not produce a separate figures page
 %    \tablespagefalse  % do not produce a separate tables page
 
@@ -53,12 +53,12 @@
 %=================================================================================
 
 \prefacesection{Abstract}
-	This report tells you all you need to know about something.
+    This report tells you all you need to know about something.
 
 %=================================================================================
 
 \prefacesection{Acknowledgements}
-	(To be fleshed out more after the first draft)
+    (To be fleshed out more after the first draft)
     We would like to thank:
     \begin{itemize}
     \item Our supervisors, professors Shikharesh Majumdar and Chung-Horng Lung
@@ -77,26 +77,27 @@
 \listoftables   % to print the List of Tables
 
 %=================================================================================
-		            
+                    
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
-	AID & Application IDentifier \\
-	APDU & Application Protocol Data Unit \\
-	API & Application Programming Interface \\
-	HMAC & Keyed-Hash Message Authentication Code \\
+    AID & Application IDentifier \\
+    APDU & Application Protocol Data Unit \\
+    API & Application Programming Interface \\
+    HMAC & Keyed-Hash Message Authentication Code \\
     I2C & Inter-Integrated Circuit \\
     IO & Input/Output \\
-	JSON & JavaScript Object Notation \\
-	MVC & Model-View-Controller \\
-	NFC & Near Field Communication \\
-	RFC & Request for Comments \\
+    JSON & JavaScript Object Notation \\
+    MVC & Model-View-Controller \\
+    NFC & Near Field Communication \\
+    RFC & Request for Comments \\
+    SBACS & Sensor-Based Access Control System \\
 \end{tabular}
 
 %=================================================================================
 
 \endpreface
-	
+    
 %=================================================================================
 
 \chapter{Introduction}
@@ -305,9 +306,9 @@ correctly, the link between their identity and the storage container is broken. 
 inappropriately access the storage container again, and a new link could be made for a different customer.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
-	\caption{Online Order Secure Pickup Use Case Diagram}
-	\label{fig:online-order-secure-pickup-use-case}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
+    \caption{Online Order Secure Pickup Use Case Diagram}
+    \label{fig:online-order-secure-pickup-use-case}
 \end{figure}
 
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
@@ -359,9 +360,9 @@ customer that the package will no longer be available to be picked up, and alter
 also lead to an expiry of the customer's registration to the box, so they will no longer be able to open the box.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
-	\caption{Central Mail Package Pickup Use Case Diagram}
-	\label{fig:central-mail-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
+    \caption{Central Mail Package Pickup Use Case Diagram}
+    \label{fig:central-mail-use-case-diagram}
 \end{figure}
 
 %=================================================================================
@@ -397,9 +398,9 @@ period. All of the attemped authentications could also be logged and made availa
 reliable paper trail.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
-	\caption{Long Term Storage Use Case Diagram}
-	\label{fig:long-term-storage-pickup-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
+    \caption{Long Term Storage Use Case Diagram}
+    \label{fig:long-term-storage-pickup-use-case-diagram}
 \end{figure}
 
 %=================================================================================
@@ -604,9 +605,9 @@ Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the cor
 electrical elements used in each block are discussed in section~\ref{section:lock-control-circuit-implementation}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/hardware_block}
-	\caption{Hardware Block Diagram}
-	\label{fig:hardware-block}
+    \includegraphics[width=\textwidth]{Diagrams/hardware_block}
+    \caption{Hardware Block Diagram}
+    \label{fig:hardware-block}
 \end{figure}
 
 %---------------------------------------------------------------------------------
@@ -647,9 +648,9 @@ stereotype in the pattern, as the software did not need to be complex. The Authe
 USB to a controller in the central process.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/modules_ecb}
-	\caption{Authentication Modules Pattern Draft}
-	\label{fig:modules-ecb}
+    \includegraphics[width=\textwidth]{Diagrams/modules_ecb}
+    \caption{Authentication Modules Pattern Draft}
+    \label{fig:modules-ecb}
 \end{figure}
 
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
@@ -946,9 +947,9 @@ has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC}
 circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/relay_circuit}
-	\caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
-	\label{fig:relay-circuit-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/relay_circuit}
+    \caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
+    \label{fig:relay-circuit-diagram}
 \end{figure}
 
 What separates the relay from a transistor/diode circuit is that it uses a solenoid internally to flip a mechanical 
@@ -961,9 +962,9 @@ terminal, while the NC terminal is open-circuited.
 The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}.
 
 \begin{figure}
-	\includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
-	\caption{Lock Control Circuit}
-	\label{fig:lock-control-circuit-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
+    \caption{Lock Control Circuit}
+    \label{fig:lock-control-circuit-diagram}
 \end{figure}
 
 \subsection{Lock Control Software}
