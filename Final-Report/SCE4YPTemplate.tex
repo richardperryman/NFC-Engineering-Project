@@ -102,6 +102,7 @@
     I2C & Inter-Integrated Circuit \\
     IO & Input/Output \\
     JSON & JavaScript Object Notation \\
+    LED & Light-Emitting Diode \\
     MVC & Model-View-Controller \\
     NFC & Near Field Communication \\
     RFC & Request for Comments \\
@@ -262,7 +263,7 @@ All members collaborated on sections 2 and 4.
 
 \section{Single-Board Computers and Microcontrollers} \label{single-board-computers-and-microcontrollers}
 
-A single-board computer, or SOC, incorporates all of the elements necessary for a functional 
+A single-board computer, or SBC, incorporates all of the elements necessary for a functional 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
 (SOMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
 circuit board. The main distinction between SOCs and SOMs is the same as that between computers and microcontrollers.
@@ -701,6 +702,8 @@ from the remaining requirements: one class to poll the authentication modules, w
 hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
 {fig:hardware-block} is a block diagram of the architecture of the lock software.
 
+
+
 %---------------------------------------------------------------------------------
 
 \subsection{Authentication Modules} \label{authentication-modules}
@@ -708,22 +711,33 @@ hardware abstraction of the hardware interface, and one class to handle server c
 To meet the requirement of having a modular framework that supports multiple authentication methods, modules that 
 perform the gathering of authentication data can be attached to the system, to increase the authentication options. As 
 a result, multiple design patterns emerged immediately in the design of the software for the modules. Interfacing with 
-the system core woud be the same across all authentication modules, so only the method used to gather authentication 
+the system core would be the same across all authentication modules, so only the method used to gather authentication 
 data is unique to each module. Two design patterns can be extracted from this statement: an Adapter pattern, where the 
 Adaptee provides the interfaces necessary for communicating with the core, and a Template method for handling the 
 authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
-necessary for the means of authentication.
+necessary for the means of authentication. Figure~\ref{fig:modules-start} is a basic class diagram of how these 
+patterns would be implemented. The AuthenticationModule class is the Adaptee, providing the getData() template method 
+to Adapters when they provide a specific implementation of the module.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/modules_start}
+    \caption{Authentication Modules Basic Classes}
+    \label{fig:modules-start}
+\end{figure}
 
 With an Adapter pattern in place to handle the creation of various types of authentication modules, there also needed to 
 be a pattern to handle the general flow of data, which starts with user entry, and ends with transmission to the system
 core. The Entity-Controller-Boundary pattern was a natural fit for this situation, and as shown in 
 Figure~\ref{fig:modules-ecb}, the first draft of the authentication module software only required one of each 
-stereotype in the pattern, as the software did not need to be complex. The Authenticator object would be passed over 
-USB to a controller in the central process.
+stereotype in the pattern, as the software did not need to be complex. An actor, such as a user attempting to gain 
+access, interacts with the Boundary class of the authentication module, the Module-Specific Data Handler, to send a 
+form of authentication data to the system. The Data Handler hands the data to the Module Controller, which then 
+converts the data into an Entity class, represented as the Authenticator class in Figure~\ref{fig:modules-ecb}. 
+Authenticator is an abstraction of the authentication data, which would be sent to the core process.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/modules_ecb}
-    \caption{Authentication Modules Pattern Draft}
+    \caption{Authentication Modules Entity-Controller-Boundary Diagram}
     \label{fig:modules-ecb}
 \end{figure}
 
@@ -1021,61 +1035,80 @@ and the authentication modules.
 
 \subsection{Lock Control Circuit Implementation} \label{section:lock-control-circuit-implementation}
 
-Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. While 
+Selecting the device to run the core process was the first step in implementing the lock control circuit. A 
+single-board microcontroller was the first option considered, as it had the potential to be lower in cost than a 
+single-board computer, given that it would fulfil all of the requirements for the core circuit.
+
+Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. This 
+would lower the cost of the hardware, as digital-only boards tend to be cheaper than analog-capable boards. While 
 the single-board microcontrollers considered had optional boards which could add Wifi or Ethernet capabilities, they 
 would not have been a sufficient solution to run the core process, as they were lacking a sufficient number of USB 
 ports, and the overhead for implementing the core would have been too high. Because the microcontrollers do not run an 
-operating system, 
+operating system, essential primitive operations such as file opening, checking device attributes, and reading/writing
+to devices would not be available. For these reasons, a single-board microcontroller was not selected to run the core 
+process for the lock control circuit.
 
 A Raspberry Pi was ultimately selected as the computer to run the core process. The Pi 3 Model B has four USB ports, 
-built-in Wifi capability, and forty pins for general-purpose IO (GPIO). These hardware features made the Raspberry Pi the best 
-out-of-the-box solution to run the core process.
+built-in Wifi capability, runs Linux, and has forty pins for general-purpose IO (GPIO). These hardware features made the
+Raspberry Pi the best out-of-the-box solution to run the core process. The GPIO pins provided the digital outputs for 
+driving the status LEDs and the lock. Using Linux 
 
 \subsection{Lock Control Circuit} \label{lock-control-circuit}
 
 The next design problem to consider was the means to control the status of the electric lock. The simplest locks 
 available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
-to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the power to the 
-lock, with the switching being driven by one of the Raspberry Pi's GPIO pins. There were two options considered for 
-this:
+to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the
+power to the lock, with the switching being driven by one of the Raspberry Pi's GPIO pins. There were two options
+considered for this:
 
-1- Transistor/diode circuit
+\begin{enumerate}
+
+\item Transistor/diode circuit
 
 This circuit would use a TIP120 Darlington transistor, coupled with a 1N4004 flyback diode, to drive the lock. This 
 circuit is demonstrated in figure X.
 
 Todo: Make the figure of the transistor/diode circuit in Fritzing
 
-The major issue with this circuit is that 
-
-Some heat-related math for the transistor:
+The major issue with this circuit is that a significant amount of power would be dissipated by the transistor.
 The power law for a single voltage drop is $ P = IV = I^2R $. A transistor can be treated as two voltage drops, one 
 from base to emitter ($ V_{BE} $), and another from collector to emitter ($ V_{CE} $), resulting in the power dissipated
 by a transistor being given by:
-$$ P = V_{BE}I_B + V_{CE}I_C $$
+$$ P = V_{BE}I_B + V_{CE}I_C \text{~\autocite{TRANSISTORPOWER}} $$
 Since $ I_B \ll I_C $ when the lock circuit is active, the $ V_{BE}I_B $ term is negligible in this case, so the power
 dissipated by the transistor is given by:
 $$ P = V_{CE}I_C $$
-At steady state, the voltage drop from the solenoid is negligible, as $ \frac{di}{dt} $ is zero, resulting in $ V = 
-L\frac{di}{dt} = 0 $. This means that the voltage drop across the transistor, from emitter to collector, is 12V. Given
-that the solenoid draws $\SI{650}{\milli\ampere}$ of current, the power across the transistor is:
+Since the transistor is in the "off" state when there is no voltage applied to the base terminal, no current may flow, 
+so the power dissipated by the transistor when "off" is zero. When a voltage is applied to the base, the transistor is 
+brought into the "saturation" state, which allows current to flow freely from collector to emitter. When this happens, 
+the solenoid is powered on, and quickly reaches a state where it behaves like a wire, or close-circuit. This means that 
+the change in current through the solenoid, $ \frac{di}{dt} $, is zero. Since the voltage drop across a solenoid is 
+given by $ V = -L\frac{di}{dt} $~\autocite{SOLENOIDVOLTAGE}, there will then be no decrease in voltage from the 
+solenoid power source to the transistor. Since the solenoid lock used for the proof-of-concept system draws 650 mA at 
+12V, the power dissipated by the transistor would be:
 $$ P = \SI{12}{\volt} \times \SI{650}{\milli\ampere} $$
 $$ P = \SI{7.8}{\watt} $$
 This power dissipation is quite significant in comparison to, for example, the resistors in the LED circuit, which at 
-most will dissipate about $\SI{50}{\milli\watt}$. (n.b. should I put the math behind this in an appendix?) A heat 
+most will dissipate about $\SI{50}{\milli\watt}$. (See Appendix~\ref{appendix:calculations}.) A heat 
 dissipation mechanism would be necessary to ensure that the system does not heat up dangerously while in operation, 
-which may not be practical in a real-life scenario. Secure systems should be completely enclosed, as a fan would 
-introduce a point of physical access to the system.
+which may not be practical in a real-life scenario. Secure systems should be completely enclosed. Adding a fan would 
+introduce a point of physical access to the system, increasing the risk that it could be physically compromised.
 
 Insert some more math and talk about the flyback diode to deal with the voltage spike - take the lock to a DOE lab at 
 some point and measure the voltage spike when 12V DC is applied, to see what the minimum RB breakdown voltage should be
 
-2- Relay circuit
+\item Relay circuit
 
 Internally, a relay is very similar to the transistor/diode circuit, with a mechanical switch added. The relay itself 
 has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC} $), ground (GND), and an input signal 
-(IN). The outputs are a normally-closed terminal (NC), a common terminal (CO), and a normally-open terminal (NO). The 
-circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}.
+(IN). The outputs are a normally-closed terminal (NC), a common terminal (COM), and a normally-open terminal (NO). The 
+circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}. On the left side are the three input 
+terminals. The IN terminal is connected to a transistor (Q1 on the diagram), which determines whether an internal
+solenoid (K1 on the diagram) is powered or unpowered. The solenoid generates a magnetic field when powered, causing the
+magnetic switch next to it to flip. When the solenoid is unpowered, the switch completes the circuit connected to the 
+NC terminal, allowing current to flow through the COM and NC terminals. When the IN signal is high and the switch is 
+flipped, the NC terminal is disconnected from the circuit, while the NO terminal takes its place. Current then flows
+through the COM and NO terminals when IN is high.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/relay_circuit}
@@ -1083,12 +1116,20 @@ circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}.
     \label{fig:relay-circuit-diagram}
 \end{figure}
 
-What separates the relay from a transistor/diode circuit is that it uses a solenoid internally to flip a mechanical 
-switch. When the IN signal is low (0 volts), the switch short-circuits the "normally closed" connection, allowing
-current to flow from the NC terminal to the CO terminal. The NO terminal is open-circuited, so no current will flow.
-When the IN signal is high (5 volts), the solenoid inside the relay generates a magnetic field, which causes the switch 
-to instead short-circuit the "normally open" connection, allowing current to flow from the NO terminal to the CO 
-terminal, while the NC terminal is open-circuited. 
+Unlike the transistor in the transistor/diode circuit, the transistor inside the relay does not require any heat
+dissipation. The relay's $V_{CC}$ is provided by the 5V GPIO pin on the Raspberry Pi, as $ V_{CC} $ should be 
+$ \SI{5}{\volt} $, according to the datasheet for the relay ~\autocite{RELAYDETAILS}. The maximum current that can be
+drawn from this pin, when there are no other GPIO pins drawing current, is $\SI{400}{\milli\ampere}$~\autocite{PIPOWER}.
+Therefore, the maximum power dissipated by transistor K1 is:
+
+$$ P_{max} = \SI{5}{\volt} \times \SI{400}{\milli\ampere} $$
+$$ P_{max} = \SI{2}{\watt} $$
+
+Since there are three GPIO pins being used to power LEDs, the minimum current drawn from the 5V pin will be $ 
+\SI{400}{\milli\ampere} - 3 \times \SI{16}{\milli\ampere} = \SI{352}{\milli\ampere} $. This gives a minimum power of $ 
+P_{min} = \SI{1.76}{\watt} $.
+
+\end{enumerate}
 
 The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}.
 
@@ -1100,13 +1141,20 @@ The final layout for the lock control circuit is demonstrated in figure ~\ref{fi
 
 \subsection{Lock Control Software} \label{lock-control-software}
 
-% To realize the design outlined in section
+The lock control software was written in C++. C++ was selected primarily because the software for the authentication 
+modules could only be written in C++, and using the same language as the modules would allow the core process to share 
+classes with the modules. The second major reason for selecting C++ was that it was an object-oriented language, so the 
+design patterns mentioned in section~\ref{lock-control-software-design}
 
 \subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
 \subsubsection{NFC Module} \label{nfc-modules}
 
+One of the modules 
+
 \subsubsection{PIN Module} \label{pin-modules}
+
+
 
 %=================================================================================
 
@@ -1262,8 +1310,15 @@ Points to mention in this chapter:
 
 %=================================================================================
 
-\chapter{Sample Appendix} \label{sample-appendix}
+\chapter{Calculations} \label{appendix:calculations}
 
+A.1 Power dissipated by a resistor in LED circuit
+
+Each GPIO pin on the Raspberry Pi uses 3.3V logic, and allows a maximum current draw of 16 mA. 
+
+%---------------------------------------------------------------------------------
+
+\chapter{Diagrams} \label{appendix:diagrams}
 
 
 \end{document}
