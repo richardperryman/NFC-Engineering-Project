@@ -616,11 +616,27 @@ the cloud server as well as the many potential hardware devices.
 
 \subsection{User Interface} \label{user-interface}
 
-The natural decision for designing the basic workings of the application was to use the Model-View-Controller (MVC) [] 
-design pattern. This pattern separates the underlying data (model) from the display that the user sees (view) as well as
+The natural decision for designing the basic workings of the application was to use the Model-View-Controller (MVC)~\autocite{MVC} 
+architectural pattern. This pattern separates the underlying data (model) from the display that the user sees (view) as well as
 the components that the user interacts with (controller). Android provides APIs to support MVC. Model objects can be
 simple objects, but view objects can subclass the View class or its more specific subclasses, and the controller
-objects can subclass the Adapter class or its subclasses.
+objects can subclass the Adapter class or its subclasses. More precisely, since the View objects and the Model objects
+never communicate, this follows the Model-View-Adapter pattern. The difference can be seen in figures~\ref{fig:MVC} and
+\ref{fig:MVA}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75 \textwidth]{Diagrams/Design-Pattern-Diagrams/MVC}
+    \caption{Demonstrative class diagram of the MVC pattern}
+    \label{fig:MVC}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75 \textwidth]{Diagrams/Design-Pattern-Diagrams/MVA}
+    \caption{Demonstrative class diagram of the MVA pattern}
+    \label{fig:MVA}
+\end{figure}
 
 Android applications themselves should follow the patterns set out by the standards. Activity classes represent the
 pages that contain the various views and controllers that users can interact with. We decided on a design where the user

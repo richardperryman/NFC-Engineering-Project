@@ -9,3 +9,7 @@
 **/*.synctex.gz
 **/*.toc
 **/*.run.xml
+
+# Exclude unwanted windows files
+
+**/*Thumbs.db
