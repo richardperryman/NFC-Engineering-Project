@@ -767,7 +767,7 @@ microcontrollers, while still meeting the requirements.
 
 % TODO: Resolve the comments in my section
 
-\subsection{Amazon Web Servies} \label{amazon-web-servies}
+\subsection{Amazon Web Services} \label{amazon-web-services}
 
 % Double check my reference
 
@@ -810,7 +810,7 @@ then determines based on the identifiers the appropriate handler of the request.
 
 In order to send information between the client and the server, a standard format for
 representing the data is necessary. We have chosen to use JavaScript Object Notation (JSON) to
-serve this purpose. "JSON is a lightweight, text-based, language-independent data interchange
+serve this purpose. ""JSON is a lightweight, text-based, language-independent data interchange
 format" ~\autocite{JSONREF}. JSON provides an easy way of transferring data that is flexible and has support
 from many programming languages, making it a very good choice for our project, where
 different components will be using different technologies and built in different languages. It is
@@ -820,7 +820,7 @@ different types of data, keeping the parsing easy which can help to improve resp
 \subsection{Node.js} \label{node.js}
 
 Amazon Web Services allows for web
-servers written in many languages, leaving the choice of language to the user \ref{amazon-web-services}.
+servers written in many languages, leaving the choice of language to the user (as discussed in section \ref{amazon-web-services}).
 In our case we
 decided to use Node.js to write our server code. This language was chosen because it is able to
 run on multiple operating systems and does not require more than one tool for effective development.
@@ -848,7 +848,7 @@ rendered by the client's web browser.
 
 \subsection{JQuery} \label{jquery}
 
-The structure and content of the web interface are statically defined using HTML \ref{html}, but this will not
+The structure and content of the web interface are statically defined using HTML (as discussed in section \ref{html}), but this will not
 be an interactive web page without the use of JavaScript. JavaScript allows for functionality to be
 added to certain actions performed by the user while interacting with the web page. In this project,
 we use JavaScript to dynamically modify the content of the web page and retrieve additional
@@ -945,6 +945,30 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 % All need a class diagram or similar to prove the pattern is used
 
 Diagrams and descriptions of how certain design patterns were used will go here.
+
+Front Controller pattern can be seen in Figure~\ref{fig:front-controller}.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Front-Controller.png}
+    \caption{Front Controller Class Diagram}
+    \label{fig:front-controller}
+\end{figure}
+
+Facade pattern can be seen in Figure~\ref{fig:facade-server}. Facade functionality is shown
+through the sequence diagram in Figure~\ref{fig:facade-signup-sequence}.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade.png}
+    \caption{Facade Class Diagram}
+    \label{fig:facade-server}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade_SignUpSequence.png}
+    \caption{Facade - Sign Up Sequence Diagram}
+    \label{fig:facade-signup-sequence}
+\end{figure}
+
 
 
 %=================================================================================
