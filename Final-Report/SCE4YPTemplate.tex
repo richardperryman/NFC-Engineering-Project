@@ -10,7 +10,7 @@
 \usepackage{graphicx}
 %Forces figures to appear within a section, if more specific placement is needed go to:
 % http://tex.stackexchange.com/questions/279/how-do-i-ensure-that-figures-appear-in-the-section-theyre-associated-with
-\usepackage[section]{placeins}
+\usepackage{placeins}
 \usepackage{SCE4YPTemplate}
 \usepackage[nottoc,numbib]{tocbibind}
 \usepackage{url}
@@ -23,6 +23,18 @@
 \usepackage[scientific-notation=true, binary-units=true]{siunitx}
 \sisetup{per-mode=fraction}%
 \sisetup{scientific-notation=false}%
+
+% Taken from http://tex.stackexchange.com/a/235312
+% Prevents floats from being placed outside of (sub)(sub)sections
+
+\let\Oldsection\section
+\renewcommand{\section}{\FloatBarrier\Oldsection}
+
+\let\Oldsubsection\subsection
+\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}
+
+\let\Oldsubsubsection\subsubsection
+\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
 
 \makeatletter
 \def\blx@maxline{77}
@@ -493,7 +505,7 @@ choices in card reader. Since NFC communications are specified by the ISO, most 
 decision on our part would be very likely to be supported by any card that would be desirable for any other reason.
 
 %---------------------------------------------------------------------------------
-
+\FloatBarrier
 \subsection{Mobile Devices} \label{mobile-devices}
 
 The two most popular operating systems for mobile devices are iOS and Android []. Since iOS devices have NFC disabled
@@ -505,7 +517,23 @@ host-based card emulation. Devices with hardware support have a component called
 the communication with the external NFC terminal. Later, applications can query this element to determine the status of
 the transaction, as well as other data. Devices which use host-based card emulation use a software implementation of
 secure elements. Since host-based card emulation is done through software, it will run on all Android devices running
-version 4.4 or greater[], which represents over 99\% of all devices currently in use.
+version 4.4 or greater~\autocite{ANDROIDHCE}, which represents over 99\% of all Android devices currently in use. The
+differences between secure elements and emulators can be seen in figures~\ref{fig:android-secure-element} and \ref
+{fig:android-host-based}.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.6 \textwidth]{Diagrams/NFC-Diagrams/Android-Secure-Element}
+    \caption[Secure element operation on an Android device]{An android device using a secure element~\autocite{ANDROIDHCE}}
+    \label{fig:android-secure-element}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.6 \textwidth]{Diagrams/NFC-Diagrams/Android-Host-Based-Card}
+    \caption[Host-based card emulation on an Android device]{An android device using host-based emulation~\autocite{ANDROIDHCE}}
+    \label{fig:android-host-based}
+\end{figure}
 
 % Find out which protocol we actually use!
 Android offers an API called Beam which is the only way Anndroid devices can use NFC in active mode []. Beam,
@@ -524,7 +552,7 @@ application may happen to share an AID with another application. We found that t
 less than the cost of reserving an AID, therefore our application uses a proprietary which we selected at random.
 
 %---------------------------------------------------------------------------------
-
+\FloatBarrier
 \subsection{Protocol} \label{protocol}
 
 Since our NFC communications may require more data than can be fit within an Application Protocol Data Units (APDUs), we
