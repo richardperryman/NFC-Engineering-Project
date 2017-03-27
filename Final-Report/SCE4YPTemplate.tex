@@ -505,11 +505,11 @@ choices in card reader. Since NFC communications are specified by the ISO, most 
 decision on our part would be very likely to be supported by any card that would be desirable for any other reason.
 
 %---------------------------------------------------------------------------------
-\FloatBarrier
+
 \subsection{Mobile Devices} \label{mobile-devices}
 
-The two most popular operating systems for mobile devices are iOS and Android []. Since iOS devices have NFC disabled
-for everything except Apple Pay[], the only option that remained was Android. Apple devices would represent a large
+The two most popular operating systems for mobile devices are iOS and Android~\autocite{OSPOPULARITY}. Since iOS devices have NFC disabled
+for everything except Apple Pay\autocite{IPHONENFC}, the only option that remained was Android. Apple devices would represent a large
 part of the potential market, so alternatives to NFC would have to be considered.
 
 Among Android devices, there exist devices which have hardware support for NFC communications, and those which rely on
@@ -536,7 +536,7 @@ differences between secure elements and emulators can be seen in figures~\ref{fi
 \end{figure}
 
 % Find out which protocol we actually use!
-Android offers an API called Beam which is the only way Anndroid devices can use NFC in active mode []. Beam,
+Android offers an API called Beam which is the only way Anndroid devices can use NFC in active mode~\autocite{ANDROIDBEAM}. Beam,
 however, does not support sending more than one message between devices. Since the information we are sending can be
 fairly large in the interest of security, this was not feasible given the restrictions of the NFC protocols we used.
 Further, active communications are easier to eavesdrop on, as discussed in the background section. We decided that these
@@ -544,20 +544,20 @@ costs outweighed the simplicity of the Beam API, so passive communications were 
 
 % Discuss AID here? or in implementation? Here for now I guess
 Since more than one application could potentially want to handle an NFC message, the message protocol contains a field
-called the Application IDentifier, or AID []. These AIDs are 16-byte bit patterns which identify which application should
+called the Application IDentifier, or AID~\autocite{AIDISO}. These AIDs are 16-byte bit patterns which identify which application should
 handle the associated message. The Android operating system is responsible for delivering the APDUs to the
-appropriate application's service []. Reserving a particular AID for national or international use requires some
-paperwork and and a fee, as per the international standards organisation []. Therefore, by not paying this fee, our
+appropriate application's service~\autocite. Reserving a particular AID for national or international use requires some
+paperwork and and a fee, as per the international standards organisation~\autocite{AIDISO}. Therefore, by not paying this fee, our
 application may happen to share an AID with another application. We found that the cost of a potential collision was
 less than the cost of reserving an AID, therefore our application uses a proprietary which we selected at random.
 
 %---------------------------------------------------------------------------------
-\FloatBarrier
+
 \subsection{Protocol} \label{protocol}
 
 Since our NFC communications may require more data than can be fit within an Application Protocol Data Units (APDUs), we
-required a protocol which would handle segmenting and recombining the message. APDUs are defined in ISO 7816-4 [] and are
-the units used by ISO 14443-4 [], which describes the transmission protocol used by NFC devices. They are restricted to
+required a protocol which would handle segmenting and recombining the message. APDUs are defined in ISO 7816-4~\autocite{NDEFISO} and are
+the units used by ISO 14443-4~\autocite{APDUISO}, which describes the transmission protocol used by NFC devices. They are restricted to
 256 bytes, including headers.
 
 To work around this, the hardware device connected to the shield maintains a buffer. Under ISO 14443-4, messages can be
