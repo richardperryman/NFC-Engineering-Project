@@ -259,10 +259,9 @@ All members collaborated on sections 2 and 4.
 
 \section{Cloud Computing} \label{cloud-computing}
 
-%TODO: Reference for cloud computing: https://aws.amazon.com/what-is-cloud-computing/
-
 Cloud computing is about performing computation, providing data storage, and offering other services
-on demand over the internet. For this project, Amazon Web Services (as discussed in Section~\ref{amazon-web-services}
+on demand over the internet~\autocite{CLOUDCOMPUTING}. For this project, Amazon Web Services (as discussed
+in Section~\ref{amazon-web-services})
 has been used as the provider of a cloud computing platform to host the server and database of SBACS.
 Cloud computing allows for computational resources to be dynamically allocated based on the demand
 at the time. This means that when a server has low demand it will not use as many resources, but when
@@ -496,13 +495,11 @@ registration, we were able to implement notifications to the user as well as str
 
 \subsection{Architectural Patterns} \label{architectural-patterns}
 
-% TODO: Get references for Client-server pattern and for Basic Layer pattern
 % TODO: Reference for layer: http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf
 	% The reference is a book, need page 9 (page '1' of the book content)
-% TODO: Reference for client server: https://msdn.microsoft.com/en-ca/library/ee658117.aspx#ClientServerStyle
 
-The architecture of our system is a Centralized Client-Server pattern, as can be seen in the model diagram 
-in Figure~\ref{fig:architecture-sbacs}. The client components of
+The architecture of our system is a Centralized Client-Server pattern ~\autocite{CLIENTSERVERARCH}, as can be seen 
+in the model diagram in Figure~\ref{fig:architecture-sbacs}. The client components of
 the system are the LockHardware, AndroidApplication, and WebInterface. The server components are the SbacsServer and
 the SbacsDatabase. This is centralized because the data and general functionality of the system are on the central
 server components. The client components have some specific functionality locally as well, generally limited to
@@ -885,8 +882,6 @@ effectively host our web server for this project.
 
 \subsection{Representational State Transer} \label{representational-state-transer}
 
-% TODO: Reference the Front Controller section (once written)
-
 The Representational State Transfer (REST) architectural style ~\autocite{RESTARCHSTYLE} was chosen to be used
 for our web server. The main principle of REST that we adhered to is the idea of a stateless
 server in the client-server relationship. This means that the server does not store any session
@@ -897,7 +892,7 @@ determine session information. Another feature of REST is the idea of a uniform 
 helps to keep the system simple by relying on identifiers to specify which resource or service is
 needed at the time. The path and the query string in the URL are examples of identifiers that
 specify which endpoint or service is being requested. The web server for this project has this
-uniform interface as all HTTP requests go to a single Front Controller, which
+uniform interface as all HTTP requests go to a single Front Controller (Section~\ref{design-patterns}), which
 then determines based on the identifiers the appropriate handler of the request.
 
 \subsection{JavaScript Object Notation} \label{javascript-object-notation}
@@ -977,32 +972,32 @@ the database whenever it was needed.
 
 \subsection{Relational Database Normalization} \label{relational-database-normalization}
 
-% Database normalization reference: https://www.tutorialspoint.com/sql/sql-rdbms-concepts.htm
-	% TODO: Also use the first, second, third pages as references separately
-
 Database Normalization is used to efficiently organize tables in a database to eliminate redundant
-data and to maintain all information that exists in the data. The end goal of normalization is to
+data and to maintain all information that exists in the data~\autocite{DBNORMALIZATION}.
+The end goal of normalization is to
 reduce the amount of data that is stored, without removing necessary information. There are various
 normal forms to measure the amount of normalization that has been used. In our database, we meet
 the third normal form.
 
 To meet third normal form, first and second normal form must also be met. First normal form
 has three rules: data items must be defined and grouped in tables, there must be no repeating
-groups of data, and there must be a primary key for each table. In our database we have many tables
+groups of data, and there must be a primary key for each table~\autocite{FIRSTNORMALFORM}.
+In our database we have many tables
 that are used to group data; one example is the Users table that groups data items such as User\_Id,
 Name, and Rights. There are no repeating groups of data in any of the tables and each table has a
 primary key.
 
-Second normal form requires that no partial dependencies exist. This means that there
+Second normal form requires that no partial dependencies exist~\autocite{SECONDNORMALFORM}. This means that there
 cannot be data items that are dependent on a field that is not the primary key in a table. In our
 tables, we have ensured that no partial dependencies exist, so we meet second normal form.
 Third normal form requires that no transitive dependencies exist in a table, meaning that a data item
-does not depend on the primary key of the table. Again, in our tables there are no transitive dependencies
-so we meet third normal form.
+does not depend on the primary key of the table~\autocite{THIRDNORMALFORM}. Again, in our tables there
+are no transitive dependencies so we meet third normal form.
 
 \subsection{Authentication for Server API} \label{authentication-for-server-api}
 
-% TODO: Also include SD for flow of this in detail
+% Was going to have sequence diagram, but while making it I realized it was a bit too complicated
+	% So I will most likely leave it out, unless I can simplify it significantly
 
 Many requests to the server allow users to read, modify, and delete data, so we needed a
 way to ensure that users were identified and authenticated to allow certain requests to be
@@ -1043,14 +1038,14 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 
 \subsection{Design Patterns} \label{design-patterns}
 	
-% TODO: Front controller reference: https://martinfowler.com/eaaCatalog/frontController.html
 % TODO: Facade reference: Try library for the patterns book
 
 % Patterns to discuss include: Front Controller, Facade (sign-up)
 
 In order to handle incoming requests to the server, we use a Front Controller pattern. In this pattern,
 all request to the server are handled by a single contoller, the Front Controller, and the requests
-are sent to the appropriate controller to be handled. As can be seen in Figure~\ref{fig:front-controller},
+are sent to the appropriate controller to be handled~\autocite{FRONTCONTROLLER}. As can be seen in
+Figure~\ref{fig:front-controller},
 the requests will all go to the FrontController. This controller will determine, based on the path and
 method of the request, which controller should be called to complete the request. The request will then
 be processed and a correct response will be generated by the controller that is called. For example,
@@ -1301,16 +1296,13 @@ One of the modules
 
 \section{Cloud Services} \label{cloud-services}
 
-%TODO: Reference for Notepad++: https://notepad-plus-plus.org/
-%TODO: Reference for NPM: https://www.npmjs.com/
-
 The server application was developed using Notepad++, a free source code editor with support
-for multiple languages. This was used instead of an IDE to maintain the same development
+for multiple languages~\autocite{NOTEPADPLUSPLUS}. This was used instead of an IDE to maintain the same development
 environment at school and outside of school when working on this project. Node.js does not
 require special build tools, so it is very easy to simply write the code in a relatively basic
 editor, and then run it from the command line to test it. To manage dependencies of libraries
 for our server code we used NPM, a package manager for Node.js. NPM is the dependency management
-tool that is bundled with Node.js, so it was a natural choice to use for our project.
+tool that is bundled with Node.js, so it was a natural choice to use for our project~\autocite{NODENPM}.
 
 
 %========================================================
@@ -1318,10 +1310,9 @@ tool that is bundled with Node.js, so it was a natural choice to use for our pro
 % My problems/solutions section
 \subsection{Learning to Use Amazon Web Services} \label{learning-to-use-amazon-web-services}
 
-% TODO: Reference AWS section in chapter 5
-
 Amazon Web Services provides all the hosting that we needed for this project, so it was a
-natural choice for us to use. When we started, we followed some basic tutorials to get a sample
+natural choice for us to use (Section~\ref{amazon-web-services}. When we started, we followed
+some basic tutorials to get a sample
 web application running, that would return a static HTML page on all HTTP requests. The first
 major challenge came from attempting to modify this sample application. First, we had to find
 the code of the sample application, as it was not given in any location that we thought to look on
@@ -1360,8 +1351,8 @@ specific troubles with SSL Certificates will be explained in more detail in the 
 
 \subsection{SSL Certificates} \label{ssl-certificates}
 
-%TODO: Reference section in 5.5 about HTTPS and SSL stuff
-
+As discussed in Section~\ref{sending-data-securely-over-the-network}, it is important to use HTTPS
+instead of HTTP when sending requests with sensitive information.
 In order to send requests over HTTPS instead of HTTP, SSL Certificates are needed.
 These provide an extra layer of security to ensure that only the sending and receiving parties are
 aware of the content of the message.
@@ -1443,7 +1434,7 @@ Points to mention in this chapter:
     on a port would be enabled by default on some machines but not others)
 \end{itemize}
 
-%TODO: Talk about using Postman to test server, get reference for Postman: 
+%TODO: Talk about using Postman to test server, get reference for Postman
 
 \section{Bugs} \label{bugs}
 
