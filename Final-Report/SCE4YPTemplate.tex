@@ -491,11 +491,57 @@ registration, we were able to implement notifications to the user as well as str
 
 \subsection{Architectural Patterns} \label{architectural-patterns}
 
-% TODO: A discussion of the architectural patterns used for our system
-%    (with deployment diagrams)
-% Maybe make each a sub section, we will see how long they are
+% TODO: Get references for Client-server pattern and for Basic Layer pattern
 
-We used a Centralized Client-Server pattern, as well as a Basic Layer pattern.
+The architecture of our system is a Centralized Client-Server pattern, as can be seen in the model diagram 
+in Figure~\ref{fig:architecture-sbacs}. The client components of
+the system are the LockHardware, AndroidApplication, and WebInterface. The server components are the SbacsServer and
+the SbacsDatabase. This is centralized because the data and general functionality of the system are on the central
+server components. The client components have some specific functionality locally as well, generally limited to
+basic processing of information supplied by a user, as well as the manipulation of the user interface.
+
+Each component in the system uses a Basic Layer pattern to divide responsibilities of the component. Specifically,
+there are four main layers used: user interface layer, system interface layer, function layer, and model layer.
+The user interface layer handles the display to the user and the input from the user. The system interface layer
+is used to send and receive information between components in the system. The function layer is used to process
+information in a variety of ways. The model layer is used to store the needed information of the system.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Diagrams/ArchitectureSBACS}
+    \caption{Architecture of SBACS}
+    \label{fig:architecture-sbacs}
+\end{figure}
+
+The AndroidApplication component has a user interface layer, to handle the display of information to the user,
+in the form of a graphical user interface. The user can interact with this interface and enter information.
+When information needs to be processed, it is sent to the function layer, where basic processing of the
+information is performed. In some cases, there will need to be more processing performed, using the functionality
+available on the central server. In order to send the information to the server, it is passed to the system
+interface layer to be sent to the SbacsServer.
+
+The WebInterface component has a user interface layer that acts in a very similar way to the AndroidApplication
+component. However, the WebInterface does not perform any processing of information locally, so it does not
+need a function layer. Instead, when processing is required, it is sent to the system interface layer to send
+the information to the SbacsServer.
+
+The LockHardware component has a very basic user interface layer, consisting of LEDs for the display of information
+and various authentication modules for user input. Once users input information through an authentication module,
+the information is passed to the function layer to be processed. Similarly to the AndroidApplication, the information
+sometimes requires more processing on the central server, and in that case is sent to the system interface layer
+to send the information to the SbacsServer.
+
+The SbacsServer component has no user interface layer, as it should only be interacted with through one of the client
+components. Instead, all input to the server is done through the system interface layer in the form of HTTP requests.
+The requests are then passed to the function layer to process the request and generate an appropriate response. The
+processing of requests often requires information stored in the SbacsDatabase, so the system interface layer must be
+called to send a request to the SbacsDatabase.
+
+The SbacsDatabase component only has system interface and model layers, as it is only meant to store information and
+respond to requests for information. The system interface layer is used to receive requests for data, and then will
+call the model layer to retrieve the appropriate data. The model layer is the only model layer that exists in the
+system, as it stores all of the data for the system as a whole.
+
 
 %=================================================================================
 
@@ -791,11 +837,7 @@ microcontrollers, while still meeting the requirements.
 
 \section{Cloud} \label{cloud}
 
-% TODO: Resolve the comments in my section
-
 \subsection{Amazon Web Services} \label{amazon-web-services}
-
-% Double check my reference
 
 Amazon Web Services (AWS) provides a platform to host various cloud services,
 including web servers and data storage options~\autocite{AMAZONWEBSERVICES}. In this
@@ -814,7 +856,6 @@ effectively host our web server for this project.
 
 \subsection{Representational State Transer} \label{representational-state-transer}
 
-% Double check my reference
 % TODO: Reference the Front Controller section (once written)
 
 The Representational State Transfer (REST) architectural style ~\autocite{RESTARCHSTYLE} was chosen to be used
@@ -831,8 +872,6 @@ uniform interface as all HTTP requests go to a single Front Controller, which
 then determines based on the identifiers the appropriate handler of the request.
 
 \subsection{JavaScript Object Notation} \label{javascript-object-notation}
-
-% Double check my reference (page 7, section 1)
 
 In order to send information between the client and the server, a standard format for
 representing the data is necessary. We have chosen to use JavaScript Object Notation (JSON) to
@@ -863,8 +902,6 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
-% TODO: Check if I need to explain HTTP GET request
-
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
 the content of a web page ~\autocite{HTMLREF}. Since this language is the standard, it was a natural choice for our
@@ -892,7 +929,7 @@ very desirable library to fulfill all of the needs of our web interface.
 
 \subsection{Single Page Application} \label{single-page-application}
 
-% Maybe quote first sentence of the reference?
+% TODO: Maybe quote first sentence of the reference?
 
 The web interface is designed to be a Single Page Application (SPA). A Single Page Application is
 a web application that runs on a single web page, having no HTML page reloads ~\autocite{SPAREF}. This means
@@ -921,7 +958,6 @@ We follow third normal form in our database. The proof and description of what t
 \subsection{Authentication for Server API} \label{authentication-for-server-api}
 
 % TODO: Also include SD for flow of this in detail
-% TODO: Maybe?: Mention the hashing algorithm used, maybe explain it
 
 Many requests to the server allow users to read, modify, and delete data, so we needed a
 way to ensure that users were identified and authenticated to allow certain requests to be
@@ -949,8 +985,6 @@ the same password. With this technique, the data is never stored in plain text s
 vulnerable to many types of attacks.
 
 \subsection{Sending Data Securely Over the Network} \label{sending-data-securely-over-the-network}
-
-% TODO: Double check that my reference for this is correct, had two authors
 
 The Hypertext Transfer Protocol (HTTP) is the standard protocol used to send requests on the internet ~\autocite{HTTPREF}.
 In many situations, these requests need to contain sensitive information, such as passwords or personal
@@ -984,9 +1018,6 @@ to the AccessController.
     \caption{Front Controller Class Diagram}
     \label{fig:front-controller}
 \end{figure}
-
-Facade pattern can be seen in Figure~\ref{fig:facade-server}. Facade functionality is shown
-through the sequence diagram in Figure~\ref{fig:facade-signup-sequence}.
 
 The Facade pattern is used to initially sign up a user for SBACS. There is a single request to the
 server to sign up, with a given username and password. This request will be processed by the
@@ -1220,11 +1251,12 @@ One of the modules
 
 %TODO: Talk about node http library, crypto library, url library, mysql library
 
-%TODO: Generally developed using Notepad++, Postman to test it
+%TODO: Generally developed using Notepad++, Postman to test it, npm for package management
 
 % My problems/solutions section
-% TODO: Reference relevant sections of earlier part throughout this section (AWS, HTTPS, Database stuff)
 \subsection{Learning to Use Amazon Web Services} \label{learning-to-use-amazon-web-services}
+
+% TODO: Reference AWS section in chapter 5
 
 Amazon Web Services provides all the hosting that we needed for this project, so it was a
 natural choice for us to use. When we started, we followed some basic tutorials to get a sample
