@@ -648,8 +648,6 @@ is visualised as a message sequence chart in figure~\ref{fig:nfc-protocol-msc}, 
     \label{fig:nfc-protocol-fsm-app}
 \end{figure}
 
-% Todo: MSC / FSMs?
-
 %=================================================================================
 
 \section{Android Application} \label{android-application}
@@ -669,6 +667,8 @@ simple objects, but view objects can subclass the View class or its more specifi
 objects can subclass the Adapter class or its subclasses. More precisely, since the View objects and the Model objects
 never communicate, this follows the Model-View-Adapter pattern. The difference can be seen in figures~\ref{fig:MVC} and
 \ref{fig:MVA}.
+
+%TODO change to MVP?
 
 \begin{figure}
     \centering
@@ -700,10 +700,14 @@ correctly load the information from that user when displaying the data Activitie
 \subsection{Notifications} \label{notifications}
 
 The design for the notifications that would inform end users of information such as their newly available registration
-with a particular lock was based partly on decreasing load on the server. Having the server maintain a large amount of
-session information as well as spending time and memory on the timers to be able to update the user of these changes
-was thought to be too great a cost. For this reason, it seemed simpler and more effective to have the application poll
-the server at a particular access point for new information.
+with a particular lock was based partly on decreasing load on the server. If we had designed the notification system to
+be handled by the server, we would have needed the server to maintain a large amount of state information. In order to
+be able to send the notifications, the server would have to remember the IP address of each current user. This would
+require handshaking between the application and server on creating and terminating a connection, as well as when the
+application changes IP address due to roaming. Further, the server would have to queue up all of the notification
+information that a user who does not currently have a session would want. Having the server maintain all of this
+information was thought to be too great a cost. For this reason, it seemed simpler and more effective to have the
+application poll the server at a particular access point for new information.
 
 This polling was implemented simply in the application using a service which runs in the background of the Android
 device. This service regularly hits the server at a particular endpoint designed for handling these notifications. Since
@@ -712,11 +716,28 @@ The endpoint returns information valuable to the application for display in the 
 of an Android notification's ability to launch an Acticity with an Intent to take the user to the appropriate Activity
 associated with the notification.
 
+The overall design of the polling sequence can be seen in figure~\ref{fig:notfication-sequence}. Some simplifications
+have been made to the diagram to preserve its readability. The main simplification is the Notification that is created
+by the service. In order to preserve security as well as to improve the user's experience there is only ever one SBACS
+notification in existence at a time on a given device. This way when a user logs out, another user cannot see their
+notifications. In addition, the user will not be inundated with a large number of notifications when, for example, they
+join a company which makes extensive use of SBACS locks. Therefore, when the service receives new notifications, in the
+opt block of figure~\ref{fig:notfication-sequence}, it first checks if there is an existing Notification. If there is,
+instead of creating a new Notification it updates the current one. Also, Notifications can be cleared by the user
+visiting the appropriate page of the application that would show the new information, or by the user interactign with
+the notification through their Android device's operating system.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/NotificationSequence}
+    \caption{Notification polling sequence diagram}
+    \label{fig:notfication-sequence}
+\end{figure}
+
 %---------------------------------------------------------------------------------
 
 \subsection{NFC Handler} \label{nfc-handler}
 
-% Provide ref to section?
 Recall from section~\ref{mobile-devices}, the NFC communication method that we decided on used host-based card emulation. Android provides
 an API to accomplish these communications, through the HostApduService class []. This class provides a framework for
 creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
