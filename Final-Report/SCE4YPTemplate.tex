@@ -698,7 +698,7 @@ first encouters a login Activity, which prompts them to either sign up or log in
 provide a hub Activity which leads to the various other Activities in the application. These other Activities show the
 various data related to the user, such as their authenticators and identities.
 
-Communication between Activities is handled by a class provided by Android called an Intent. Intent objects contain
+Communication between Activities is handled by a class provided by Android called an Intent~\autocite{ANDROIDINTENT}. Intent objects contain
 information about the nature of the request to begin the new Activity. In this way, information such as the user's
 identification number could be sent from the login Activity to the hub Activity, which would allow the application to
 correctly load the information from that user when displaying the data Activities.
@@ -747,17 +747,17 @@ the notification through their Android device's operating system.
 \subsection{NFC Handler} \label{nfc-handler}
 
 Recall from section~\ref{mobile-devices}, the NFC communication method that we decided on used host-based card emulation. Android provides
-an API to accomplish these communications, through the HostApduService class []. This class provides a framework for
+an API to accomplish these communications, through the HostApduService class~\autocite{ANDROIDAPDU}. This class provides a framework for
 creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
 communications, while also providing overrideable methods to determine what data should be sent based on the incoming
 message.
 
-Services also take an Intent object to determine their purpose. This feature was used to have the login Activity start
-the service with the correct key information for a user's NFC authenticator. This way, the data sent could be overridden
-with the user's secret key value. Since passive NFC communications are difficult to eavesdrop on, this was thought to be
+Services also take an Intent object to determine their purpose~\autocite{ANDROIDINTENT}. This feature allows the login Activity to start
+the service with the correct key information for a user's NFC authenticator. This way, the data sent by the service could
+contain the user's secret key value. Since passive NFC communications are difficult to eavesdrop on, this was thought to be
 a safe method of conveying the secret key to the lock without requiring too much data to be sent over the slow NFC
 physical links. This passing of information of course was also configured to follow the protocol designed above for NFC
-communications.
+communications in section~\ref{protocol}.
 
 %=================================================================================
 
@@ -989,7 +989,7 @@ the third normal form.
 To meet third normal form, first and second normal form must also be met. First normal form
 has three rules: data items must be defined and grouped in tables, there must be no repeating
 groups of data, and there must be a primary key for each table. In our database we have many tables
-that are used to group data; one example is the Users table that groups data items such as User_Id,
+that are used to group data; one example is the Users table that groups data items such as User\_Id,
 Name, and Rights. There are no repeating groups of data in any of the tables and each table has a
 primary key.
 
@@ -1107,9 +1107,9 @@ up SBACS.
 
 \section{Android Application Development} \label{android-application-development}
 
-The Android application was developed using Android Studio [] exclusively, and is primarily composed of Java classes, XML
+The Android application was developed using Android Studio~\autocite{ANDROIDSTUDIO} exclusively, and is primarily composed of Java classes, XML
 documents, and gradle build files. Android studio was selected since it seemed to be the natural tool for writing an
-Android application, and didn't have any negatives with respect to our requirements. Gradle [] was chosen as the build
+Android application, and didn't have any negatives with respect to our requirements. Gradle~\autocite{GRADLE} was chosen as the build
 tool as it is naturally integrated with Android studio.
 
 %---------------------------------------------------------------------------------
@@ -1117,7 +1117,8 @@ tool as it is naturally integrated with Android studio.
 \subsection{Server Interfacing} \label{server-interfacing}
 
 Connections to the server were managed through the android Volley API. Volley provides a simple interface over which
-HTTP and HTTPS messages can be sent. Standard operation of Volley follows a simple procedure: first a RequestQueue is
+HTTP and HTTPS messages can be sent~\autocite{ANDROIDVOLLEY}~\autocite{VOLLEY}.
+Standard operation of Volley follows a simple procedure: first a RequestQueue is
 set up, and then various Requests are enqueued. These requests are then dequeued by the RequestQueue's thread, which
 then creates an HTTP/HTTPS connection. The response that comes back over the connection is handled by another thread.
 
