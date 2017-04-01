@@ -259,15 +259,20 @@ All members collaborated on sections 2 and 4.
 
 \section{Cloud Computing} \label{cloud-computing}
 
-%=================================================================================
+%TODO: Reference for cloud computing: https://aws.amazon.com/what-is-cloud-computing/
 
-%---------------------------------------------------------------------------------
-
-\subsection{AWS} \label{aws}
+Cloud computing is about performing computation, providing data storage, and offering other services
+on demand over the internet. For this project, Amazon Web Services (as discussed in Section~\ref{amazon-web-services}
+has been used as the provider of a cloud computing platform to host the server and database of SBACS.
+Cloud computing allows for computational resources to be dynamically allocated based on the demand
+at the time. This means that when a server has low demand it will not use as many resources, but when
+the demand is higher, it will dynamically be provided with more resources.
 
 %=================================================================================
 
 \section{Security} \label{security}
+
+% TODO: Do we need this section? I think it is covered in the why http isn't secure part later
 
 %=================================================================================
 
@@ -492,6 +497,9 @@ registration, we were able to implement notifications to the user as well as str
 \subsection{Architectural Patterns} \label{architectural-patterns}
 
 % TODO: Get references for Client-server pattern and for Basic Layer pattern
+% TODO: Reference for layer: http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf
+	% The reference is a book, need page 9 (page '1' of the book content)
+% TODO: Reference for client server: https://msdn.microsoft.com/en-ca/library/ee658117.aspx#ClientServerStyle
 
 The architecture of our system is a Centralized Client-Server pattern, as can be seen in the model diagram 
 in Figure~\ref{fig:architecture-sbacs}. The client components of
@@ -1018,12 +1026,11 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 
 
 \subsection{Design Patterns} \label{design-patterns}
+	
+% TODO: Front controller reference: https://martinfowler.com/eaaCatalog/frontController.html
+% TODO: Facade reference: Try library for the patterns book
 
-% TODO: Find GOF book for references about patterns (4806 textbook for Front Controller pattern)
-% TODO: For Facade section, modify the signup sequence diagram to match the process described,
-	%	and show/mention the diagram in the paragraph
-
-% Patterns to discuss include: Front Controller, MVC, Facade (sign-up), 
+% Patterns to discuss include: Front Controller, Facade (sign-up)
 
 In order to handle incoming requests to the server, we use a Front Controller pattern. In this pattern,
 all request to the server are handled by a single contoller, the Front Controller, and the requests
@@ -1043,16 +1050,23 @@ to the AccessController.
 The Facade pattern is used to initially sign up a user for SBACS. There is a single request to the
 server to sign up, with a given username and password. This request will be processed by the
 Front Controller and then sent to the SignupController. Figure~\ref{fig:facade-server} shows the
-class diagram of how the SignupController interacts with multiple other controllers. The SignupController
-will call the UserController
+class diagram of how the SignupController interacts with multiple other controllers. The sequence
+of operations that are called can be seen in the sequence diagram in Figure~\ref{fig:facade-signup}.
+The SignupController will call the UserController
 to create a new User with the given username, then will call the IdentityController to create an Identity
 for the new User, and finally will call the AuthenticatorController to create an Authenticator that is
-a password with the given password for the User.
+a password with the given password for the User. 
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade}
     \caption{Facade Class Diagram}
     \label{fig:facade-server}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade_SignUpSequence}
+    \caption{Facade Sequence Diagram}
+    \label{fig:facade-signup}
 \end{figure}
 
 
