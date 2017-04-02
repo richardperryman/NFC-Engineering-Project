@@ -1122,7 +1122,18 @@ Response.Listener class provides methods to handle HTTP responses. Since these c
 methods, anonymous classes were used in all cases. Further, we decided that handling the parsing should be done as
 safely as possible, so all responses were first parsed simply as Strings. Then, the response was attempted to be parsed
 as a JSON object of the type expected from the server. If that parsing failed, the message was instead considered an
-error, and handled from there.
+error, and handled from there. A high level example is shown in figure~\ref{fig:login-volley} in the particular case of
+logging in to the application. Note that in this figure, the getBody call that the StringRequest performs is actually
+asynchronous. This shows how much the operations in Volley are performed asynchronously on the fly, and if these were
+to take too long, the message would be sent by the RequestQueue before the StringRequest finished. In this case, this
+was not particularly important, since the only operation performed was converting a JSON object containing a few bytes
+to a byte array, but had to be considered in other cases.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/VolleyExampleSequence}
+    \caption{Login sequence diagram demonstrating Volley}
+    \label{fig:login-volley}
+\end{figure}
 
 %---------------------------------------------------------------------------------
 
@@ -1441,26 +1452,7 @@ Points to mention in this chapter:
     on a port would be enabled by default on some machines but not others)
 \end{itemize}
 
-
-\section{Testing} \label{testing}
-
-\subsection{Server Testing} \label{server-testing}
-
-To test the server, it was hosted locally by running the server code through the command line.
-In order to send HTTP requests to the server, an application called Postman was used. Postman
-is a useful application for building and sending HTTP requests, with a nice user interface~\autocite{POSTMAN}.
-It also saves the history of sent requests, making it easy to perform a suite of requests
-each time testing needs to be performed.
-
-Once the code was tested locally and verified to be stable, it was deployed to Amazon Web
-Services to host the new version of the server. Once it was deployed, the test suite was
-run again to ensure that the code still worked in the actual server environment.
-
-In order to debug when issues were found on the server, the server logs were very important.
-The logs of the server would often indicate how the input was interpreted or how the data
-from the database was read, so we could see where the issue was. In some cases, additional
-logging information was needed to indicate if certain blocks of code had been reached, to 
-determine whether the program flow was correct.
+%TODO: Talk about using Postman to test server, get reference for Postman
 
 \section{Bugs} \label{bugs}
 
