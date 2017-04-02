@@ -1434,7 +1434,26 @@ Points to mention in this chapter:
     on a port would be enabled by default on some machines but not others)
 \end{itemize}
 
-%TODO: Talk about using Postman to test server, get reference for Postman
+
+\section{Testing} \label{testing}
+
+\subsection{Server Testing} \label{server-testing}
+
+To test the server, it was hosted locally by running the server code through the command line.
+In order to send HTTP requests to the server, an application called Postman was used. Postman
+is a useful application for building and sending HTTP requests, with a nice user interface~\autocite{POSTMAN}.
+It also saves the history of sent requests, making it easy to perform a suite of requests
+each time testing needs to be performed.
+
+Once the code was tested locally and verified to be stable, it was deployed to Amazon Web
+Services to host the new version of the server. Once it was deployed, the test suite was
+run again to ensure that the code still worked in the actual server environment.
+
+In order to debug when issues were found on the server, the server logs were very important.
+The logs of the server would often indicate how the input was interpreted or how the data
+from the database was read, so we could see where the issue was. In some cases, additional
+logging information was needed to indicate if certain blocks of code had been reached, to 
+determine whether the program flow was correct.
 
 \section{Bugs} \label{bugs}
 
