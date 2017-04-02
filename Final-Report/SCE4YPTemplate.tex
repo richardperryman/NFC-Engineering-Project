@@ -276,6 +276,10 @@ All members collaborated on sections 2 and 4.
 % Consider adding Node, Android? Maybe others?
 \chapter{Technical Background} \label{technical-background}
 
+This section identifies several technical topics that are relevant to the SBACS. These topics are discussed lightly here
+to ensure the reader's familiarity with them in later sections. Therefore, these sections do not discuss the SBACS in
+detail, but instead attempt to set up a baseline from which the SBACS's operation can be understood.
+
 %=================================================================================
 
 \section{NFC} \label{nfc}
@@ -296,7 +300,34 @@ the demand is higher, it will dynamically be provided with more resources.
 
 \section{Security} \label{security}
 
-% TODO: Do we need this section? I think it is covered in the why http isn't secure part later
+The three main principles of network security are confidentiality, message integrity, end-point authentication, and
+operational security~\autocite{NETWORKTEXTBOOK}. Confidential networks ensure that only the sender and receiver can
+understand the the contents of a message. A message's integrity is protected by a network if the contents of the message
+cannot be modified by either a malicious attacker or by accident. Networks enable end-point authentication by providing
+mechanisms by which the sender and receiver can confirm the identity of the other party. Operational security deals with
+the ability for organisations to protect their host machines from attackers on the internet.
+
+Confidentiality is primarily provided by means of cryptography. Encryption describes a process by which a message is
+modified using some secret information~\autocite{NETWORKTEXTBOOK}. Then if a sender and a receiver share some secret
+information, usually called a key, they can be sure that only they can understand the actual message. If the shared keys
+are identical, it is called symmetric-key cryptography. If only one of the sender or receiver knows both keys, but both
+know of the other key, then it is called a public key cryptography.
+
+Message integrity can be handled in many ways, but the goal is always to verify the sender's identity, and to verify
+that the message has not been changed~\autocite{NETWORKTEXTBOOK}. Two common ways of providing message integrity are
+through message authentication codes and digital signitures. Message authentication codes are redundant information
+added to a message after being generated using a shared secred value. The sender and receiver mush share the secret in
+andvance and follow the same procedure to calculate the code. Then the receiver can check that their calculated value
+matches the value sent by the sender. Digital signatures are primarily handled by certification authorities. The
+authority does work to ensure the identity of a potential sender, and then combines that sender's public key along with
+identifying information using the authority's private key. This way, a receiver can check with the certification
+authority that the sender is who they say that they are.
+
+Operational security primarily lies outside the scope of the SBACS and is handled by things like firewalls~\autocite
+{NETWORKTEXTBOOK}. Therefore, the SBACS does not make any considerations for handling operational security. This means
+that the SBACS is as vulnerable as the system that it is being run over to operational attacks. As an example, if an
+attacker had access to a sufficiently powerful machine, they could perform a kind of replay attack. By creating a copy
+of the data and simply brute forcing all possible keys, the attacker could gain access to a lock.
 
 %=================================================================================
 
