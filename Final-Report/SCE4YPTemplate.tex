@@ -127,23 +127,60 @@ as desired.
 
 \chapter{Introduction} \label{introduction}
 
-Give an introduction to your project.  This might include:
-\begin{itemize}
-  \item Motivation for your project
-  \item Problem you are trying to solve
-  \item Scope of your project
-  \item Organization of your report
-\end{itemize}
-You should tune this appropriately for what best suits your project.
+%Give an introduction to your project.  This might include:
+%\begin{itemize}
+%  \item Motivation for your project
+%  \item Problem you are trying to solve
+%  \item Scope of your project
+%  \item Organization of your report
+%\end{itemize}
+%You should tune this appropriately for what best suits your project.
 
 \section{Project Motivation} \label{project-motivation}
-%TODO: What is the background problem to solve with this project?
+%TODO: Pulled with slight modification from proposal, needs more editing probably
+
+As technology becomes more and more prevalent in our lives, our identities become increasingly intertwined with the
+technologies that we use daily. This melding has become extremely prevalent in some areas. Some example areas are
+professional networking with LinkedIn, and banking with the advent of online account management. Over half of all
+smartphone users have used mobile banking~\autocite{MOBILEBANKING}. This popularity may be derived
+from how convenient and secure the online handling of money is. However, certain aspects of our day to day lives
+have not yet been graced by the benefits of electronic security and automation.
+
+Physical locks and keys are still widely used for several tasks where electronic locks could be used instead. House
+locks, bicycle locks, and locker locks are frequently physical locks. Changing to electronic locks could help streamline
+all of these locks, reducing the number of keys to remember and improving security by reducing the likelihood that the
+key could be faked by an attacker. This would also reduce the risk of misplacing keys, as a digital key can be backed 
+up for use on another device. It can also increase the security of the lockers by reducing the number of points of failure.
+Some applications for this have already been found: for example, Walmart has a system 
+where customers can order products to be placed in lockers with electronic keys called Grab-and-Go~\autocite{WALMART}. 
+Such a system greatly reduces the work involved in getting a key to the customer, as a PIN can be sent and received 
+electronically.
 
 \section{Proposed Solution} \label{proposed-solution}
-%TODO: What do we propose to do to solve the stated problem?
+%TODO: Pulled with slight modification from proposal, needs more editing probably
+
+This project outlines a Sensor-Based Access Control System~(SBACS), that will expand upon the concept of using electronic
+locks to further tie security and identity to the electronics we use most: our phones. Using near-field 
+communication~(NFC) sensors, along with other electronic authentication methods, the identity associated with a phone
+can be used as
+identification for anything requiring access control. This represents a huge advantage with respect to convenience, and 
+it would even further lower the number of possible failure points in security. In addition, with modern mobile devices 
+being automatically backed up to cloud storage, recovering access control keys when a device is lost or stolen can be accomplished 
+easily and securely.
 
 \seciton{Accomplishments} \label{accomplishments}
-% TODO: What exactly did we accomplish of the project goals (brief description)
+% What exactly did we accomplish of the project goals (brief description)
+
+The final product of this project accomplishes the main goals set out in the proposal; a system for access control,
+using multiple sensors for different methods of authentication, with the ability to dynamically grant and remove
+access to different users. We have a working prototype that is a drawer secured with an electronic lock, connected
+to our system to control access. This prototype is able to function with multiple methods of authentication: a PIN
+and an NFC sensor. An Android application has been developed to allow users to manage aspects of their identity and
+view information about which locks they are able to access, as well as to use NFC to open a lock. A cloud server stores
+information about which users are able to access which locks, and verifies that given authentication information is
+adequate to provide access to a lock. The lock hardware and the Android application communicate with the cloud server,
+and the Android application also sends information to the lock hardware using NFC. Finally, there is a web interface
+to allow management of access to different locks, and to provide basic account management to users of the system.
 
 \section{Overview of Report} \label{overview-of-report}
 % In this report, you will find ...
