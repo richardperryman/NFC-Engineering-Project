@@ -1556,7 +1556,28 @@ needed for the request, but will not retrieve data that is unnecessary. Less que
 keeps the delay in sending and receiving responses low, allowing the server to spend less time
 waiting and more time processing information.
 
+In addition, the calculations done to ensure security had to be measured to ensure that the response time was not
+suffering without meaningfully benefitting security. We measured the time taken by the password-based key derivation
+function using the algorithm we chose, SHA256, given different numbers of iterations, which is summarised in table~\ref
+{tab:sha256-performance}. We found that ten thousand iterations worked well, as roughly a tenth of a second did not
+dramatically impact user experience, while also ensuring that brute forcing was too inefficient.
 
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{| r | r |}
+		\hline
+		Iterations & Response Time (ms) \\ \hline
+		1 & 2 \\ \hline
+		10 & 2 \\ \hline
+		100 & 2 \\ \hline
+		1000 & 15 \\ \hline
+		10000 & 130 \\ \hline
+		100000 & 1308 \\ \hline
+		1000000 & 12777 \\ \hline
+	\end{tabular}
+	\caption{Table of time taken to perform SHA256 password based key derivation}
+	\label{tab:sha256-performance}
+\end{table}
 
 %=================================================================================
 
