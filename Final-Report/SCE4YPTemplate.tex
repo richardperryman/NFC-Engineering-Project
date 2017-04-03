@@ -1560,7 +1560,9 @@ In addition, the calculations done to ensure security had to be measured to ensu
 suffering without meaningfully benefitting security. We measured the time taken by the password-based key derivation
 function using the algorithm we chose, SHA256, given different numbers of iterations, which is summarised in table~\ref
 {tab:sha256-performance}. We found that ten thousand iterations worked well, as roughly a tenth of a second did not
-dramatically impact user experience, while also ensuring that brute forcing was too inefficient.
+dramatically impact user experience, while also ensuring that brute forcing was too inefficient. We then considered the
+salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows,  we found that the salt
+length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
 
 \begin{table}[!h]
 	\centering
@@ -1575,8 +1577,27 @@ dramatically impact user experience, while also ensuring that brute forcing was 
 		100000 & 1308 \\ \hline
 		1000000 & 12777 \\ \hline
 	\end{tabular}
-	\caption{Table of time taken to perform SHA256 password based key derivation}
+	\caption{Time taken to perform SHA256 password based key derivation vs. iterations}
 	\label{tab:sha256-performance}
+\end{table}
+
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{| r | r |}
+		\hline
+		Salt Length & Response Time (ms) \\ \hline
+		1 & 1188 \\ \hline
+		2 & 1249 \\ \hline
+		4 & 1206 \\ \hline
+		8 & 1214 \\ \hline
+		16 & 1200 \\ \hline
+		32 & 1191 \\ \hline
+		64 & 1178 \\ \hline
+		128 & 1173 \\ \hline
+		256 & 1216 \\ \hline
+	\end{tabular}
+	\caption{Time taken to perform SHA256 password based key derivation vs. salt length, with 10000 iterations}
+	\label{tab:sha256-salt-performance}
 \end{table}
 
 %=================================================================================
