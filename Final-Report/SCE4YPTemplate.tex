@@ -1045,7 +1045,7 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
-%TODO: maybe a screenshot of what the HTML looks like here?
+%TODO: screenshot of the HTML and the rendered page beside each other
 
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
@@ -1125,9 +1125,6 @@ are no transitive dependencies so we meet third normal form.
 
 \subsection{Authentication for Server API} \label{authentication-for-server-api}
 
-% Was going to have sequence diagram, but while making it I realized it was a bit too complicated
-	% So I will most likely leave it out, unless I can simplify it significantly
-
 Many requests to the server allow users to read, modify, and delete data, so we needed a
 way to ensure that users were identified and authenticated to allow certain requests to be
 performed. We used Keyed-Hash Message Authentication Codes (HMAC) to accomplish this goal.
@@ -1166,8 +1163,6 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 
 
 \subsection{Design Patterns} \label{design-patterns}
-	
-% TODO: Facade reference: Try library for the patterns book
 
 % Patterns to discuss include: Front Controller, Facade (sign-up)
 
@@ -1187,7 +1182,7 @@ to the AccessController.
     \label{fig:front-controller}
 \end{figure}
 
-The Facade pattern is used to initially sign up a user for SBACS. There is a single request to the
+The Facade pattern~\autocite{DESIGNPATTERNSGOF} is used to initially sign up a user for SBACS. There is a single request to the
 server to sign up, with a given username and password. This request will be processed by the
 Front Controller and then sent to the SignupController. Figure~\ref{fig:facade-server} shows the
 class diagram of how the SignupController interacts with multiple other controllers. The sequence
