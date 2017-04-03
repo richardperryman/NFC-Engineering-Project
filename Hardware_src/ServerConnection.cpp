@@ -156,23 +156,34 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
         AuthenticationModule* module = modules->at(i);
         if (module->hasToken())
         {
-            json_object* token;
-            json_object* buffer;
-            json_object* data;
+            if (strcmp(module->getID(), "nfc") == 0) {
+                json_object* token;
+                json_object* buffer;
+                json_object* data;
 
-            token = json_object_new_object();
-            buffer = json_object_new_object();
-            data = json_object_new_array();
-            json_object_object_add(token, "type", json_object_new_string(module->getID()));
-            json_object_object_add(buffer, "type", json_object_new_string("Buffer"));
-            for (uint16_t i = 0; i < module->getTokenSize(); i++)
-            {
-                json_object_array_add(data, json_object_new_int(module->getTokenByteAt(i)));
+                token = json_object_new_object();
+                buffer = json_object_new_object();
+                data = json_object_new_array();
+                json_object_object_add(token, "type", json_object_new_string(module->getID()));
+                json_object_object_add(buffer, "type", json_object_new_string("Buffer"));
+                for (uint16_t i = 0; i < module->getTokenSize(); i++)
+                {
+                    json_object_array_add(data, json_object_new_int(module->getTokenByteAt(i)));
+                }
+                json_object_object_add(buffer, "data", data);
+                std::string* value = removeSpaces(json_object_to_json_string(buffer));
+                json_object_object_add(token, "value", json_object_new_string(value->c_str()));
+                json_object_array_add(json, token);
             }
-            json_object_object_add(buffer, "data", data);
-            std::string* value = removeSpaces(json_object_to_json_string(buffer));
-            json_object_object_add(token, "value", json_object_new_string(value->c_str()));
-            json_object_array_add(json, token);
+            
+            else {
+                json_object* token;
+
+                token = json_object_new_object();
+                json_object_object_add(token, "type", json_object_new_string(module->getID()));
+                json_object_object_add(token, "value", json_object_new_string(module->getTokenString()));
+                json_object_array_add(json, token);                
+            }
         }        
     }
 
@@ -185,6 +196,8 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
     curl_easy_setopt(curly, CURLOPT_WRITEDATA, devnull); // Don't print the response 
     curl_easy_setopt(curly, CURLOPT_SSL_VERIFYPEER, 1L); // Verify the CA certificate
     curl_easy_setopt(curly, CURLOPT_SSL_VERIFYHOST, 1L); // Verify that the host reached matches the certificate
+    
+    printf("Seding: %s\n", json_object_to_json_string(json));
     
     DEBUG_LOG(INFO, __FUNCTION__, "Sending access request...");
     res = curl_easy_perform(curly);

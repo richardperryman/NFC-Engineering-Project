@@ -152,45 +152,51 @@ static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConne
     BLUE.setValue(GPIO_HIGH);
     while(access(KILL_FILE, F_OK) == -1)
     {
-        uint16_t counter = 50;
+        uint16_t counter = 5;
         bool counting = false;
         uint16_t tokenCount = 0;
         
-        // Poll each device
-        for (uint8_t i = 0; i < modules->size(); i++)
-        {
-            AuthenticationModule* module = modules->at(i);
-            
-            if (module->getToken())
+        do {
+            // Poll each device
+            for (uint8_t i = 0; i < modules->size(); i++)
             {
-                tokenCount++;
-                            
-                // On first token, start 5-second countdown
-                if (!counting)
-                {
-                    counting = true;
-                }         
-            }
-            
-            if (tokenCount == modules->size() || counter == 0)
-            {      
-                // Attempt an unlock
-                if (0 == connection->requestAccess(LOCK_ID, modules)) {
-                    accessGranted();
-                } else {
-                    accessDenied();
-                }
-
-                counting = false;
-                counter = 50;
-                tokenCount = 0;
+                AuthenticationModule* module = modules->at(i);
                 
-                for (uint16_t j = 0; j < modules->size(); j++) modules->at(i)->clearToken();
+                if (module->getToken())
+                {
+                    tokenCount++;
+                                
+                    // On first token, start 5-second countdown
+                    if (!counting)
+                    {
+                        counting = true;
+                    }         
+                }
             }
             
             if (counting) counter--;
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            
+            if (tokenCount == modules->size()) counting = false;
+        } while (counting && counter > 0);
+            
+        if (tokenCount == modules->size() || counter == 0)
+        {      
+            // Attempt an unlock
+            if (0 == connection->requestAccess(LOCK_ID, modules)) {
+                accessGranted();
+            } else {
+                accessDenied();
+            }
+
+            counting = false;
+            counter = 50;
+            tokenCount = 0;
+            
+            
         }
+        
+        for (uint16_t j = 0; j < modules->size(); j++) modules->at(j)->clearToken();
     }   
 }
 

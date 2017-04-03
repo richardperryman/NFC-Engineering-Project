@@ -104,6 +104,7 @@ as desired.
     AID & Application IDentifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
+    CPU & Central Processing Unit \\
     HMAC & Keyed-Hash Message Authentication Code \\
 	HTML & Hypertext Markup Language \\
 	HTTP & Hypertext Transfer Protocol \\
@@ -127,14 +128,14 @@ as desired.
 
 \chapter{Introduction} \label{introduction}
 
-%Give an introduction to your project.  This might include:
-%\begin{itemize}
-%  \item Motivation for your project
-%  \item Problem you are trying to solve
-%  \item Scope of your project
-%  \item Organization of your report
-%\end{itemize}
-%You should tune this appropriately for what best suits your project.
+Give an introduction to your project.  This might include:
+\begin{itemize}
+  \item Motivation for your project
+  \item Problem you are trying to solve
+  \item Scope of your project
+  \item Organization of your report
+\end{itemize}
+You should tune this appropriately for what best suits your project.
 
 \section{Project Motivation} \label{project-motivation}
 %TODO: Pulled with slight modification from proposal, needs more editing probably
@@ -396,7 +397,7 @@ A single-board computer, or SBC, incorporates all of the elements necessary for 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
 (SBMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
 circuit board. The main distinction between SBCs and SBMs is the same as that between computers and microcontrollers.
-A microcontroller is designed specifically for one  purpose, such as powering an alarm clock. Whereas, a
+A microcontroller is designed specifically for one  purpose, such as powering an alarm clock. Whereas a
 computer is a general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware 
 features to support the more intense computing needs of a user. As such, it does not require a significant amount of
 memory, processing power, or electricity to perform its task.
@@ -408,8 +409,8 @@ memory, processing power, or electricity to perform its task.
 The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
 design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
 level. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
-used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over ten million 
-units [CITATION], with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
+used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over five million 
+units~\autocite{RPISALES}, with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
 % One more paragraph here
 
 %---------------------------------------------------------------------------------
@@ -913,7 +914,7 @@ Since USB is widely used and simple to implement, USB was chosen as the means to
 Continuing on with dividing the various responsibilities of the lock control software into subclasses, two more emerge 
 from the remaining requirements: one class to poll the authentication modules, which will take advantage of the 
 hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
-{fig:hardware-block} is a block diagram of the architecture of the lock software.
+{fig:hardware-block} is a block diagram of the initial design architecture of the lock software.
 
 
 
@@ -1417,13 +1418,17 @@ The final layout for the lock control circuit is demonstrated in figure ~\ref{fi
 The lock control software was written in C++. C++ was selected primarily because the software for the authentication 
 modules could only be written in C++, and using the same language as the modules would allow the core process to share 
 classes with the modules. The second major reason for selecting C++ was that it was an object-oriented language, so the 
-design patterns mentioned in section~\ref{lock-control-software-design}
+design patterns mentioned in section~\ref{lock-control-software-design} could 
 
 \subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
+The authentication modules in this project were powered by 
+
 \subsubsection{NFC Module} \label{nfc-modules}
 
-One of the modules 
+The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses a Adafruit 
+PN532 NFC shield to read NFC data from an Android phone. The PN532 is driven by a Adafruit Feather 32u4 single-board 
+microcontroller.
 
 \subsubsection{PIN Module} \label{pin-modules}
 
@@ -1613,7 +1618,6 @@ Points to mention in this chapter:
     on a port would be enabled by default on some machines but not others)
 \end{itemize}
 
-
 \section{Testing} \label{testing}
 
 \subsection{Server Testing} \label{server-testing}
@@ -1633,6 +1637,16 @@ The logs of the server would often indicate how the input was interpreted or how
 from the database was read, so we could see where the issue was. In some cases, additional
 logging information was needed to indicate if certain blocks of code had been reached, to 
 determine whether the program flow was correct.
+
+\section{Debugging} \label{sec:debugging}
+
+\subsection{Hardware Debugging}
+
+Due to the limitations of the Arduino IDE, debugging the various components of the lock hardware was not a simple task. 
+In particular, the largest limitation was that there was no way to debug an Authentication Module by monitoring the 
+data it was sending over USB, while also running the lock hardware's core process, as only one program at a time could 
+access the authentication module's device file at a time. If the Arduino IDE Serial Monitor was running, the SBACS 
+process could not. Since the Arduino IDE did not provide any other debugging mechanisms besides the Serial Monitor, 
 
 \section{Bugs} \label{bugs}
 
@@ -1657,7 +1671,8 @@ determine whether the program flow was correct.
 
 A.1 Power dissipated by a resistor in LED circuit
 
-Each GPIO pin on the Raspberry Pi uses 3.3V logic, and allows a maximum current draw of 16 mA. 
+Each GPIO pin on the Raspberry Pi uses 3.3V logic, and allows a maximum current draw of 16 mA. A typical red LED is 
+rated for 1.8V to 2.2V, with 20mA current draw~\autocite{REDLED}.
 
 %---------------------------------------------------------------------------------
 

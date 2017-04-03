@@ -74,9 +74,10 @@ void setup() {
 }
 
 void loop() {
-  if (error) {
-    delay(10000);
-  } else {
+  //if (error) {
+  //  Serial.println("error");
+  //  delay(1000);
+  //} else {
     uint16_t dataLen = 8; // Arbitrarily designated 8 numbers as maximum
     uint8_t data[dataLen];
 
@@ -93,5 +94,5 @@ void loop() {
     }
 
     delay(300);
-  }
+  //}
 }
