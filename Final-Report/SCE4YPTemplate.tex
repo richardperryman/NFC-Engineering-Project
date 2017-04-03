@@ -103,7 +103,7 @@ as desired.
 \prefacesection{List of Abbreviations}
     
 \begin{tabular}[t]{l@{\hspace*{2cm}}l}
-    AID & Application IDentifier \\
+    AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
     HMAC & Keyed-Hash Message Authentication Code \\
@@ -167,13 +167,17 @@ communication~(NFC) sensors, along with other electronic authentication methods,
 can be used as
 identification for anything requiring access control. This represents a huge advantage with respect to convenience, and 
 it would even further lower the number of possible failure points in security. In addition, with modern mobile devices 
-being automatically backed up to cloud storage, recovering access control keys when a device is lost or stolen can be accomplished 
-easily and securely.
+being automatically backed up to cloud storage, recovering access control keys when a device is lost or stolen can be accomplished easily and securely.
+
+While the focus of the implementation will be on utilising a handheld mobile phone as the vector for transmitting keys
+to locks, the SBACS is designed to be easily extensible to other hardware. This could include devices as simple as a PIN
+keypad, or as complex as facial recognition. This allows the SBACS to adapt to particular use cases more effectively
+by accommodating security, user experience, and redundancy needs dynamically.
 
 \section{Accomplishments} \label{accomplishments}
 % What exactly did we accomplish of the project goals (brief description)
 
-The final product of this project accomplishes the main goals set out in the proposal; a system for access control,
+The final product of this project accomplishes the main goals set out in the proposal: a system for access control,
 using multiple sensors for different methods of authentication, with the ability to dynamically grant and remove
 access to different users. We have a working prototype that is a drawer secured with an electronic lock, connected
 to our system to control access. This prototype is able to function with multiple methods of authentication: a PIN
@@ -183,6 +187,8 @@ information about which users are able to access which locks, and verifies that 
 adequate to provide access to a lock. The lock hardware and the Android application communicate with the cloud server,
 and the Android application also sends information to the lock hardware using NFC. Finally, there is a web interface
 to allow management of access to different locks, and to provide basic account management to users of the system.
+For the simplicity of the prototype, the distinction between administrative users and regular users does not exist, and
+users cannot be associated into groups like companies.
 
 \section{Overview of Report} \label{overview-of-report}
 % In this report, you will find ...
