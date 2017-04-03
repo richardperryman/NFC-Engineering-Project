@@ -1045,6 +1045,8 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
+%TODO: maybe a screenshot of what the HTML looks like here?
+
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
 the content of a web page ~\autocite{HTMLREF}. Since this language is the standard, it was a natural choice for our
@@ -1519,27 +1521,6 @@ this was the best option we found for this problem, so we bought a domain name, 
 able to get the SSL Certificates, and had HTTPS working quickly after that.
 
 
-\subsection{Issues with String Encodings} \label{issues-with-string-encodings}
-% More than just server issue, but problem was on server
-
-When the database was first built, we decided to store authentication data as strings. This
-was chosen because we found strings easy to work with, and most HTTP libraries had support
-for sending data as strings. During the integration phase of the project, we started having trouble
-with authentication, where the data that was retrieved from the server by the phone was then sent
-to the lock controller and then sent back to the server for validation. The server was receiving
-different data than it was initially sending, so all requests to unlock were being denied. After
-debugging at different points in the system, we came to the conclusion that the encoding of
-strings was not the same across the languages and technologies we were using, so the data was
-not the same when it reached the server again.
-
-To solve this problem, we changed the data types stored by the database to be binary data
-rather than strings. This eliminated the problem of encoding, since binary data is simply binary
-regardless of the platform or technology being used. We realized that it would have made more
-sense to go with a binary data type in the beginning, but we did not anticipate the problems with
-encoding initially. This problem took a long time to identify, and was the largest delay in our
-integration phase of the project.
-
-
 \subsection{Improving Response Time} \label{improving-response-time}
 
 The system needs to respond quickly to inputs from the user in order to provide the best
@@ -1645,6 +1626,27 @@ determine whether the program flow was correct.
 \section{Bugs} \label{bugs}
 
 \subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
+
+
+\subsection{Issues with String Encodings} \label{issues-with-string-encodings}
+% More than just server issue, but problem was on server
+
+When the database was first built, we decided to store authentication data as strings. This
+was chosen because we found strings easy to work with, and most HTTP libraries had support
+for sending data as strings. During the integration phase of the project, we started having trouble
+with authentication, where the data that was retrieved from the server by the phone was then sent
+to the lock controller and then sent back to the server for validation. The server was receiving
+different data than it was initially sending, so all requests to unlock were being denied. After
+debugging at different points in the system, we came to the conclusion that the encoding of
+strings was not the same across the languages and technologies we were using, so the data was
+not the same when it reached the server again.
+
+To solve this problem, we changed the data types stored by the database to be binary data
+rather than strings. This eliminated the problem of encoding, since binary data is simply binary
+regardless of the platform or technology being used. We realized that it would have made more
+sense to go with a binary data type in the beginning, but we did not anticipate the problems with
+encoding initially. This problem took a long time to identify, and was the largest delay in our
+integration phase of the project.
 
 %=================================================================================
 
