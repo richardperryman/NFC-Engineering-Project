@@ -84,9 +84,11 @@ as desired.
     \item Our supervisors, professors Shikharesh Majumdar and Chung-Horng Lung
     \item Jenna Noseworthy and Madeline Ibrahim from the SCE office
     \item Jennifer Wolters (from the Capstone Design fund)
-    \item Nagui Mikhail, for soldering lock the hardware
+    \item Nagui Mikhail, for soldering the lock hardware
     \item Michel and Normand Leroux, for their construction work on the demo unit for the poster fair
     \end{itemize}
+	
+%TODO: Write this into paragraph form
 
 %=================================================================================
 
@@ -1089,7 +1091,7 @@ the database whenever it was needed.
 
 \subsection{Relational Database Normalization} \label{relational-database-normalization}
 
-% TODO: Put diagram of the tables somewhere in this section and reference it in 1NF paragraph
+% TODO: Maybe reference the diagram better, or provide more explanation of it
 
 Database Normalization is used to efficiently organize tables in a database to eliminate redundant
 data and to maintain all information that exists in the data~\autocite{DBNORMALIZATION}.
@@ -1104,7 +1106,13 @@ groups of data, and there must be a primary key for each table~\autocite{FIRSTNO
 In our database we have many tables
 that are used to group data; one example is the Users table that groups data items such as User\_Id,
 Name, and Rights. There are no repeating groups of data in any of the tables and each table has a
-primary key.
+primary key. Figure~\ref{fig:db-tables} shows the tables of our database, and their relationships.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/DB_Tables}
+    \caption{Database Tables}
+    \label{fig:db-tables}
+\end{figure}
 
 Second normal form requires that no partial dependencies exist~\autocite{SECONDNORMALFORM}. This means that there
 cannot be data items that are dependent on a field that is not the primary key in a table. In our
