@@ -131,14 +131,14 @@ as desired.
 
 \chapter{Introduction} \label{introduction}
 
-Give an introduction to your project.  This might include:
-\begin{itemize}
-  \item Motivation for your project
-  \item Problem you are trying to solve
-  \item Scope of your project
-  \item Organization of your report
-\end{itemize}
-You should tune this appropriately for what best suits your project.
+%Give an introduction to your project.  This might include:
+%\begin{itemize}
+%  \item Motivation for your project
+%  \item Problem you are trying to solve
+%  \item Scope of your project
+%  \item Organization of your report
+%\end{itemize}
+%You should tune this appropriately for what best suits your project.
 
 \section{Project Motivation} \label{project-motivation}
 %TODO: Pulled with slight modification from proposal, needs more editing probably
@@ -160,7 +160,7 @@ where customers can order products to be placed in lockers with electronic keys 
 Such a system greatly reduces the work involved in getting a key to the customer, as a PIN can be sent and received 
 electronically.
 
-\section{Proposed Solution} \label{proposed-solution}se
+\section{Proposed Solution} \label{proposed-solution}
 %TODO: Pulled with slight modification from proposal, needs more editing probably
 
 This project outlines a Sensor-Based Access Control System~(SBACS), that will expand upon the concept of using electronic
@@ -630,7 +630,7 @@ the SbacsDatabase. This is centralized because the data and general functionalit
 server components. The client components have some specific functionality locally as well, generally limited to
 basic processing of information supplied by a user, as well as the manipulation of the user interface.
 
-Each component in the system uses a Basic Layer pattern to divide responsibilities of the component. Specifically,
+Each component in the system uses a Basic Layer pattern~\autocite{LAYERPATTERNBOOK} to divide responsibilities of the component. Specifically,
 there are four main layers used: user interface layer, system interface layer, function layer, and model layer.
 The user interface layer handles the display to the user and the input from the user. The system interface layer
 is used to send and receive information between components in the system. The function layer is used to process
@@ -988,8 +988,6 @@ microcontrollers, while still meeting the requirements.
 
 \section{Cloud} \label{cloud}
 
-% TODO: Need at least one diagram/picture between here and JQuery section
-
 \subsection{Amazon Web Services} \label{amazon-web-services}
 
 Amazon Web Services (AWS) provides a platform to host various cloud services,
@@ -1032,6 +1030,16 @@ from many programming languages, making it a very good choice for our project, w
 different components will be using different technologies and built in different languages. It is
 also very lightweight in terms of its grammar, having very few elements that allow for many
 different types of data, keeping the parsing easy which can help to improve response time.
+Figure~\ref{fig:json-authenticators} shows the JSON representation of Authenticators for a
+user. This information is a list of Authenticator entries, each with an Auth\_Id, AuthType,
+AuthKey, and AuthSalt, where the AuthKey and AuthSalt each have an array of byte data and type
+of Buffer.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/JSON}
+    \caption{JSON Representation of Authenticator data for a user}
+    \label{fig:json-authenticators}
+\end{figure}
 
 \subsection{Node.js} \label{node.js}
 
@@ -1053,14 +1061,19 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
-%TODO: screenshot of the HTML and the rendered page beside each other
-
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
 the content of a web page ~\autocite{HTMLREF}. Since this language is the standard, it was a natural choice for our
 project to have the structure and content of the web interface represented in HTML. An HTML document
 is returned by the server on an HTTP GET request to the root of the SBACS server URL, and is then
-rendered by the client's web browser.
+rendered by the client's web browser. Figure~\ref{fig:home-html} shows the HTML of the SBACS web site
+home page, along with the page rendered by a web browser.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/HTML}
+    \caption{Rendered SBACS Home Web Page (left) and HTML of Web Page (right)}
+    \label{fig:home-html}
+\end{figure}
 
 \subsection{JQuery} \label{jquery}
 
@@ -1101,14 +1114,13 @@ the database whenever it was needed.
 
 \subsection{Relational Database Normalization} \label{relational-database-normalization}
 
-% TODO: Maybe reference the diagram better, or provide more explanation of it
-
 Database Normalization is used to efficiently organize tables in a database to eliminate redundant
 data and to maintain all information that exists in the data~\autocite{DBNORMALIZATION}.
 The end goal of normalization is to
 reduce the amount of data that is stored, without removing necessary information. There are various
-normal forms to measure the amount of normalization that has been used. In our database, we meet
-the third normal form.
+normal forms to measure the amount of normalization that has been used. The rules to meet first,
+second, and third normal form will be shown in this section, as our database tables meet these forms.
+Figure~\ref{fig:db-tables} shows the tables of our database and their relationships.
 
 To meet third normal form, first and second normal form must also be met. First normal form
 has three rules: data items must be defined and grouped in tables, there must be no repeating
@@ -1116,7 +1128,7 @@ groups of data, and there must be a primary key for each table~\autocite{FIRSTNO
 In our database we have many tables
 that are used to group data; one example is the Users table that groups data items such as User\_Id,
 Name, and Rights. There are no repeating groups of data in any of the tables and each table has a
-primary key. Figure~\ref{fig:db-tables} shows the tables of our database, and their relationships.
+primary key.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/DB_Tables}
@@ -1283,18 +1295,17 @@ and expire over time, creating the notion of a session.
 
 The precise algorithm used for the hashing function matches the decision made for the server. This is necessary, since
 otherwise the secret values would not match between the application and the server. The application relies on a version
-of the Password-Based Key Derivation Function algorithm using SHA256 to be available on the Android device. The only
+of the Password-Based Key Derivation Function algorithm using SHA256~\autocite{RFC4634} to be available on the Android device. The only
 workarounds for this added requirement would have been to implement the algorithm (specified in RFC 8018~\autocite{RFC8018} with test
 vectors in RFC 6070~\autocite{RFC6070}) ourselves, or by making use of a third party implementation. However writing it ourselves is
 heavily discouraged as any minor error could result in a security breach, and we did not want to have to worry about
 any intellectual property issues of using a third party library. In addition, the number of iterations and the length of
 the resulting key had to be synchronised between the server and the application to ensure the values match.
 
-% TODO add ref to section when it is written
 Sometime after this was implemented, an update to the Android operating system resulted in the algorithm used for key
 derivation to no longer be supported. Since this occurred at a time near to a project deliverable, we felt that the
 fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead. This is further explained
-and explored in section ??.
+and explored in section~\ref{issues-with-string-encodings}.
 
 %---------------------------------------------------------------------------------
 
@@ -1767,6 +1778,25 @@ from the database was read, so we could see where the issue was. In some cases, 
 logging information was needed to indicate if certain blocks of code had been reached, to 
 determine whether the program flow was correct.
 
+\subsection{Android Application Testing} \label{android-application-testing}
+
+The majority of the Android application's code was written for one of two reasons: to display information to the user,
+or to interface with the server controllers. While there exist ways to test the display~\autocite{ANDROIDUITEST}, the
+display was not considered paramount to the success of the demonstrative system we set out to make. Conversely, the
+interactions that the application had with the controller are fundamental to the success of the project.
+
+Since most of the interactions with the server a mock would have had to be built to set up local unit and regression
+tests. Since the server was in development at the same time as the application, there would have been extra work
+associated with keeping the mock up to date. Instead, most testing was done through a human regression over a test plan.
+The number of test cases to verify stayed at a reasonable level throughout the design process, so performing the
+regression by hand never became cumbersome. The regression covered each action that the application could take that
+interacted with the server including each unsuccessful interaction due to things like a dropped internet connection.
+
+Bugs, when encountered, were examined using the debugger in Android Studio~\autocite{ANDROIDSTUDIO}. This debugger
+supports breakpoints as well as simple stepping instructions, which make finding the cause of an error much simpler.
+Another application of these features was in the regression tests themselves, where certain invisible values, such as
+the HMAC key received from the login controller on the server, could be checked without modifying the application.
+
 \section{Debugging} \label{sec:debugging}
 
 \subsection{Hardware Debugging}
@@ -1802,9 +1832,46 @@ sense to go with a binary data type in the beginning, but we did not anticipate 
 encoding initially. This problem took a long time to identify, and was the largest delay in our
 integration phase of the project.
 
+\subsection{Issues with Encryption Algorithm Availability} \label{issues-with-encryption-algorithm-availability}
+
+This issue is discussed briefly in section~\ref{hmac}. The algorithm used by the server to compute HMAC message digests
+used the password-based key derivation function (PBKF2)~\autocite{RFC6070} run using SHA256~\autocite{RFC4634}. We chose
+SHA256 over SHA1 because SHA1 has a known method of generating collisions~\autocite{SHA1COLLISION}. However, Android
+did not specifically state that PBKF2 over SHA256 was supported on all devices~\autocite{ANDROIDKEYFACTORY}. This
+unfortunately caused problems later on in development. After a certain update, the Android devices that we were using
+for testing stopped supporting this algorithm.
+
+We had a few options: we could change to the supported SHA1 algorithm, we could make use of a third party implementation
+of the algorithm using SHA256, we could write the SHA256 implementation ourselves, or we could change the method used to
+create message digests. Each of these options had benefits and drawbacks, but the decision had to be made quickly since
+the change to support occurred very near to a deadline.
+
+Using a third party implementation seemed risky without the time to investigate the various options to be sure that the
+code met the standards needed. There was also a possibility of difficulties integrating the code with ours, and
+potential legal problems with licensing. While this may have required the least code change, we felt the risk
+associated with this option was too great.
+
+Implementing the algorithm ourselves would almost certainly have not been feasible within the time required. Further,
+writing such complicated and important algorithms is generally discouraged, as even a small error could result in
+incompatibility with other code using the standards correctly, or even worse, a security breach. Overall, this option
+was not appealing.
+
+% Todo: change the code?
+Eliminating those options left either changing a couple constants in the code to switch the underlying secure hash
+algorithm, or changing the way keys are generated to using a different supported algorithm. For the time being, we
+decided that the much simpler option of converting the code to use SHA1 instead of SHA256. Since then, we have updated
+the server and application to make use of the built in HMAC digest generation code using the currently collision-free
+SHA256.
+
 %=================================================================================
 
 \chapter{Conclusions} \label{conclusions}
+
+%TODO: Summary of problem, our solution, and our accomplishments again (shorter than intro)
+
+%TODO: Suggestions to extend the project, what else could be done? (new authentication modules)
+
+%TODO: Alternative solutions found later that may have been better? (continous integration, delivery?)
 
 %=================================================================================   
 
