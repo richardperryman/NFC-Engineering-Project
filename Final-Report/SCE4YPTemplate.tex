@@ -1109,14 +1109,13 @@ the database whenever it was needed.
 
 \subsection{Relational Database Normalization} \label{relational-database-normalization}
 
-% TODO: Maybe reference the diagram better, or provide more explanation of it
-
 Database Normalization is used to efficiently organize tables in a database to eliminate redundant
 data and to maintain all information that exists in the data~\autocite{DBNORMALIZATION}.
 The end goal of normalization is to
 reduce the amount of data that is stored, without removing necessary information. There are various
-normal forms to measure the amount of normalization that has been used. In our database, we meet
-the third normal form.
+normal forms to measure the amount of normalization that has been used. The rules to meet first,
+second, and third normal form will be shown in this section, as our database tables meet these forms.
+Figure~\ref{fig:db-tables} shows the tables of our database and their relationships.
 
 To meet third normal form, first and second normal form must also be met. First normal form
 has three rules: data items must be defined and grouped in tables, there must be no repeating
@@ -1124,7 +1123,7 @@ groups of data, and there must be a primary key for each table~\autocite{FIRSTNO
 In our database we have many tables
 that are used to group data; one example is the Users table that groups data items such as User\_Id,
 Name, and Rights. There are no repeating groups of data in any of the tables and each table has a
-primary key. Figure~\ref{fig:db-tables} shows the tables of our database, and their relationships.
+primary key.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/DB_Tables}
