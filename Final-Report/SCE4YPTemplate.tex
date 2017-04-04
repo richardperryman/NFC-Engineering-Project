@@ -23,6 +23,7 @@
 \usepackage[scientific-notation=true, binary-units=true]{siunitx}
 \sisetup{per-mode=fraction}%
 \sisetup{scientific-notation=false}%
+\usepackage{bytefield}
 
 % Taken from http://tex.stackexchange.com/a/235312
 % Prevents floats from being placed outside of (sub)(sub)sections
@@ -159,7 +160,7 @@ where customers can order products to be placed in lockers with electronic keys 
 Such a system greatly reduces the work involved in getting a key to the customer, as a PIN can be sent and received 
 electronically.
 
-\section{Proposed Solution} \label{proposed-solution}
+\section{Proposed Solution} \label{proposed-solution}se
 %TODO: Pulled with slight modification from proposal, needs more editing probably
 
 This project outlines a Sensor-Based Access Control System~(SBACS), that will expand upon the concept of using electronic
@@ -1457,7 +1458,131 @@ uses the SCLK, MOSI, MISO, SSEL pins on the PN532 shield
 
 \subsection{Serial Communication Protocol} \label{serial-communication-protocol}
 
+In order to distinguish actual communication data from noise on the serial line, a protocol was necessary to allow for 
+error-free communication between the authentication modules and the Raspberry Pi. The protocol is a simple set of rules 
+for formatting raw bytes into data packets, largely inspired by the Trivial File Transfer Protocol (TFTP), specified in 
+RFC 1350~\autocite{RFC1350}.
 
+When a user interacts with an authentication module, the data they send is buffered in the module's RAM. Once an 
+interaction between the user and the module is complete, the module initiates a data transfer with the Raspberry Pi. 
+The authentication module divides its buffered data into 254-byte blocks, and sends them in sequence, as the Pi 
+acknowledges them in sequence. The reasons for this design will be outlined in the remainder of this subsection.
+
+Similarly to TFTP, the Serial Communication protocol supports five types of packets:
+\begin{enumerate}
+    \item Request data transfer (REQUEST)
+    \item Acknowledgment (ACK)
+    \item Data (DATA)
+    \item Module set-up (SETUP)
+    \item Error (ERROR)
+\end{enumerate}
+Packets start and end with a single byte known as the packet flag. The packet flag could have been any arbitrary byte, 
+so 0x7E was selected. 0x7E is outside of the range of ASCII, so it would not commonly appear in the data. Following the 
+starting packet flag is a Serial Communication Protocol header, which consists of two two-byte values: the packet 
+opcode, and a block number. The opcode field defines which of the five listed types is the type of the packet, while 
+the block number field's use varies depending on the packet type. All packets end with the packet flag.
+
+REQUEST packets are sent by authentication modules to the Raspberry Pi, to notify the Pi that a full authentication 
+token has been buffered by the module, and is ready to send.  The format of a REQUEST packet is shown in 
+Figure~\ref{fig:request-packet}. For REQUEST packets, the block number field denotes the number of DATA packets that 
+the module will send. This allows the Pi to allocate a data buffer to match the size of the authentication token, 
+instead of an arbitrarily large buffer, which is wasteful for smaller modules such as the PIN module.
+
+\begin{figure}
+    \centering
+    \begin{bytefield}[bitwidth=3em]{6}
+    \bitheader{0-5} \\
+    \bitbox{1}{FLAG} &
+    \bitbox{2}{REQUEST} &
+    \bitbox{2}{BLOCK} &
+    \bitbox{1}{FLAG} \\
+    \bitbox{1}{0x7E} &
+    \bitbox{2}{0x00 0x01} &
+    \bitbox{2}{} &
+    \bitbox{1}{0x7E}
+    \end{bytefield}
+    \caption{Serial REQUEST packet format}
+    \label{fig:request-packet}
+\end{figure}
+
+The Raspberry Pi acknowledges REQUEST and DATA packets using ACK packets. Like REQUEST packets, ACK packets are 6-byte 
+packets, starting with the packet flag, followed by the opcode. Unlike REQUEST packets, bytes 3 and 4 of an ACK packet 
+denote the block number that is being acknowledged by the Pi. This ensures that the Pi correctly buffers the data in 
+sequence. Figure~\ref{fig:ack-packet} demonstrates the format of ACK packets.
+
+\begin{figure}
+    \centering
+    \begin{bytefield}[bitwidth=3em]{6}
+    \bitheader{0-5} \\
+    \bitbox{1}{FLAG} &
+    \bitbox{2}{ACK} &
+    \bitbox{2}{BLOCK} &
+    \bitbox{1}{FLAG} \\
+    \bitbox{1}{0x7E} &
+    \bitbox{2}{0x00 0x02} &
+    \bitbox{2}{} &
+    \bitbox{1}{0x7E}
+    \end{bytefield}
+    \caption{Serial ACK packet format}
+    \label{fig:ack-packet}
+\end{figure}
+
+An authentication module sends the token data to the Raspberry Pi using DATA packets. DATA packets are the only packets 
+of variable length, with the DATA field ranging from 1 byte to 255 bytes long. Like ACK packets, the block number field 
+denotes the block number of the data. The format of DATA packets is depicted Figure~\ref{fig:data-packet}, but warrants 
+further explanation.
+
+\begin{figure}
+    \centering
+    \begin{bytefield}[bitwidth=3em]{8}
+    \bitheader{0-5} \\
+    \bitbox{1}{FLAG} &
+    \bitbox{2}{ACK} &
+    \bitbox{2}{BLOCK} &
+    \bitbox{4}{DATA} &
+    \bitbox{1}{FLAG} \\
+    \bitbox{1}{0x7E} &
+    \bitbox{2}{0x00 0x02} &
+    \bitbox{2}{} &
+    \bitbox{4}{ 1 to 255 bytes } &
+    \bitbox{1}{0x7E}
+    \end{bytefield}
+    \caption{Serial DATA packet format}
+    \label{fig:data-packet}
+\end{figure}
+
+As mentioned earlier in this section, the authentication module divides its buffer into 254-byte blocks, but the 
+DATA packets can can contain up to 255 bytes. This difference is due to the need to encode the data bytes before they
+are sent over USB. If the packet flag (0x7E) occurs in the data, then the packet will be cut short when it is received by 
+the Raspberry Pi. To remedy this, the data block is encoded using the Consistent Overhead Byte Stuffing (COBS) algorithm.
+
+% n.b. get references after dinner
+
+COBS eliminates occurences of the packet flag in the data by transforming them into pointers. Appended to the start of 
+the data is a byte, whose value denotes the index of the next occurence of the packet flag, relative to that 
+byte. If the next instance is not the terminal byte, then it will be transformed into a relative index of the next 
+occurence of the packet flag. This process of replacing the packet flag with pointers is repeated until the terminal 
+byte. Finally, the data is terminated with the packet flag. Table~\ref{tab:cobs-encoding} shows a few sample inputs 
+drawn from actual data used to test the SBACS hardware, encoded using COBS.
+
+\begin{table}[!h]
+    \begin{tabular}{|c|c|c|} \hline
+        Input Type & In Bytes & Out Bytes \\ \hline
+        Module ID ""nfc"" & 6E 66 63 00 & 04 6E 66 63 00 7E \\ \hline
+        PIN data & 30 34 28 31 & 04 30 34 28 31 7E \\ \hline
+        NFC data block & 00 01 ... 7D 7E 7F ... FD & 7F 00 01 ... 7D 80 7F ... FD 7E \\ \hline
+    \end{tabular}
+    \caption{COBS encoding inputs and outputs for various data}
+    \label{tab:cobs-encoding}
+\end{table}
+
+This algorithm was chosen for its consistent overhead. COBS inserts one additional byte for every 254 bytes in a data 
+block, requiring the data to be divided into 254-byte sections if it is larger than that. Therefore, to reduce the
+number of computations required to chunk the data for COBS and then for DATA packets, the DATA packet buffer size was 
+chosen as 255 bytes to match COBS. This way, data that has been chunked for processing in COBS can be immediately 
+inserted into a packet without further transformations.
+
+% Remaining stuff after dinner: SETUP and ERROR packets
 
 %=================================================================================
 
