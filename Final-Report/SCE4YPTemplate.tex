@@ -986,8 +986,6 @@ microcontrollers, while still meeting the requirements.
 
 \section{Cloud} \label{cloud}
 
-% TODO: Need at least one diagram/picture between here and JQuery section
-
 \subsection{Amazon Web Services} \label{amazon-web-services}
 
 Amazon Web Services (AWS) provides a platform to host various cloud services,
@@ -1030,6 +1028,16 @@ from many programming languages, making it a very good choice for our project, w
 different components will be using different technologies and built in different languages. It is
 also very lightweight in terms of its grammar, having very few elements that allow for many
 different types of data, keeping the parsing easy which can help to improve response time.
+Figure~\ref{fig:json-authenticators} shows the JSON representation of Authenticators for a
+user. This information is a list of Authenticator entries, each with an Auth\_Id, AuthType,
+AuthKey, and AuthSalt, where the AuthKey and AuthSalt each have an array of byte data and type
+of Buffer.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/JSON}
+    \caption{JSON Representation of Authenticator data for a user}
+    \label{fig:json-authenticators}
+\end{figure}
 
 \subsection{Node.js} \label{node.js}
 
@@ -1051,14 +1059,19 @@ work on the code in the same development environment whether we were at school o
 
 \subsection{HTML} \label{html}
 
-%TODO: screenshot of the HTML and the rendered page beside each other
-
 Hyper Text Markup Language (HTML) is the standard language for creating web pages. HTML describes the
 structure and content of a web page through its markup. Web Browsers use an HTML document to render
 the content of a web page ~\autocite{HTMLREF}. Since this language is the standard, it was a natural choice for our
 project to have the structure and content of the web interface represented in HTML. An HTML document
 is returned by the server on an HTTP GET request to the root of the SBACS server URL, and is then
-rendered by the client's web browser.
+rendered by the client's web browser. Figure~\ref{fig:home-html} shows the HTML of the SBACS web site
+home page, along with the page rendered by a web browser.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/HTML}
+    \caption{Rendered SBACS Home Web Page (left) and HTML of Web Page (right)}
+    \label{fig:home-html}
+\end{figure}
 
 \subsection{JQuery} \label{jquery}
 
