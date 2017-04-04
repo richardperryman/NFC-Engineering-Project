@@ -204,8 +204,6 @@ uint8_t Serial::readChar()
         DEBUG_LOG(WARNING, __FUNCTION__, "Failed to read byte from port %s.", portName.c_str());
     }
     
-    printf("Received byte %d\n", result);
-    
     return result;
 }
 
@@ -264,12 +262,6 @@ void Serial::sendPacket(EncodedPacket packet)
     uint16_t numBytes = packet.getSize();
     uint8_t packetBytes[numBytes];
     packet.getBytes(packetBytes);
-    
-    printf("Sending bytes: ");
-    for (int i = 0; i < numBytes; i++) {
-        printf("%d ", packetBytes[i]);
-    }
-    printf("\n");
     
     write(serialPort, packetBytes, numBytes);
     flush();

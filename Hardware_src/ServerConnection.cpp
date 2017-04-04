@@ -197,7 +197,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
     curl_easy_setopt(curly, CURLOPT_SSL_VERIFYPEER, 1L); // Verify the CA certificate
     curl_easy_setopt(curly, CURLOPT_SSL_VERIFYHOST, 1L); // Verify that the host reached matches the certificate
     
-    printf("Seding: %s\n", json_object_to_json_string(json));
+    DEBUG_LOG(DEBUGGING, __FUNCTION__, "Sending access request with body: %s\n", json_object_to_json_string(json));
     
     DEBUG_LOG(INFO, __FUNCTION__, "Sending access request...");
     res = curl_easy_perform(curly);

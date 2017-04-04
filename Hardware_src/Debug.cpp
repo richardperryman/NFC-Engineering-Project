@@ -15,6 +15,8 @@ static const char* levelToString(debug_level_t level)
 			return "WARNING";
 		case INFO:
 			return "INFO";
+        case DEBUGGING:
+            return "DEBUG";
 		default:
 			return "undefined";
 	}

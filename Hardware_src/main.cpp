@@ -217,7 +217,7 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
     while( fgets( buf, BUFSIZE,  f ) ) {
         std::string* path= new std::string(buf);
         device_paths.push_back(path->substr(0, path->length()-1));
-        DEBUG_LOG(INFO, __FUNCTION__, "Found device on %s", (path->substr(0, path->length()-1)).c_str());
+        DEBUG_LOG(DEBUGGING, __FUNCTION__, "Found device on %s", (path->substr(0, path->length()-1)).c_str());
     }
     pclose( f );
     
@@ -232,7 +232,7 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
     
     for (uint8_t i = 0; i < device_paths.size(); i++)
     {
-        DEBUG_LOG(INFO, __FUNCTION__, "Sending setup packet");
+        DEBUG_LOG(DEBUGGING, __FUNCTION__, "Sending setup packet to %s", device_paths.at(i).c_str());
         Serial *usb = new Serial(device_paths[i]);
         usb->openPort(SERIAL_BAUD_NFC);
 

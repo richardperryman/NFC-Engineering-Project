@@ -18,7 +18,8 @@ enum debug_level_t {
     CRITICAL = 50,
     ERROR = 40,
     WARNING = 30,
-    INFO = 20
+    INFO = 20,
+    DEBUGGING = 10
 };
 
 #define PACKET_OPCODE_T_SIZE 2
