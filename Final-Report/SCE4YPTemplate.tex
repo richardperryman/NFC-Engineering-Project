@@ -1624,6 +1624,25 @@ from the database was read, so we could see where the issue was. In some cases, 
 logging information was needed to indicate if certain blocks of code had been reached, to 
 determine whether the program flow was correct.
 
+\subsection{Android Application Testing} \label{android-application-testing}
+
+The majority of the Android application's code was written for one of two reasons: to display information to the user,
+or to interface with the server controllers. While there exist ways to test the display~\autocite{ANDROIDUITEST}, the
+display was not considered paramount to the success of the demonstrative system we set out to make. Conversely, the
+interactions that the application had with the controller are fundamental to the success of the project.
+
+Since most of the interactions with the server a mock would have had to be built to set up local unit and regression
+tests. Since the server was in development at the same time as the application, there would have been extra work
+associated with keeping the mock up to date. Instead, most testing was done through a human regression over a test plan.
+The number of test cases to verify stayed at a reasonable level throughout the design process, so performing the
+regression by hand never became cumbersome. The regression covered each action that the application could take that
+interacted with the server including each unsuccessful interaction due to things like a dropped internet connection.
+
+Bugs, when encountered, were examined using the debugger in Android Studio~\autocite{ANDROIDSTUDIO}. This debugger
+supports breakpoints as well as simple stepping instructions, which make finding the cause of an error much simpler.
+Another application of these features was in the regression tests themselves, where certain invisible values, such as
+the HMAC key received from the login controller on the server, could be checked without modifying the application.
+
 \section{Bugs} \label{bugs}
 
 \subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
