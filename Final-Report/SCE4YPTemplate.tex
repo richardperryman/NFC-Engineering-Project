@@ -1668,6 +1668,37 @@ sense to go with a binary data type in the beginning, but we did not anticipate 
 encoding initially. This problem took a long time to identify, and was the largest delay in our
 integration phase of the project.
 
+\subsection{Issues with Encryption Algorithm Availability} \label{issues-with-encryption-algorithm-availability}
+
+This issue is discussed briefly in section~\ref{hmac}. The algorithm used by the server to compute HMAC message digests
+used the password-based key derivation function (PBKF2)~\autocite{RFC6070} run using SHA256~\autocite{RFC4634}. We chose
+SHA256 over SHA1 because SHA1 has a known method of generating collisions~\autocite{SHA1COLLISION}. However, Android
+did not specifically state that PBKF2 over SHA256 was supported on all devices~\autocite{ANDROIDKEYFACTORY}. This
+unfortunately caused problems later on in development. After a certain update, the Android devices that we were using
+for testing stopped supporting this algorithm.
+
+We had a few options: we could change to the supported SHA1 algorithm, we could make use of a third party implementation
+of the algorithm using SHA256, we could write the SHA256 implementation ourselves, or we could change the method used to
+create message digests. Each of these options had benefits and drawbacks, but the decision had to be made quickly since
+the change to support occurred very near to a deadline.
+
+Using a third party implementation seemed risky without the time to investigate the various options to be sure that the
+code met the standards needed. There was also a possibility of difficulties integrating the code with ours, and
+potential legal problems with licensing. While this may have required the least code change, we felt the risk
+associated with this option was too great.
+
+Implementing the algorithm ourselves would almost certainly have not been feasible within the time required. Further,
+writing such complicated and important algorithms is generally discouraged, as even a small error could result in
+incompatibility with other code using the standards correctly, or even worse, a security breach. Overall, this option
+was not appealing.
+
+% Todo: change the code?
+Eliminating those options left either changing a couple constants in the code to switch the underlying secure hash
+algorithm, or changing the way keys are generated to using a different supported algorithm. For the time being, we
+decided that the much simpler option of converting the code to use SHA1 instead of SHA256. Since then, we have updated
+the server and application to make use of the built in HMAC digest generation code using currently collision-free
+SHA256.
+
 %=================================================================================
 
 \chapter{Conclusions} \label{conclusions}

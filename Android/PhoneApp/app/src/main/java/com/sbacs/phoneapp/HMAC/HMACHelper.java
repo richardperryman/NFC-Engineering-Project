@@ -11,6 +11,7 @@ import java.security.spec.KeySpec;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -27,18 +28,15 @@ public class HMACHelper {
         String secret;
         Map <String, String> result = new HashMap<String, String>();
 
-        /*
         try {
             secret = URLEncoder.encode(SecretString(body, key), "UTF-16");
         } catch (UnsupportedEncodingException e) {
             secret = "";
         }
-        */
 
-        result.put("hmac-user", "10outta13");
-        /*result.put("hmac-user", "" + userId);
+        result.put("hmac-user", "" + userId);
         result.put("hmac-content", secret);
-        /**/
+		
         return result;
     }
 
@@ -58,27 +56,24 @@ public class HMACHelper {
         // Should probably add code to force UTF-16
         SecretKeyFactory skf;
         KeySpec spec;
-        SecretKey secret;
+        byte[] secret;
         try {
-            // Not working anymore...?
-            skf = SecretKeyFactory.getInstance("PBKDF2withHmacSHA256");
+			Mac mac = Mac.getInstance("HmacSHA256");
         } catch (NoSuchAlgorithmException e) {
             return "";
         }
 
-        //char[] pw = body.length() > 0 ? body.toCharArray() : new char[] {'1'};
-        spec = new PBEKeySpec(body.toCharArray(), key.getBytes(), iterations, secret_length);
+        spec = new SecretKeySpec(key.getBytes(), "HmacSHA256");
 
         try {
-            secret = skf.generateSecret(spec);
+            mac.init(spec);
+			secret = mac.doFinal(body.getBytes());
         } catch (InvalidKeySpecException e) {
             return "";
         } catch (Exception e) {
-            e.printStackTrace();
-            Object foo = e.getStackTrace();
-            return "wtf";
+            return "";
         }
 
-        return new String(secret.getEncoded());
+        return new String(secret);
     }
 }

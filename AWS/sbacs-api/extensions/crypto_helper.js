@@ -14,6 +14,10 @@ encryptedAuth : function(secret, salt) {
 	this.secret = crypto.pbkdf2Sync(secret, this.salt, iterations, secret_length, hashAlgorithm);
 },
 
+hmacDigest : function(secret, message) {
+	return crypto.createHmac(hashAlgorithm, secret).update(message).digest();
+}
+
 getSalt : function () {
 	return generateSalt();
 }
