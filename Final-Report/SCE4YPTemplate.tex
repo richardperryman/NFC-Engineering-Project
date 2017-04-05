@@ -354,6 +354,29 @@ detail, but instead attempt to set up a baseline from which the SBACS's operatio
 
 \section{NFC} \label{nfc}
 
+NFC is a form of short-range, low-power communication used by devices such as smartphones and tablets. NFC is a fast
+and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. The 
+active device uses magnetic induction to create a current in the information-holding passive device. The
+passive device responds by modulating the EM field coming from the active device. The active device then reads and
+converts the modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two
+smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
+also known as communication in active mode.
+
+NFC is being increasingly used to smarten up passive information delivery systems such as business cards, and posters.
+Brief data such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
+tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
+replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
+each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
+ must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
+
+Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
+can only be reliably eavesdropped from a distance of approximately 10 metres or less if the interaction is between two 
+active devices, dropping to 1 metre if the interaction is a passive communication ~\autocite{NFCSECURITY}. This, along 
+with some other facts, makes a man-in-the-middle attack nearly impossible to accomplish in a real-world 
+scenario~\autocite{NFCSECURITY}. These attacks may be protected against by establishing a secure channel, by using 
+symmetric-key encryption or other secret-sharing method. For these reasons, NFC is a reliable method to pair a smart 
+device with an electronic lock system.
+
 %=================================================================================
 
 \section{Cloud Computing} \label{cloud-computing}
