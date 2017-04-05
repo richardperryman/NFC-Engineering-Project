@@ -107,10 +107,11 @@ as desired.
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
+    COBS & Consistent Overhead Byte Stuffing \\
     CPU & Central Processing Unit \\
     HMAC & Keyed-Hash Message Authentication Code \\
-	HTML & Hypertext Markup Language \\
-	HTTP & Hypertext Transfer Protocol \\
+    HTML & Hypertext Markup Language \\
+    HTTP & Hypertext Transfer Protocol \\
     I2C & Inter-Integrated Circuit \\
     IO & Input/Output \\
     JSON & JavaScript Object Notation \\
@@ -1302,10 +1303,23 @@ heavily discouraged as any minor error could result in a security breach, and we
 any intellectual property issues of using a third party library. In addition, the number of iterations and the length of
 the resulting key had to be synchronised between the server and the application to ensure the values match.
 
+A simplified demonstration of this process is shown in figure~\ref{fig:hmac-sequence}. This figure shows what the
+application does when a user requests the information related to all the locks that they have a registration for.
+Several steps, such as the Volley RequestQueue, have been abstracted out for the purpose of simplifying the message
+of the diagram. For more details about volley, see section~\ref{server-interfacing}. For more information on how the
+server handles HMAC, see section~\ref{authentication-for-server-api}.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/HMACAuthenticationSequence}
+    \caption{Sequence diagram of the application requesting sample data after loggin in}
+    \label{fig:hmac-sequence}
+\end{figure}
+
 Sometime after this was implemented, an update to the Android operating system resulted in the algorithm used for key
 derivation to no longer be supported. Since this occurred at a time near to a project deliverable, we felt that the
-fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead. This is further explained
-and explored in section~\ref{issues-with-string-encodings}.
+fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead, and then later to use
+SHA256 again but with a different algorithm. This is further explained and explored in section~\ref
+{issues-with-string-encodings}.
 
 %---------------------------------------------------------------------------------
 
@@ -1708,6 +1722,8 @@ function using the algorithm we chose, SHA256, given different numbers of iterat
 dramatically impact user experience, while also ensuring that brute forcing was too inefficient. We then considered the
 salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows,  we found that the salt
 length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
+
+% Todo: run tests more than once and report min/max/avg?
 
 \begin{table}[!h]
 	\centering
