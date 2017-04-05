@@ -107,10 +107,11 @@ as desired.
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
+    COBS & Consistent Overhead Byte Stuffing \\
     CPU & Central Processing Unit \\
     HMAC & Keyed-Hash Message Authentication Code \\
-	HTML & Hypertext Markup Language \\
-	HTTP & Hypertext Transfer Protocol \\
+    HTML & Hypertext Markup Language \\
+    HTTP & Hypertext Transfer Protocol \\
     I2C & Inter-Integrated Circuit \\
     IO & Input/Output \\
     JSON & JavaScript Object Notation \\
@@ -353,6 +354,29 @@ detail, but instead attempt to set up a baseline from which the SBACS's operatio
 
 \section{NFC} \label{nfc}
 
+NFC is a form of short-range, low-power communication used by devices such as smartphones and tablets. NFC is a fast
+and convenient method to exchange small amounts of data, as it does not require any steps to set up a connection. The 
+active device uses magnetic induction to create a current in the information-holding passive device. The
+passive device responds by modulating the EM field coming from the active device. The active device then reads and
+converts the modulations into useful data~\autocite{NFCORG}. This scenario is a NFC communication in passive mode. Two
+smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
+also known as communication in active mode.
+
+NFC is being increasingly used to smarten up passive information delivery systems such as business cards, and posters.
+Brief data such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
+tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
+replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
+each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
+ must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
+
+Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
+can only be reliably eavesdropped from a distance of approximately 10 metres or less if the interaction is between two 
+active devices, dropping to 1 metre if the interaction is a passive communication ~\autocite{NFCSECURITY}. This, along 
+with some other facts, makes a man-in-the-middle attack nearly impossible to accomplish in a real-world 
+scenario~\autocite{NFCSECURITY}. These attacks may be protected against by establishing a secure channel, by using 
+symmetric-key encryption or other secret-sharing method. For these reasons, NFC is a reliable method to pair a smart 
+device with an electronic lock system.
+
 %=================================================================================
 
 \section{Cloud Computing} \label{cloud-computing}
@@ -450,7 +474,7 @@ describe these use cases in more detail and provide use-case diagrams summarisin
 
 \section{Online Order Secure Pickup} \label{online-order-secure-pickup}
 
-With online shopping becoming more popular [], the hassle of being physically present to shop in stores 
+With online shopping becoming more popular~\autocite{ONLINESHOPPING}, the hassle of being physically present to shop in stores 
 could be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
 using a SBACS-secured storage container. After a customer's order has been confirmed by the store to be packed 
 and ready for pick-up, a store employee could create a link between their customer and the storage container that holds
@@ -462,6 +486,7 @@ inappropriately access the storage container again, and a new link could be made
 {fig:online-order-secure-pickup-use-case} shows a use-case diagram summarising this.
 
 % Todo: add table of actors and system responses
+% Todo: resize these?
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
@@ -471,7 +496,7 @@ inappropriately access the storage container again, and a new link could be made
 
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
 fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
-break via brute force than a 6-digit PIN []. In addition, with the entire process of shopping being 
+break via brute force than a 6-digit PIN. In addition, with the entire process of shopping being 
 expedited, customers will spend less time in stores and parking lots, leading to less congestion due to vehicle 
 traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
 they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. Customers
@@ -1307,10 +1332,23 @@ heavily discouraged as any minor error could result in a security breach, and we
 any intellectual property issues of using a third party library. In addition, the number of iterations and the length of
 the resulting key had to be synchronised between the server and the application to ensure the values match.
 
+A simplified demonstration of this process is shown in figure~\ref{fig:hmac-sequence}. This figure shows what the
+application does when a user requests the information related to all the locks that they have a registration for.
+Several steps, such as the Volley RequestQueue, have been abstracted out for the purpose of simplifying the message
+of the diagram. For more details about volley, see section~\ref{server-interfacing}. For more information on how the
+server handles HMAC, see section~\ref{authentication-for-server-api}.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/HMACAuthenticationSequence}
+    \caption{Sequence diagram of the application requesting sample data after loggin in}
+    \label{fig:hmac-sequence}
+\end{figure}
+
 Sometime after this was implemented, an update to the Android operating system resulted in the algorithm used for key
 derivation to no longer be supported. Since this occurred at a time near to a project deliverable, we felt that the
-fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead. This is further explained
-and explored in section~\ref{issues-with-string-encodings}.
+fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead, and then later to use
+SHA256 again but with a different algorithm. This is further explained and explored in section~\ref
+{issues-with-string-encodings}.
 
 %---------------------------------------------------------------------------------
 
@@ -1845,6 +1883,8 @@ dramatically impact user experience, while also ensuring that brute forcing was 
 salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows,  we found that the salt
 length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
 
+% Todo: run tests more than once and report min/max/avg?
+
 \begin{table}[!h]
 	\centering
 	\begin{tabular}{| r | r |}
@@ -2030,6 +2070,29 @@ SHA256.
 %TODO: Suggestions to extend the project, what else could be done? (new authentication modules)
 
 %TODO: Alternative solutions found later that may have been better? (continous integration, delivery?)
+
+The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, resuable, and
+easier to recover than physical locks are. The current implementation of the system can be used to maintain a simple
+business use case, such as the online order secure pickup use case described in section~\ref
+{online-order-secure-pickup}. Locks and users can be added to the system, and registrations can be made between them.
+Then, the users can use their identities to authenticate themselves and open the locks.
+
+The system could be made more accessible to companies that don't want to use NFC or simple PIN codes as their
+authentication method by implementing more authentication modules. Certain companies would want a more secure method of
+authentication, which would encourage developing a module that performs facial, fignerprint, or other biometric
+recognition. The SBACS's design ensures that the only difficult work would be in designing the software to actually
+compare the biometrics. Integration of the new modules is totally invisible to the services provided.
+
+In addition, several companies would want to be able to associate further information with registrations, beyond just
+the video streaming, such as an inventory of items or a list of accesses to the lock. These could be implemented with
+minimal changes to the core of the SBACS. The authentication could be handled by the same session and HMAC methods used
+elsewhere, so the only real change would be an additional column or table, depending on the complexity of the desired
+data. The majority of the work would reside in providing an interface for collecting the data.
+
+Currently, the SBACS is an entirely flat system with respect to privileges for users. In a practical SBACS having a
+distinction for administrative users would likely be beneficial. This would require work on the server to support,
+particularly if multiple levels of administrator were added. Multiple types of administrators would make sense for
+providing SBACS as a service.
 
 %=================================================================================   
 
