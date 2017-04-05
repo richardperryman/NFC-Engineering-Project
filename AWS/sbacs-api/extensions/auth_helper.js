@@ -38,7 +38,7 @@ authenticate : function(req,callback){
 		}).on('end', function () {
 			body = Buffer.concat(body).toString();
 			// Hash the body using key
-			var hashedInfo = new crypt.encryptedAuth(body,key.value);
+			var hashedInfo = new crypt.encryptedAuth(body,key.value); //TODO: Change the method used
 			// Compare to hashedGiven
 			if(hashedGiven.toString() == hashedInfo.secret.toString()){
 				return callback(true);
@@ -83,7 +83,7 @@ getUserKey : function(user_id,callback){
 // Also saves it to the db
 generateUserKey : function(user_id){
 	var key = crypt.getSalt();
-	
+
 	// Save to db
 	var expirationTime = new Date(Date.now() + EXPIRY_TIME);
 	var inserts = [user_id,key,expirationTime];
