@@ -107,21 +107,43 @@ as desired.
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
+	ASCII & American Standard Code for Information Interchange \\
+	AWS & Amazon Web Services \\
     COBS & Consistent Overhead Byte Stuffing \\
     CPU & Central Processing Unit \\
+	DC & Direct Current \\
+	EM & Electromagnetic \\
+	FSM & Finite State Machine \\
+	GPIO & General-Purpose Input/Output \\
     HMAC & Keyed-Hash Message Authentication Code \\
     HTML & Hypertext Markup Language \\
     HTTP & Hypertext Transfer Protocol \\
+	HTTPS & Hypertext Transfer Protocol Secure \\
     I2C & Inter-Integrated Circuit \\
+	IDE & Integrated Development Environment \\
     IO & Input/Output \\
+	IP & Internet Protocol \\
+	ISO & International Organization for Standardization \\
     JSON & JavaScript Object Notation \\
     LED & Light-Emitting Diode \\
     MVC & Model-View-Controller \\
     NFC & Near Field Communication \\
+	NPM & Node Package Manager \\
     OS & Operating System \\
+	PIN & Personal Identification Number \\
+	RAM & Random-Access Memory \\
+	REST & Representational State Transfer \\
     RFC & Request for Comments \\
     SBACS & Sensor-Based Access Control System \\
+	SBC & Single-Board Computer \\
+	SBM & Single-Board Microcontroller \\
+	SHA & Secure Hash Algorithms \\
+	SPA & Single Page Application \\
+	SSL & Secure Socket Layer \\
+	TFTP & Trivial File Transfer Protocol \\
     URL & Uniform Resource Locator \\
+	USB & Universal Serial Bus \\
+	XML & Extensible Markup Language \\
 \end{tabular}
 
 %=================================================================================
@@ -438,6 +460,8 @@ memory, processing power, or electricity to perform its task.
 %---------------------------------------------------------------------------------
 
 \subsection{Raspberry Pi} \label{raspberry-pi}
+
+%TODO: Having the 5 USD looks a little odd
 
 The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
 design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
@@ -1399,6 +1423,8 @@ operating at 12V.
 
 \subsection{Lock Control Circuit} \label{lock-control-circuit}
 
+%TODO: Lots of acronymns, not in list at top
+
 The next design problem to consider was the means to control the status of the electric lock. The simplest locks 
 available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
 to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the
@@ -1546,7 +1572,7 @@ PN532's 3V logic. The wiring of the NFC module hardware is shown in Figure~\ref{
     \caption{NFC module wiring diagram}
     \label{fig:nfc-module-wiring}
 \end{figure}
-
+%TODO: UART and IRQ are not explained?? Are MISO and others needed in top list???
 The PN532 shield is run in Serial Peripheral Interface (SPI) mode by wiring the SEL0 pins ``off" and the SEL1 pins 
 ``on". This interface designates the PN532 as a slave device for the Feather, the master device. SPI was selected over 
 the other interfaces because of its ease of implementation for both hardware and software. It requires only five pins on 
@@ -2089,6 +2115,8 @@ Currently, the SBACS is an entirely flat system with respect to privileges for u
 distinction for administrative users would likely be beneficial. This would require work on the server to support,
 particularly if multiple levels of administrator were added. Multiple types of administrators would make sense for
 providing SBACS as a service.
+
+
 
 %=================================================================================   
 
