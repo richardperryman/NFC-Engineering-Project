@@ -2116,7 +2116,13 @@ distinction for administrative users would likely be beneficial. This would requ
 particularly if multiple levels of administrator were added. Multiple types of administrators would make sense for
 providing SBACS as a service.
 
-
+An alternative solution that has been discovered recently by the group is continuous integration and continuous
+delivery for the cloud server component of the system. This technique was not used, as we did not know enough about
+it, but could have been used to quickly perform more testing and automatically deploy code that works to the server.
+Continous integration would allow our server code to be tested automatically every time we commit a new version to our
+version control system. In the case where all the tests pass, the code could then be automatically deployed to the
+server using continuous deployment. These two techniques used together could allow for faster discovery of bugs, and
+a faster process of deployment to the server.
 
 %=================================================================================   
 
