@@ -451,7 +451,7 @@ describe these use cases in more detail and provide use-case diagrams summarisin
 
 \section{Online Order Secure Pickup} \label{online-order-secure-pickup}
 
-With online shopping becoming more popular [], the hassle of being physically present to shop in stores 
+With online shopping becoming more popular~\autocite{ONLINESHOPPING}, the hassle of being physically present to shop in stores 
 could be eliminated by allowing customers to make an order and payment online, then pick up their products at the store 
 using a SBACS-secured storage container. After a customer's order has been confirmed by the store to be packed 
 and ready for pick-up, a store employee could create a link between their customer and the storage container that holds
@@ -463,6 +463,7 @@ inappropriately access the storage container again, and a new link could be made
 {fig:online-order-secure-pickup-use-case} shows a use-case diagram summarising this.
 
 % Todo: add table of actors and system responses
+% Todo: resize these?
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
@@ -472,7 +473,7 @@ inappropriately access the storage container again, and a new link could be made
 
 A strong advantage of this system over existing ones, such as Walmart's Grab \& Go, is that it creates a digital 
 fingerprint using a combination of authentication methods supported by the SBACS, which is more difficult to 
-break via brute force than a 6-digit PIN []. In addition, with the entire process of shopping being 
+break via brute force than a 6-digit PIN. In addition, with the entire process of shopping being 
 expedited, customers will spend less time in stores and parking lots, leading to less congestion due to vehicle 
 traffic. This system will also grant customers with mobility or vision impairments increased personal autonomy, as 
 they will be able to retrieve their goods with less aid from store employees than traditional shopping allows. Customers
@@ -1888,6 +1889,29 @@ SHA256.
 %TODO: Suggestions to extend the project, what else could be done? (new authentication modules)
 
 %TODO: Alternative solutions found later that may have been better? (continous integration, delivery?)
+
+The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, resuable, and
+easier to recover than physical locks are. The current implementation of the system can be used to maintain a simple
+business use case, such as the online order secure pickup use case described in section~\ref
+{online-order-secure-pickup}. Locks and users can be added to the system, and registrations can be made between them.
+Then, the users can use their identities to authenticate themselves and open the locks.
+
+The system could be made more accessible to companies that don't want to use NFC or simple PIN codes as their
+authentication method by implementing more authentication modules. Certain companies would want a more secure method of
+authentication, which would encourage developing a module that performs facial, fignerprint, or other biometric
+recognition. The SBACS's design ensures that the only difficult work would be in designing the software to actually
+compare the biometrics. Integration of the new modules is totally invisible to the services provided.
+
+In addition, several companies would want to be able to associate further information with registrations, beyond just
+the video streaming, such as an inventory of items or a list of accesses to the lock. These could be implemented with
+minimal changes to the core of the SBACS. The authentication could be handled by the same session and HMAC methods used
+elsewhere, so the only real change would be an additional column or table, depending on the complexity of the desired
+data. The majority of the work would reside in providing an interface for collecting the data.
+
+Currently, the SBACS is an entirely flat system with respect to privileges for users. In a practical SBACS having a
+distinction for administrative users would likely be beneficial. This would require work on the server to support,
+particularly if multiple levels of administrator were added. Multiple types of administrators would make sense for
+providing SBACS as a service.
 
 %=================================================================================   
 
