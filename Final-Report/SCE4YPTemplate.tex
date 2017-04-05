@@ -903,8 +903,8 @@ Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the cor
 electrical elements used in each block are discussed in section~\ref{section:lock-control-circuit-implementation}.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/hardware_block}
-    \caption{Hardware Block Diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_block}
+    \caption{Hardware block diagram}
     \label{fig:hardware-block}
 \end{figure}
 
@@ -925,7 +925,11 @@ from the remaining requirements: one class to poll the authentication modules, w
 hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
 {fig:hardware-block} is a block diagram of the initial design architecture of the lock software.
 
-
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_lock_control_class}
+    \caption{Hardware Block Diagram}
+    \label{fig:hardware-lock-control-class}
+\end{figure}
 
 %---------------------------------------------------------------------------------
 
@@ -939,12 +943,13 @@ data is unique to each module. Two design patterns can be extracted from this st
 Adaptee provides the interfaces necessary for communicating with the core, and a Template method for handling the 
 authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
 necessary for the means of authentication. Figure~\ref{fig:modules-start} is a basic class diagram of how these 
-patterns would be implemented. The AuthenticationModule class is the Adaptee, providing the getData() template method 
-to Adapters when they provide a specific implementation of the module.
+patterns would be implemented. The AuthenticationModule class is the Adaptee. Adapters like the SpecificModule class 
+implement the getData() method to complete the sendData() template method.
 
 \begin{figure}
-    \includegraphics{Diagrams/modules_start}
-    \caption{Authentication Modules Basic Classes}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/modules_start}
+    \caption{Authentication modules basic classes}
     \label{fig:modules-start}
 \end{figure}
 
@@ -959,13 +964,13 @@ converts the data into an Entity class, represented as the Authenticator class i
 Authenticator is an abstraction of the authentication data, which would be sent to the core process.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/modules_ecb}
-    \caption{Authentication Modules Entity-Controller-Boundary Diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/modules_ecb}
+    \caption{Authentication modules Entity-Controller-Boundary diagram}
     \label{fig:modules-ecb}
 \end{figure}
 
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
-single-board microcontroller, such as a Arduino, which would be deemed a "communication board." This communication board
+single-board microcontroller, such as a Arduino, which would be deemed a ``communication board." This communication board
 would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
 removing that overhead from the central computer. Once all of the authentication data was gathered, the board would send 
 the data over a USB connection to the central computer. However, this design was discarded for multiple reasons:
@@ -973,8 +978,8 @@ the data over a USB connection to the central computer. However, this design was
     \item The Arduino, as well as most other microcontrollers in the hobby market, can only communicate with another 
     Arduino over I2C;
     \item There is only one pair of pins reserved for I2C on most microcontrollers, meaning there can only be one 
-    "slave" for each "master" communication board (refer to pinout here);
-    \item Connecting all of the authentication modules over USB allowed for far more modularity than the "communication
+    ``slave" for each ``master" communication board (refer to pinout here);
+    \item Connecting all of the authentication modules over USB allowed for far more modularity than the ``communication
     board" would have.
 \end{enumerate}
 
@@ -1338,7 +1343,7 @@ single-board computer, given that it would fulfil all of the requirements for th
 
 Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. This 
 would lower the cost of the hardware, as digital-only boards tend to be cheaper than analog-capable boards. While 
-the single-board microcontrollers considered had optional boards which could add Wifi or Ethernet capabilities, they 
+the single-board microcontrollers considered had optional addons which could add Wifi or Ethernet capabilities, they 
 would not have been a sufficient solution to run the core process, as they were lacking a sufficient number of USB 
 ports, and the overhead for implementing the core would have been too high. Because the microcontrollers do not run an 
 operating system, essential primitive operations such as file opening, checking device attributes, and reading/writing
@@ -1348,7 +1353,11 @@ process for the lock control circuit.
 A Raspberry Pi was ultimately selected as the computer to run the core process. The Pi 3 Model B has four USB ports, 
 built-in Wifi capability, runs Linux, and has forty pins for general-purpose IO (GPIO). These hardware features made the
 Raspberry Pi the best out-of-the-box solution to run the core process. The GPIO pins provided the digital outputs for 
-driving the status LEDs and the lock. Using Linux 
+driving the status LEDs and the lock. Interfacing with serial devices is simple to implement using Linux, as the devices 
+are represented as files, and can be read from and written to like files.
+
+The lock used in the proof of concept was a solenoid lock. This lock required 9V to 12V DC, and drew 650 mA when 
+operating at 12V.
 
 \subsection{Lock Control Circuit} \label{lock-control-circuit}
 
@@ -1356,82 +1365,66 @@ The next design problem to consider was the means to control the status of the e
 available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
 to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the
 power to the lock, with the switching being driven by one of the Raspberry Pi's GPIO pins. There were two options
-considered for this:
-
-\begin{enumerate}
-
-\item Transistor/diode circuit
-
-This circuit would use a TIP120 Darlington transistor, coupled with a 1N4004 flyback diode, to drive the lock. This 
-circuit is demonstrated in figure X.
-
-Todo: Make the figure of the transistor/diode circuit in Fritzing
-
-The major issue with this circuit is that a significant amount of power would be dissipated by the transistor.
-The power law for a single voltage drop is $ P = IV = I^2R $. A transistor can be treated as two voltage drops, one 
-from base to emitter ($ V_{BE} $), and another from collector to emitter ($ V_{CE} $), resulting in the power dissipated
-by a transistor being given by:
-$$ P = V_{BE}I_B + V_{CE}I_C \text{~\autocite{TRANSISTORPOWER}} $$
-Since $ I_B \ll I_C $ when the lock circuit is active, the $ V_{BE}I_B $ term is negligible in this case, so the power
-dissipated by the transistor is given by:
-$$ P = V_{CE}I_C $$
-Since the transistor is in the "off" state when there is no voltage applied to the base terminal, no current may flow, 
-so the power dissipated by the transistor when "off" is zero. When a voltage is applied to the base, the transistor is 
-brought into the "saturation" state, which allows current to flow freely from collector to emitter. When this happens, 
-the solenoid is powered on, and quickly reaches a state where it behaves like a wire, or close-circuit. This means that 
-the change in current through the solenoid, $ \frac{di}{dt} $, is zero. Since the voltage drop across a solenoid is 
-given by $ V = -L\frac{di}{dt} $~\autocite{SOLENOIDVOLTAGE}, there will then be no decrease in voltage from the 
-solenoid power source to the transistor. Since the solenoid lock used for the proof-of-concept system draws 650 mA at 
-12V, the power dissipated by the transistor would be:
-$$ P = \SI{12}{\volt} \times \SI{650}{\milli\ampere} $$
-$$ P = \SI{7.8}{\watt} $$
-This power dissipation is quite significant in comparison to, for example, the resistors in the LED circuit, which at 
-most will dissipate about $\SI{50}{\milli\watt}$. (See Appendix~\ref{appendix:calculations}.) A heat 
-dissipation mechanism would be necessary to ensure that the system does not heat up dangerously while in operation, 
-which may not be practical in a real-life scenario. Secure systems should be completely enclosed. Adding a fan would 
-introduce a point of physical access to the system, increasing the risk that it could be physically compromised.
-
-Insert some more math and talk about the flyback diode to deal with the voltage spike - take the lock to a DOE lab at 
-some point and measure the voltage spike when 12V DC is applied, to see what the minimum RB breakdown voltage should be
-
-\item Relay circuit
-
-Internally, a relay is very similar to the transistor/diode circuit, with a mechanical switch added. The relay itself 
-has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC} $), ground (GND), and an input signal 
-(IN). The outputs are a normally-closed terminal (NC), a common terminal (COM), and a normally-open terminal (NO). The 
-circuit diagram of a relay is shown in Figure~\ref{fig:relay-circuit-diagram}. On the left side are the three input 
-terminals. The IN terminal is connected to a transistor (Q1 on the diagram), which determines whether an internal
-solenoid (K1 on the diagram) is powered or unpowered. The solenoid generates a magnetic field when powered, causing the
-magnetic switch next to it to flip. When the solenoid is unpowered, the switch completes the circuit connected to the 
-NC terminal, allowing current to flow through the COM and NC terminals. When the IN signal is high and the switch is 
-flipped, the NC terminal is disconnected from the circuit, while the NO terminal takes its place. Current then flows
-through the COM and NO terminals when IN is high.
+considered for this: a circuit using a transistor and diode to switch on the lock, or a relay.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/relay_circuit}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/diode_transistor_circuit}
+    \caption{Transistor-diode lock control circuit}
+    \label{fig:transistor-diode-circuit-diagram}
+\end{figure}
+
+The transistor and diode circuit in Figure~\ref{fig:transistor-diode-circuit-diagram} shows the first possible 
+implementation of a lock control circuit. One of the Raspberry Pi's GPIO pins is connected to the base terminal of the 
+TIP120 NPN transistor, which allows the transistor to act as a electronic switch controlled by the Pi. The ground 
+input of the solenoid lock is connected to the collector terminal, while the +12V input is connected to a diode which 
+connects to the collector terminal. Finally, the emitter terminal is connected to a ground rail. The diode is in place 
+to prevent any damage to the system when the solenoid is turned on, as solenoids will produce what is known as a
+``kickback current" to oppose a change in current. % TODO: cite this
+
+When the base is set to "off" by the Raspberry Pi, the collector-emitter voltage $V_{CE}$ will be 0, putting the 
+transistor in the cut-off state, which does not allow current to flow from emitter to collector.
+
+One of the issues with the transistor and diode circuit was that there were concerns that a heat dissipation mechanism 
+would be required to safely operate the transistor. The TIP120 transistor can safely dissipate a maximum power of 2 
+Watts~\autocite{TIP120}, and can reach a maximum operating temperature of 150 degrees Celsius. Adding a fan to the 
+system could have removed this risk, but at the expense of compromising the overall security of the hardware. The lock 
+control circuit, in a real-world scenario, should be kept enclosed and hidden away to prevent break-ins. Adding a fan 
+would compromise both of those points.
+
+For these reasons, the relay was chosen for the lock circuit implementation. The relay would not require a heat 
+dissipation mechanism, in addition to physically isolating the power circuit for the lock from the lock control 
+circuit. Figure~\ref{fig:relay-circuit-diagram} is a circuit diagram of the internal layout of a relay.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/relay_circuit}
     \caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
     \label{fig:relay-circuit-diagram}
 \end{figure}
 
-Unlike the transistor in the transistor/diode circuit, the transistor inside the relay does not require any heat
-dissipation. The relay's $V_{CC}$ is provided by the 5V GPIO pin on the Raspberry Pi, as $ V_{CC} $ should be 
-$ \SI{5}{\volt} $, according to the datasheet for the relay ~\autocite{RELAYDETAILS}. The maximum current that can be
-drawn from this pin, when there are no other GPIO pins drawing current, is $\SI{400}{\milli\ampere}$~\autocite{PIPOWER}.
-Therefore, the maximum power dissipated by transistor K1 is:
+Internally, a relay is very similar to the transistor and diode circuit, with a mechanical switch added. The relay 
+has three inputs, and three outputs. The inputs are a positive voltage ($ V_{CC} $), ground (GND), and an input signal 
+(IN). The outputs are a normally-closed terminal (NC), a common terminal (COM), and a normally-open terminal (NO). In 
+the implementation of the lock control circuit, $ V_{CC} $ is provided by the 5V pin on the Raspberry Pi, and the IN
+signal is provided by a GPIO pin.
 
-$$ P_{max} = \SI{5}{\volt} \times \SI{400}{\milli\ampere} $$
-$$ P_{max} = \SI{2}{\watt} $$
+In Figure~\ref{fig:relay-circuit-diagram}, diode D1 and the assembly U1 are status LEDs. Diode D1 indicates when the 
+relay is powered on, while the assembly U1 indicates whether the relay's internal switch is flipped to the NC terminal 
+(LED off), or to the NO terminal (LED on). The transistor in assembly U1, combined with the transistor Q1, control 
+whether current flows to the solenoid K1. When IN is high, the base voltages at both transistors sets them to 
+saturation mode, so current will flow through solenoid K1. Diode D2 protects the relay circuit from the kickback 
+voltage of solenoid K1. The mechanical switch, or armature, is indicated by the dashed line connected to solenoid K1. 
+The armature's position is controlled by K1. When the relay is powered off, the armature is positioned so that the NC 
+terminal and COM terminal are connected. When the relay is powered on, the armature is attracted by K1 to switch to 
+conecting the NO and COM terminals.
 
-Since there are three GPIO pins being used to power LEDs, the minimum current drawn from the 5V pin will be $ 
-\SI{400}{\milli\ampere} - 3 \times \SI{16}{\milli\ampere} = \SI{352}{\milli\ampere} $. This gives a minimum power of $ 
-P_{min} = \SI{1.76}{\watt} $.
-
-\end{enumerate}
-
-The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}.
+The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}. The 
+12V terminal of the solenoid lock is connected to the NO terminal of the relay, while the 12V terminal of the DC power 
+supply is connected to the COMM terminal. When the IN signal from the Raspberry Pi is low, the 12V terminal of the lock 
+is disconnected from the power supply, so the lock is powered off and locked. When the IN signal is high, the 12V 
+connection is made, powering on and unlocking the lock.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/hardware_lock_control}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_lock_control}
     \caption{Lock Control Circuit}
     \label{fig:lock-control-circuit-diagram}
 \end{figure}
@@ -1441,30 +1434,124 @@ The final layout for the lock control circuit is demonstrated in figure ~\ref{fi
 The lock control software was written in C++. C++ was selected primarily because the software for the authentication 
 modules could only be written in C++, and using the same language as the modules would allow the core process to share 
 classes with the modules. The second major reason for selecting C++ was that it was an object-oriented language, so the 
-design patterns mentioned in section~\ref{lock-control-software-design} could be implemented as described. 
+design patterns mentioned in section~\ref{lock-control-software-design} could be implemented as described.
+
+% TODO: Describe the overall behavior of the lock software
+
+% TODO: Put the class diagram in the appendix
+% TODO: Make some sectioned-off class diagrams for here
+The classes are divided into four categories describing their use.
+
+Firstly, the Entity classes used for communication are the Packet and its subclasses, and the AuthenticationToken 
+class. The Packet classes are used for communication between authentication modules and the main process. The code for 
+these classes is shared with the authentication module's source code. EncodedPacket objects are used when one device 
+has a byte buffer to send to another over USB. DecodedPacket objects are used to translate a stream of bytes received 
+over USB into a byte buffer containing only relevant data. Packets are described in more detail in the 
+Section~\ref{serial-communication-protocol}, which describes the protocol communicating over USB. AuthenticationToken 
+objects are created by the main process to internally represent a complete authentication token that has been received 
+from a authentication module. Because some modules have raw bytes as data and others may use ASCII strings, methods are 
+available to represent AuthenticationTokens either way.
+
+The second grouping of classes performs communication using the aforementioned Entity classes. The AuthenticationModule 
+class is an abstraction of the authentication modules connected to the Raspberry Pi. This class associates the module's 
+string identifer with a reference to the serial line of the module, and keeps a reference to an AuthenticationToken if 
+one was received. The ServerConnection class is used for communicating with the web server. To accomplish this, this 
+class uses the libcurl C library. With libcurl, all of the work done to execute a HTTP request is handled by the 
+library, so the ServerConnection is only responsible for preparing the request, including setting the headers, and 
+generating the request body.
+
+The third grouping of classes provides abstractions of various hardware components. The GPIOPin class is used for 
+controlling the GPIO pins of the Raspberry Pi, which for this project only needed to be set as output and be written 
+high or low. The Serial class represents a USB port on the Raspberry Pi, and provides the mechanisms needed to interact 
+with the port. The most notable methods in this class are receivePacket() and sendPacket(), which use the Packet 
+classes.
+
+Finally, to perform all of the actions outlined previously, using all of these classes, is the main level.
 
 \subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
-The authentication modules in this project were powered by Arduino IDE-compatible microcontrollers. The 
+The authentication modules in this project were powered by Arduino IDE-compatible microcontrollers. Because the 
+officially supported Arduino library is written in C++, the software for the authentication modules had to be written 
+in C++.
+
+Applying the design patterns outlined in Section~\ref{authentication-modules} was simple, and the actual implementation 
+did not significantly deviate from the design. The AuthenticationModule superclass grew to accommodate more 
+requirements, such as adding a string identifier to the module so that the type of token can be identified. It can be 
+seen from the class diagram, Figure ~\ref{fig:authentication-module-class-diagram}, that the sendData() template method 
+was used, with the pure virtual method getData() rendering the class abstract. Additional methods for communicating 
+with the Raspberry Pi, sendPacket() and receivePacket(), are used by startup() and sendData() to convert bytes received 
+or sent over the serial line into appropriate variations of the Packet object.
+
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/authenticationmodule_class}
+    \caption{Authentication module class diagram}
+    \label{fig:authentication-module-class-diagram}
+\end{figure}
+
+One notable change from the Entity-Controller-Boundary design from Figure~\ref{fig:modules-ecb} was that separate 
+objects for the Module-Specific Data Handler and the Module Controller were not necessary, as the modules' software was 
+simple enough that the Boundary and Controller functionality was implemented in the AuthenticationModule class. In 
+addition, the Entity class generated by the AuthenticationModule class was the EncodedPacket class, instead of a 
+``Authenticator" as it was named in Figure~\ref{fig:modules-ecb}.
 
 \subsubsection{NFC Module} \label{nfc-modules}
 
 The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses a Adafruit 
-PN532 NFC shield to read NFC data from an Android phone. The PN532 is driven by a Adafruit Feather 32u4 single-board 
-microcontroller. The Feather was selected because of it uses 3V logic, matching the PN532's 3V logic. The Arduino would 
-have required a logic level shifter to shift its 5V logic down to 3V. The wiring of the NFC module hardware is shown in 
-Figure~\ref{fig:nfc-module}.
-
-The PN532 shield is run in Serial Peripheral Interface (SPI) mode by wiring SEL0 "off" and SEL1 "on". This interface 
-uses the SCLK, MOSI, MISO, SSEL pins on the PN532 shield
+PN532 NFC shield to read NFC data from an Android phone. This model of NFC shield was selected because it was the only 
+one available to be purchased in Ottawa that supported NFC communication with Android phones. The PN532 is driven by a 
+Adafruit Feather 32u4 single-board microcontroller. The Feather was selected because of it uses 3V logic, matching the 
+PN532's 3V logic. The wiring of the NFC module hardware is shown in Figure~\ref{fig:nfc-module}.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/nfc_module}
-    \caption{NFC Module Wiring Diagram}
-    \label{fig:nfc-module}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/nfc_module}
+    \caption{NFC module wiring diagram}
+    \label{fig:nfc-module-wiring}
+\end{figure}
+
+The PN532 shield is run in Serial Peripheral Interface (SPI) mode by wiring the SEL0 pins ``off" and the SEL1 pins 
+``on". This interface designates the PN532 as a slave device for the Feather, the master device. SPI was selected over 
+the other interfaces because of its ease of implementation for both hardware and software. It requires only five pins on 
+the Feather, and no additional hardware to communicate. Additionally, it is the only mode that supports software 
+polling, as the UART and IRQ modes are for asynchronous communication and require interrupt handlers.
+
+To support the synchronous data communication, the serial clock (SCK) signal is sent from the Feather to the PN532 over 
+the blue wire in Figure~\ref{fig:nfc-module}. This ensures that the Feather and the PN532 are operating at the same 
+clock frequency, so bits sent by one device are received by the other device at the same rate. Data is sent from the 
+Feather to the PN532 using the master-in-slave-out (MISO) signal, the yellow wire. Conversely, the green wire is for 
+data from the PN532 to the Feather, the master-out-slave-in (MOSI) signal. Finally, since SPI mode supports having 
+multiple slave devices, the slave select (SSEL) signal is wired to pin 5 on the Feather. The Feather will raise the 
+SSEL signal when it is interacting with the PN532, such as for polling.
+
+For the software, the NFC module used the SeeedStudio PN532 library, as the Adafruit PN532 library did not support 
+communication with Android devices. Figure~\ref{fig:nfc-module-class} demonstrates the class diagram for the NFC 
+module. Note that the module overrides the startup() method from AuthenticationModule, as the PN532 must also be set 
+up, with an error packet sent during startup() if there is an issue with it.
+
+% TODO: Reference NFC protocol section here
+
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/nfc_module_class}
+    \caption{NFC module class diagram}
+    \label{fig:nfc-module-class}
 \end{figure}
 
 \subsubsection{PIN Module} \label{pin-modules}
+
+The PIN module is a simpler module than the NFC module. It uses a 12-button matrix, which uses four output pins to 
+specify the row of the button, and three output pins to specify the column. As pictured in 
+Figure~\ref{fig:pin-module-wiring}, the matrix output pins are wired directly to seven input pins on the Arduino.
+
+The Keypad library provided by the Arduino IDE performs all of the functions needed to map row/column inputs to 
+characters, as well as key debouncing. 
+
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/pin_module}
+    \caption{PIN module wiring diagram}
+    \label{fig:pin-module-wiring}
+\end{figure}
 
 
 \subsection{Serial Communication Protocol} \label{serial-communication-protocol}
@@ -1517,9 +1604,9 @@ instead of an arbitrarily large buffer, which is wasteful for smaller modules su
 \end{figure}
 
 The Raspberry Pi acknowledges REQUEST and DATA packets using ACK packets. Like REQUEST packets, ACK packets are 6-byte 
-packets, starting with the packet flag, followed by the opcode. Unlike REQUEST packets, bytes 3 and 4 of an ACK packet 
-denote the block number that is being acknowledged by the Pi. This ensures that the Pi correctly buffers the data in 
-sequence. Figure~\ref{fig:ack-packet} demonstrates the format of ACK packets.
+packets, starting with the packet flag, followed by the opcode. Unlike REQUEST packets, the block number field of an
+ACK packet denotes the block number that is being acknowledged by the Pi. This ensures that the Pi correctly buffers 
+the data in sequence. Figure~\ref{fig:ack-packet} demonstrates the format of ACK packets.
 
 \begin{figure}
     \centering
@@ -1567,33 +1654,82 @@ DATA packets can can contain up to 255 bytes. This difference is due to the need
 are sent over USB. If the packet flag (0x7E) occurs in the data, then the packet will be cut short when it is received by 
 the Raspberry Pi. To remedy this, the data block is encoded using the Consistent Overhead Byte Stuffing (COBS) algorithm.
 
-% n.b. get references after dinner
-
-COBS eliminates occurences of the packet flag in the data by transforming them into pointers. Appended to the start of 
-the data is a byte, whose value denotes the index of the next occurence of the packet flag, relative to that 
-byte. If the next instance is not the terminal byte, then it will be transformed into a relative index of the next 
-occurence of the packet flag. This process of replacing the packet flag with pointers is repeated until the terminal 
-byte. Finally, the data is terminated with the packet flag. Table~\ref{tab:cobs-encoding} shows a few sample inputs 
-drawn from actual data used to test the SBACS hardware, encoded using COBS.
+COBS eliminates occurences of the packet flag in the data by transforming them into pointers~\autocite{COBS}. Appended 
+to the start of the data is a byte, whose value denotes the index of the next occurence of the packet flag, relative to 
+that byte. If the next instance is not the terminal byte, then it will be transformed into a relative index of the next 
+occurence of the packet flag. This process of replacing the packet flag with relative indices is repeated until the 
+terminal byte. Finally, the data is terminated with the packet flag. Table~\ref{tab:cobs-encoding} shows a few sample 
+inputs from SBACS hardware interactions, encoded using COBS.
 
 \begin{table}[!h]
     \begin{tabular}{|c|c|c|} \hline
-        Input Type & In Bytes & Out Bytes \\ \hline
-        Module ID ""nfc"" & 6E 66 63 00 & 04 6E 66 63 00 7E \\ \hline
-        PIN data & 30 34 28 31 & 04 30 34 28 31 7E \\ \hline
+        Input Type & Input Bytes & COBS-Encoded Bytes \\ \hline
+        Module ID ``nfc" & 6E 66 63 00 & 04 6E 66 63 00 7E \\ \hline
+        PIN ``0481" & 30 34 38 31 & 04 30 34 28 31 7E \\ \hline
         NFC data block & 00 01 ... 7D 7E 7F ... FD & 7F 00 01 ... 7D 80 7F ... FD 7E \\ \hline
     \end{tabular}
     \caption{COBS encoding inputs and outputs for various data}
     \label{tab:cobs-encoding}
 \end{table}
 
-This algorithm was chosen for its consistent overhead. COBS inserts one additional byte for every 254 bytes in a data 
-block, requiring the data to be divided into 254-byte sections if it is larger than that. Therefore, to reduce the
-number of computations required to chunk the data for COBS and then for DATA packets, the DATA packet buffer size was 
-chosen as 255 bytes to match COBS. This way, data that has been chunked for processing in COBS can be immediately 
-inserted into a packet without further transformations.
+This algorithm was chosen for its consistent behavior and low computational overhead~\autocite{COBS}. COBS inserts one 
+additional byte for every 254 bytes in a data block, requiring the data to be divided into 254-byte sections if it is 
+larger than that. Therefore, to reduce the number of computations required to chunk the data for COBS and then for DATA 
+packets, the DATA packet buffer size was chosen as 255 bytes to match the worst case for a COBS-encoded data chunk. 
+This way, data that has been chunked for processing in COBS can be inserted into a packet without further 
+transformations.
 
-% Remaining stuff after dinner: SETUP and ERROR packets
+Before it is possible to initiate data transfers with authentication modules, the modules must first receive a SETUP 
+packet from the Pi. This ensures that the modules will not attempt to gather authentication tokens before the core of 
+the lock hardware system is ready. The SETUP packet is a 6-byte packet which does not use the block number field from 
+the Serial Communication Protocol header, so those two bytes can be set to any arbitrary value. The format of SETUP 
+packets is demonstrated in Figure~\ref{fig:setup-packet}.
+
+Once a module has received a SETUP packet, it will respond with a DATA packet containing a string identifier for the 
+module. Similarly to SETUP, the block number for this specific DATA packet does not matter and can be set to an 
+arbitrary 2-byte value. The Raspberry Pi must acknowledge the identifier DATA packet with an ACK number matching what 
+was provided.
+
+\begin{figure}
+    \centering
+    \begin{bytefield}[bitwidth=3em]{6}
+    \bitheader{0-5} \\
+    \bitbox{1}{FLAG} &
+    \bitbox{2}{SETUP} &
+    \bitbox{2}{BLOCK} &
+    \bitbox{1}{FLAG} \\
+    \bitbox{1}{0x7E} &
+    \bitbox{2}{0x11 0x11} &
+    \bitbox{2}{x x} &
+    \bitbox{1}{0x7E}
+    \end{bytefield}
+    \caption{Serial SETUP packet format}
+    \label{fig:setup-packet}
+\end{figure}
+
+% TODO: reference debugging section
+The final type of packet defined in this protocol is the ERROR packet. These packets will be discussed in more detail 
+in section. The format of ERROR packets is given in Figure~\ref{fig:error-packet}; note that in the case of ERROR 
+packets, the block number field from the packet header is used to specify an error code.
+
+\begin{figure}
+    \centering
+    \begin{bytefield}[bitwidth=3em]{6}
+    \bitheader{0-5} \\
+    \bitbox{1}{FLAG} &
+    \bitbox{2}{ERROR} &
+    \bitbox{2}{CODE} &
+    \bitbox{1}{FLAG} \\
+    \bitbox{1}{0x7E} &
+    \bitbox{2}{0xFF 0xFF} &
+    \bitbox{2}{} &
+    \bitbox{1}{0x7E}
+    \end{bytefield}
+    \caption{Serial ERROR packet format}
+    \label{fig:error-packet}
+\end{figure}
+
+% TODO: Make some sequence diagrams for this section
 
 %=================================================================================
 
@@ -1802,10 +1938,32 @@ the HMAC key received from the login controller on the server, could be checked 
 \subsection{Hardware Debugging}
 
 Due to the limitations of the Arduino IDE, debugging the various components of the lock hardware was not a simple task. 
-In particular, the largest limitation was that there was no way to debug an Authentication Module by monitoring the 
-data it was sending over USB, while also running the lock hardware's core process, as only one program at a time could 
-access the authentication module's device file at a time. If the Arduino IDE Serial Monitor was running, the SBACS 
-process could not. Since the Arduino IDE did not provide any other debugging mechanisms besides the Serial Monitor, 
+In particular, the largest limitation was that there was no way to control the execution of a program running on a 
+microcontroller. One of the ways to remedy this was to use the Serial Monitor bundled with the IDE to monitor the data 
+being sent over USB. However, it was not possible to run the Serial Monitor and the SBACS process at the same time, as 
+only one of the processes would be allowed access to the serial port's device file. If the Arduino IDE Serial Monitor 
+was running, the SBACS process could not. Since the Arduino IDE did not provide any other debugging mechanisms besides 
+the Serial Monitor, the SBACS program would need to add the Serial Monitor's functionality to compensate for the device 
+file issue.
+
+This was accomplished by adding a "debug" option to the SBACS process code. The Debug class was added, which defined a 
+DEBUG\_LOG() function. This function would print messages to the command line, on the condition that a global variable 
+``DEBUG" was defined. If the global variable was not defined, DEBUG\_LOG() would do nothing. The DEBUG variable would be 
+defined if the makefile was run with the "debug" option.
+
+This proved to be a more versatile method to debug than using the Serial Monitor, as more information could be 
+displayed, and in more formats. Bytes sent or received could be printed as hexadecimal arrays, as strings, or decimal 
+arrays. Figure~\ref{fig:hardware-debug-logging} shows the debug logging for a successful access attempt. The first four 
+lines of the log demonstrate that the system starts up successfully, as it can reach the server, and locates at least 
+one authentication module. The access attempt was initiated between the fourth and fifth lines of the log; note that it 
+was not necessary to print every byte sent and received by the SBACS process, as all serial communication issues 
+had been resolved by the end of the project.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/access_granted}
+    \caption{Hardware debug logging}
+    \label{fig:hardware-debug-logging}
+\end{figure}
 
 \section{Bugs} \label{bugs}
 
