@@ -1,3 +1,6 @@
+% TODO for Richard: Capitalise Figures, roll the debugging hardware stuff into the testing hardware stuff
+% TODO for Jess: Investigate if "design pattern" should be changed to "behavioural pattern"
+
 % Carleton University SCE 4th Year Project thesis style
 % University of Ottawa MSc thesis style -- modifications to the report style
 % modification of suthesis style of Stanford University
@@ -370,7 +373,7 @@ As a group, we collaborated on system integration, and integration testing.
 
 Jessica's contributions:
 \begin{itemize}
-\item Section 3.4
+\item Section 3.1, 3.4
 \item Section 5.4, 5.6
 \item Section 6.2
 \item Section 7.1.3
@@ -380,7 +383,7 @@ Jessica's contributions:
 
 Richard's contributions:
 \begin{itemize}
-\item Section 3.1, 3.3
+\item Section 3.3
 \item Section 5.1, 5.2, 5.3
 \item Section 6.1
 \item Section 7.1.2
@@ -418,7 +421,7 @@ converts the modulations into useful data~\autocite{NFCORG}. This scenario is a 
 smartphones may both act as passive and active devices, allowing them to exchange data through a call-and-response procedure,
 also known as communication in active mode.
 
-NFC is being increasingly used to smarten up passive information delivery systems such as business cards, and posters.
+NFC is being increasingly used to add smart features to passive information delivery systems such as business cards, and posters.
 Brief data such as contact information, URLs, or credentials may be written to a passive NFC device, such as a smart
 tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
 replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
@@ -440,7 +443,7 @@ device with an electronic lock system.
 Cloud computing is about performing computation, providing data storage, and offering other services
 on demand over the internet~\autocite{CLOUDCOMPUTING}. For this project, Amazon Web Services (as discussed
 in Section~\ref{amazon-web-services})
-has been used as the provider of a cloud computing platform to host the server and database of SBACS.
+has been used as the provider of a cloud computing platform to host the server and database of the SBACS.
 Cloud computing allows for computational resources to be dynamically allocated based on the demand
 at the time. This means that when a server has low demand it will not use as many resources, but when
 the demand is higher, it will dynamically be provided with more resources.
@@ -458,15 +461,16 @@ the ability for organisations to protect their host machines from attackers on t
 
 Confidentiality is primarily provided by means of cryptography. Encryption describes a process by which a message is
 modified using some secret information~\autocite{NETWORKTEXTBOOK}. Then if a sender and a receiver share some secret
-information, usually called a key, they can be sure that only they can understand the actual message. If the shared keys
+information, they can be sure that only they can understand the actual message. Usually these secrets are called 
+keys. If the shared keys
 are identical, it is called symmetric-key cryptography. If only one of the sender or receiver knows both keys, but both
 know of the other key, then it is called a public key cryptography.
 
 Message integrity can be handled in many ways, but the goal is always to verify the sender's identity, and to verify
 that the message has not been changed~\autocite{NETWORKTEXTBOOK}. Two common ways of providing message integrity are
 through message authentication codes and digital signitures. Message authentication codes are redundant information
-added to a message after being generated using a shared secred value. The sender and receiver mush share the secret in
-andvance and follow the same procedure to calculate the code. Then the receiver can check that their calculated value
+added to a message after being generated using a shared secret value. The sender and receiver must share the secret in
+advance and follow the same procedure to calculate the code. Then the receiver can check that their calculated value
 matches the value sent by the sender. Digital signatures are primarily handled by certification authorities. The
 authority does work to ensure the identity of a potential sender, and then combines that sender's public key along with
 identifying information using the authority's private key. This way, a receiver can check with the certification
@@ -474,7 +478,7 @@ authority that the sender is who they say that they are.
 
 Operational security primarily lies outside the scope of the SBACS and is handled by things like firewalls~\autocite
 {NETWORKTEXTBOOK}. Therefore, the SBACS does not make any considerations for handling operational security. This means
-that the SBACS is as vulnerable as the system that it is being run over to operational attacks. As an example, if an
+that the SBACS is as vulnerable to operational attacks as the network that it is being run over. As an example, if an
 attacker had access to a sufficiently powerful machine, they could perform a kind of replay attack. By creating a copy
 of the data and simply brute forcing all possible keys, the attacker could gain access to a lock.
 
@@ -484,12 +488,12 @@ of the data and simply brute forcing all possible keys, the attacker could gain 
 
 A single-board computer, or SBC, incorporates all of the elements necessary for a functional 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
-(SBMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
+(SBMs) have the same intent: to incorporate all of the elements needed to support a microcontroller onto a single
 circuit board. The main distinction between SBCs and SBMs is the same as that between computers and microcontrollers.
-A microcontroller is designed specifically for one purpose, such as powering an alarm clock. Whereas a
-computer is a general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware 
-features to support the more intense computing needs of a user. As such, it does not require a significant amount of
-memory, processing power, or electricity to perform its task.
+A microcontroller is designed specifically for one purpose, such as powering an alarm clock.  As such, it does not 
+require a significant amount of memory, processing power, or electricity to perform its task. Whereas acomputer is a 
+general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware features to support 
+the more intense computing needs of a user. Therefore, SBCs use more energy and are less specific than SBMs.
 
 %---------------------------------------------------------------------------------
 
@@ -513,10 +517,10 @@ files are stored.
 \subsection{Arduino} \label{arduino}
 
 The Arduino platform is used for building electronics projects. Arduino consists of the hardware component, a 
-single-board microcontroller, and a Integrated Development Environment for writing Arduino code~\ref{WHATISARDUINO}. 
+single-board microcontroller, and a Integrated Development Environment for writing Arduino code~\autocite{WHATISARDUINO}. 
 The Arduino platform is easy to use, as unlike other microcontrollers, the Arduino SBM only requires a USB cable to 
 program. Some varieties of microcontroller require a separate piece of hardware, called a programmer, to load programs 
-~\ref{MCUPROGRAMMER}.
+~\autocite{MCUPROGRAMMER}.
 
 The Arduino SBM can be used to accomplish a variety of small tasks, from driving a PIN button matrix, to reading 
 temperature sensors, to running motors. For these reasons, the Arduino platform was useful for driving the various 
@@ -526,17 +530,16 @@ sensors used in this project.
 
 \chapter{Business Use Cases} \label{business-use-cases}
 
-Design for our system began with considering use cases that could be handled by our system. This way, we could be sure
-to only design features that would prove useful to some potential users, while also making sure that we don't miss any
-features that are necessary. These use cases would also provide benefit to demonstrating our system, in that stepping
+Design for our system began with considering use cases that could be handled by our system. This way, we could focus on 
+designing features that would be useful to the majority of targeted users. These use cases would also provide benefit to demonstrating our system, in that stepping
 through a sample use case would show the value of the system to people without them requiring a strong technical
 background.
 
 We primarily focused on the four use cases that follow. These were outlined in our initial proposal and have remained
 largely unchanged since then. They draw inspiration from situations that we either encountered ourselves or found
-through common knowledge and research. Online shopping seemed like a ripe market for technology like the SBACS, and
-mail delivery seemed that it followed a fairly similar system. Long term storage facilities also seemed as though they
-would benefit from abstracting away the idea of keys. Once we had considered these use cases, we found that several of
+through common knowledge and research. SBACS fit well into the existing online shopping infrastructure, and
+mail delivery follows a fairly similar system. Long term storage facilities also seemed as though they
+would benefit digitising keys. Once we had considered these use cases, we found that several of
 the problems that they shared could be solved by a company which provided SBACS as a service. The following subsections
 describe these use cases in more detail and provide use-case diagrams summarising them.
 
@@ -697,7 +700,7 @@ The requirements of our system from the use cases described in chapter~\ref{busi
 outline for the entire system. The main component of the system would be the cloud server, which would store information
  regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
  data from the user, and securely send that data to the server for verification. Since handling electronic security can
- be difficult to do manually, having an application that handles much of the busy work would greatly help users interact
+ be difficult to do manually, having an application that handles sending and retrieving data would greatly help users interact
  with the system.
 
 % Not sure if this belongs here
@@ -707,9 +710,10 @@ many authenticators, which are data like passwords, or PINs. These then could be
 would be used to open a particular lock. This allowed making identities that reuse the same authenticator, and reusing
 identities for different locks.
 
-Another goal of the system was to provide additional behaviour on top of just being able to unlock particular locks.
+Another goal of the system was to provide additional behaviour beyond being able to unlock particular locks.
 This extra behaviour was captured in the notion of a registration, which ties one lock to one identity. Through the
-registration, we were able to implement notifications to the user as well as streaming of the lock's contents.
+registration, we were able to implement notifications to the user as well as providing a video stream of the locked 
+container's contents.
 
 % Add picture of database stuff?
 
@@ -758,13 +762,13 @@ to send the information to the SbacsServer.
 
 The SbacsServer component has no user interface layer, as it should only be interacted with through one of the client
 components. Instead, all input to the server is done through the system interface layer in the form of HTTP requests.
-The requests are then passed to the function layer to process the request and generate an appropriate response. The
+The requests are then passed to the function layer for processing, which generate an appropriate responses. The
 processing of requests often requires information stored in the SbacsDatabase, so the system interface layer must be
 called to send a request to the SbacsDatabase.
 
 The SbacsDatabase component only has system interface and model layers, as it is only meant to store information and
 respond to requests for information. The system interface layer is used to receive requests for data, and then will
-call the model layer to retrieve the appropriate data. The model layer is the only model layer that exists in the
+call the model layer to retrieve the appropriate data. The model layer in the SbacsDatabase is the only model layer that exists in the
 system, as it stores all of the data for the system as a whole.
 
 
@@ -773,7 +777,7 @@ system, as it stores all of the data for the system as a whole.
 \section{NFC Design} \label{nfc-design}
 
 Determining how NFC communication should take place required analysis of two hardware systems: NFC card readers, as well
-as mobile devices. The most desirable protocol would be able to handle the widest variety of available hardwares for
+as mobile devices. The most desirable protocol would be able to handle the widest variety of available hardware systems for
 the two devices. The performance considerations between modes was fairly minimal, so preference was placed on the
 portability of the solution.
 
@@ -781,10 +785,10 @@ portability of the solution.
 
 \subsection{Card Readers} \label{card-readers}
 
-% Todo: sources
 Since NFC cards are primarily designed for NFC communications, there were few restrictions that stemmed from potential
-choices in card reader. Since NFC communications are specified by the ISO, most cards support enough protocols that any
-decision on our part would be very likely to be supported by any card that would be desirable for any other reason.
+choices in card reader. Since NFC communications are specified by the ISO~\autocite{NDEFISO}, most cards support enough 
+protocols that the
+decisions on our part would be very likely to be supported by a card that would be desirable for any other reason.
 
 %---------------------------------------------------------------------------------
 
@@ -795,10 +799,10 @@ for everything except Apple Pay\autocite{IPHONENFC}, the only option that remain
 part of the potential market, so alternatives to NFC would have to be considered.
 
 Among Android devices, there exist devices which have hardware support for NFC communications, and those which rely on
-host-based card emulation. Devices with hardware support have a component called a Secure Element which performs all of
+host-based card emulation. Devices with hardware support have a component called a secure element which performs all of
 the communication with the external NFC terminal. Later, applications can query this element to determine the status of
 the transaction, as well as other data. Devices which use host-based card emulation use a software implementation of
-secure elements. Since host-based card emulation is done through software, it will run on all Android devices running
+secure elements. Since host-based card emulation is done through software, it will run on Android devices running
 version 4.4 or greater~\autocite{ANDROIDHCE}, which represents over 99\% of all Android devices currently in use. The
 differences between secure elements and emulators can be seen in figures~\ref{fig:android-secure-element} and \ref
 {fig:android-host-based}.
@@ -810,7 +814,7 @@ differences between secure elements and emulators can be seen in figures~\ref{fi
     \label{fig:android-secure-element}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.6 \textwidth]{Diagrams/NFC-Diagrams/Android-Host-Based-Card}
     \caption[Host-based card emulation on an Android device]{An android device using host-based emulation~\autocite{ANDROIDHCE}}
@@ -818,7 +822,7 @@ differences between secure elements and emulators can be seen in figures~\ref{fi
 \end{figure}
 
 % Find out which protocol we actually use!
-Android offers an API called Beam which is the only way Anndroid devices can use NFC in active mode~\autocite{ANDROIDBEAM}. Beam,
+Android offers an API called Beam which is the only way Android devices can use NFC in active mode~\autocite{ANDROIDBEAM}. Beam,
 however, does not support sending more than one message between devices. Since the information we are sending can be
 fairly large in the interest of security, this was not feasible given the restrictions of the NFC protocols we used.
 Further, active communications are easier to eavesdrop on, as discussed in the background section. We decided that these
@@ -826,26 +830,26 @@ costs outweighed the simplicity of the Beam API, so passive communications were 
 
 % Discuss AID here? or in implementation? Here for now I guess
 Since more than one application could potentially want to handle an NFC message, the message protocol contains a field
-called the Application IDentifier, or AID~\autocite{AIDISO}. These AIDs are 16-byte bit patterns which identify which application should
+called the Application Identifier, or AID~\autocite{AIDISO}. These AIDs are 16-byte bit patterns which identify which application should
 handle the associated message. The Android operating system is responsible for delivering the APDUs to the
-appropriate application's service~\autocite. Reserving a particular AID for national or international use requires some
-paperwork and and a fee, as per the international standards organisation~\autocite{AIDISO}. Therefore, by not paying this fee, our
+appropriate application's service~\autocite{ANDROIDAPDU}. Reserving a particular AID for national or international use requires some
+paperwork and a fee, as per the international standards organisation~\autocite{AIDISO}. Therefore, by not paying this fee, our
 application may happen to share an AID with another application. We found that the cost of a potential collision was
-less than the cost of reserving an AID, therefore our application uses a proprietary which we selected at random.
+less than the cost of reserving an AID, therefore our application uses a proprietary AID which we selected at random.
 
 %---------------------------------------------------------------------------------
 
 \subsection{Protocol} \label{protocol}
 
-Since our NFC communications may require more data than can be fit within an Application Protocol Data Units (APDUs), we
+Since our NFC communications may require more data than can be fit within an Application Protocol Data Unit (APDU), we
 required a protocol which would handle segmenting and recombining the message. APDUs are defined in ISO 7816-4~\autocite{NDEFISO} and are
 the units used by ISO 14443-4~\autocite{APDUISO}, which describes the transmission protocol used by NFC devices. They are restricted to
 256 bytes, including headers.
 
-To work around this, the hardware device connected to the shield maintains a buffer. Under ISO 14443-4, messages can be
-reliably transferred, so managing this buffer is the main consideration of our protocol. The hardware determines the
-maximum amount of data that can be stored in one APDU, after filling in some mandatory fields such as the AID, and fills
-in this value into the length field of the APDU that it
+To work around this, the hardware connected to the NFC shield maintains a buffer. Under ISO 14443-4, messages can be
+reliably transferred, so managing this buffer is the main consideration of our protocol. The hardware first 
+fills in the mandatory fields, like the AID. The hardware computes the space remaining in the APDU for data, and 
+adds that value as the length field of the APDU, which it then
 sends to the Android device. Then, the Android application responds with the minimum of that much data,  and all of the
 remaining data that it has to send. Once the hardware receives an amonut of data less than the potential maximum, it
 deactivates the connection. In the event that the data from the Android application fits exactly into the last message
@@ -909,6 +913,7 @@ never communicate, this follows the Model-View-Adapter pattern. The difference c
     \label{fig:MVA}
 \end{figure}
 
+%TODO: Cite the standards
 Android applications themselves should follow the patterns set out by the standards. Activity classes represent the
 pages that contain the various views and controllers that users can interact with. We decided on a design where the user
 first encouters a login Activity, which prompts them to either sign up or log in. Once the user has logged in, we
@@ -925,7 +930,7 @@ correctly load the information from that user when displaying the data Activitie
 \subsection{Notifications} \label{notifications}
 
 The design for the notifications that would inform end users of information such as their newly available registration
-with a particular lock was based partly on decreasing load on the server. If we had designed the notification system to
+with a particular lock was based partly on decreasing the load on the server. If we had designed the notification system to
 be handled by the server, we would have needed the server to maintain a large amount of state information. In order to
 be able to send the notifications, the server would have to remember the IP address of each current user. This would
 require handshaking between the application and server on creating and terminating a connection, as well as when the
@@ -949,7 +954,7 @@ notifications. In addition, the user will not be inundated with a large number o
 join a company which makes extensive use of SBACS locks. Therefore, when the service receives new notifications, in the
 opt block of figure~\ref{fig:notfication-sequence}, it first checks if there is an existing Notification. If there is,
 instead of creating a new Notification it updates the current one. Also, Notifications can be cleared by the user
-visiting the appropriate page of the application that would show the new information, or by the user interactign with
+visiting the appropriate page of the application that would show the new information, or by the user interacting with
 the notification through their Android device's operating system.
 
 \begin{figure}
@@ -979,6 +984,8 @@ communications in section~\ref{protocol}.
 %=================================================================================
 
 \section{Lock Hardware} \label{lock-hardware}
+
+% TODO: Cite design patterns
 
 The locking hardware consists of three major components: the lock control circuit, the lock control software, and the 
 authentication modules. The control of the lock is kept separate from the access components, as one of the requirements 
