@@ -1,5 +1,5 @@
-% TODO for Richard: Capitalise Figures, roll the debugging hardware stuff into the testing hardware stuff
-% TODO for Jess: Investigate if "design pattern" should be changed to "behavioural pattern"
+% TODO for Richard: Capitalise Figures
+% TODO for Jess: Investigate if "design pattern" should be changed to "behavioural pattern", roll the debugging hardware stuff into the testing hardware stuff
 
 % Carleton University SCE 4th Year Project thesis style
 % University of Ottawa MSc thesis style -- modifications to the report style
@@ -116,7 +116,6 @@ which was displayed at the Systems and Computer Engineering poster fair.
                     
 \prefacesection{List of Abbreviations}
 
-% TODO: This is screwing up the list of table numbering?
 \begin{longtable}[t]{l@{\hspace*{2cm}}l}
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
@@ -176,6 +175,11 @@ which was displayed at the Systems and Computer Engineering poster fair.
 
 \endpreface
     
+%=================================================================================
+
+% Fixes table count
+\setcounter{table}{0}
+
 %=================================================================================
 
 \chapter{Introduction} \label{introduction}
@@ -821,14 +825,12 @@ differences between secure elements and emulators can be seen in figures~\ref{fi
     \label{fig:android-host-based}
 \end{figure}
 
-% Find out which protocol we actually use!
 Android offers an API called Beam which is the only way Android devices can use NFC in active mode~\autocite{ANDROIDBEAM}. Beam,
 however, does not support sending more than one message between devices. Since the information we are sending can be
 fairly large in the interest of security, this was not feasible given the restrictions of the NFC protocols we used.
 Further, active communications are easier to eavesdrop on, as discussed in the background section. We decided that these
 costs outweighed the simplicity of the Beam API, so passive communications were chosen for the implementation.
 
-% Discuss AID here? or in implementation? Here for now I guess
 Since more than one application could potentially want to handle an NFC message, the message protocol contains a field
 called the Application Identifier, or AID~\autocite{AIDISO}. These AIDs are 16-byte bit patterns which identify which application should
 handle the associated message. The Android operating system is responsible for delivering the APDUs to the
@@ -897,7 +899,7 @@ objects can subclass the Adapter class or its subclasses. More precisely, since 
 never communicate, this follows the Model-View-Adapter pattern. The difference can be seen in figures~\ref{fig:MVC} and
 \ref{fig:MVA}.
 
-%TODO change to MVP?
+%TODO change to MVP? - Probably not going to do this, too much work
 
 \begin{figure}
     \centering
@@ -913,8 +915,7 @@ never communicate, this follows the Model-View-Adapter pattern. The difference c
     \label{fig:MVA}
 \end{figure}
 
-%TODO: Cite the standards
-Android applications themselves should follow the patterns set out by the standards. Activity classes represent the
+Android applications themselves should follow the patterns set out by the standards~\autocite{ANDROIDSTANDARD}. Activity classes represent the
 pages that contain the various views and controllers that users can interact with. We decided on a design where the user
 first encouters a login Activity, which prompts them to either sign up or log in. Once the user has logged in, we
 provide a hub Activity which leads to the various other Activities in the application. These other Activities show the
@@ -2296,8 +2297,6 @@ SHA256.
 
 \chapter{Conclusions} \label{conclusions}
 
-%TODO: continous integration, delivery. Also have NFC tag instead of reader to simplify hardware (cheaper)
-
 The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, resuable, and
 easier to recover than physical locks are. The current implementation of the system can be used to maintain a simple
 business use case, such as the online order secure pickup use case described in section~\ref
@@ -2320,6 +2319,13 @@ Currently, the SBACS is an entirely flat system with respect to privileges for u
 distinction for administrative users would likely be beneficial. This would require work on the server to support,
 particularly if multiple levels of administrator were added. Multiple types of administrators would make sense for
 providing SBACS as a service.
+
+A large number of the difficulties that came from integration came from the complicated hardware logic. If the SBACS
+were to be continued, likely a good decision would be to offload as much work as possible from the hardware. For
+example, we could have used a simple card reader instead of an NFC shield. This would have required the application to
+communicate with the server after reading the lock identity from the card, and would require either that the server
+remember each lock, or for the card reader to store the IP address as well. This would have complicated the application
+and the server, but the gain in simplifying the hardware would outweigh those costs.
 
 An alternative solution that has been discovered recently by the group is continuous integration and continuous
 delivery for the cloud server component of the system. This technique was not used, as we did not know enough about
