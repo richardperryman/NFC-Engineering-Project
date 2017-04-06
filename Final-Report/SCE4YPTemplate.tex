@@ -78,12 +78,15 @@ This report describes how each of these components was designed, implemented, in
 hardware system uses a modular framework, allowing new means of authentication to be added to or removed from the lock 
 as desired.
 
+% TODO: Make this longer (200 ish words)
+
 %=================================================================================
 
 \prefacesection{Acknowledgements}
 
 While this report outlines the efforts we have made, this project would not have been possible without the the kind 
-support and help of many individuals. We would like to extend our sincere thanks to each of these individuals.
+support and help of many individuals. We would like to extend our sincere thanks to everyone who assisted us with this 
+project.
 
 We are highly indebted to our supervisors, Dr. Shikahresh Majumdar and Dr. Chung-Horng Lung, for their guidance 
 throughout the project. We owe a lot of our success to their support throughout the 2016-2017 academic year.
@@ -95,7 +98,7 @@ We would like to thank Jennifer Wolters, from the Faculty of Engineering and Des
 from the Capstone Design Project Fund.
 We extend our appreciation to Nagui Mikhail, who lent us his soldering expertise to help prepare some of the hardware 
 components of the project.
-Finally, we extend our appreications to Michel and Normand Leroux, for their preparation of the demonstration end unit 
+Finally, we thank Michel and Normand Leroux, for their preparation of the demonstration end unit 
 which was displayed at the Systems and Computer Engineering poster fair.
 
 %=================================================================================
@@ -109,7 +112,8 @@ which was displayed at the Systems and Computer Engineering poster fair.
 %=================================================================================
                     
 \prefacesection{List of Abbreviations}
-    
+
+% TODO: This is screwing up the list of table numbering?
 \begin{longtable}[t]{l@{\hspace*{2cm}}l}
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
@@ -273,9 +277,7 @@ were enforced to mitigate safety risks when handling the electrical components:
     \item Ground pins were connected first, to ensure any charged components would discharge
     \item Components' wiring was not altered while the system was powered on
 \end{itemize}
-% J - ask if health and safety for construction of the demo unit is necessary here
-% (it probably is)
-
+% TODO: cite the lock amperage
 %=================================================================================
 
 \section{Engineering Professionalism} \label{engineering-professionalism}
@@ -292,12 +294,13 @@ Engineering is a profession, so professionalism must be maintained when performi
 we have ensured professionalism in a variety of ways. A professional relationship between the members of the team has
 been established, ensuring that all members of the team are respected and considered as equals. When disagreements arose
 about decisions for the project, they were discussed as a team and all viewpoints were understood before making any final
-decision. This was done to ensure that all members of the team were always happy with the direction of the project, to
+decision. This was done to ensure that all members of the team were satisfied with the direction of the project, to
 ensure the best possible outcome.
 
 In this project security is a very important factor, therefore all necessary steps were taken to ensure that personal
 information and other secure data was handled correctly. This system may also be used to secure physical objects,
-so the necessary steps were taken to ensure that only the allowed individuals would be able to gain access.
+so the necessary steps were taken to ensure that only the allowed individuals would be able to gain access to private 
+information, or objects.
 
 In order to understand all background information to construct the system, we used external resources to expand our
 understanding of certain subjects. We made sure to reference the works of others and acknowledge the help that
@@ -307,9 +310,9 @@ we have received, in order to give credit where it is due.
 
 \section{Project Management} \label{project-management}
 
-This project was sufficiently complicated, that we decided that project management was a necessary tool to facilitate 
+Due to the project's complexity, we decided that project management was a necessary tool to facilitate 
 the success of the project. We used Github to manage various issues and tasks, as well as for a central 
-version-controlled repository. We held weekly meetings to follow the Agile development methodology, doing one-week 
+version-controlled repository~\autocite{GITHUB}. We held weekly meetings to follow the Agile development methodology, doing one-week 
 sprints. In these meetings, we demonstrated to each other and our supervisors our progress during the sprint. In our 
 project proposal, we planned a timeline that we used to gauge our overall progress. When we fell behind on our planned 
 timeline, we isolated areas of work that needed to be accelerated to get back on track. Responsibilities for the 
@@ -542,7 +545,7 @@ inappropriately access the storage container again, and a new link could be made
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/online-order-secure-pickup-use-case-diagram}
-    \caption{Online Order Secure Pickup Use Case Diagram}
+    \caption{Online order secure pickup use case diagram}
     \label{fig:online-order-secure-pickup-use-case}
 \end{figure}
 
@@ -597,7 +600,7 @@ also lead to an expiry of the customer's registration to the box, so they will n
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
-    \caption{Central Mail Package Pickup Use Case Diagram}
+    \caption{Central mail package pickup use case diagram}
     \label{fig:central-mail-use-case-diagram}
 \end{figure}
 
@@ -637,7 +640,7 @@ reliable paper trail.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
-    \caption{Long Term Storage Use Case Diagram}
+    \caption{Long term storage use case diagram}
     \label{fig:long-term-storage-pickup-use-case-diagram}
 \end{figure}
 
@@ -1163,7 +1166,7 @@ home page, along with the page rendered by a web browser.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/HTML}
-    \caption{Rendered SBACS Home Web Page (left) and HTML of Web Page (right)}
+    \caption[Comparison of rendered SBACS web page and HTML]{Rendered SBACS home web page (left) and HTML of web page (right)}
     \label{fig:home-html}
 \end{figure}
 
@@ -1224,7 +1227,7 @@ primary key.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/DB_Tables}
-    \caption{Database Tables}
+    \caption{Database tables}
     \label{fig:db-tables}
 \end{figure}
 
@@ -1290,7 +1293,7 @@ to the AccessController.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Front-Controller}
-    \caption{Front Controller Class Diagram}
+    \caption{Front controller class diagram}
     \label{fig:front-controller}
 \end{figure}
 
@@ -1306,13 +1309,13 @@ a password with the given password for the User.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade}
-    \caption{Facade Class Diagram}
+    \caption{Facade class diagram}
     \label{fig:facade-server}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Server_Diagrams/Facade_SignUpSequence}
-    \caption{Facade Sequence Diagram}
+    \caption{Facade sequence diagram}
     \label{fig:facade-signup}
 \end{figure}
 
@@ -1342,19 +1345,19 @@ and~\ref{fig:end-unit-leds}, with Figure~\ref{fig:end-unit-leds} focusing on the
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/end_unit_inside}
-    \caption{Inside view of the end unit demonstration}
+    \caption[End unit inside view]{Inside view of the end unit demonstration}
     \label{fig:end-unit-inside}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/end_unit_outside}
-    \caption{Outside view of the end unit demonstration}
+    \caption[End unit outside view]{Outside view of the end unit demonstration}
     \label{fig:end-unit-outside}
 \end{figure}
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/end_unit_leds}
-    \caption{Outside view of the end unit demonstration, focused on the LEDs and NFC module}
+    \caption[End unit LEDs and NFC module]{Outside view of the end unit demonstration, focused on the LEDs and NFC module}
     \label{fig:end-unit-leds}
 \end{figure}
 
@@ -1435,7 +1438,7 @@ server handles HMAC, see section~\ref{authentication-for-server-api}.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/HMACAuthenticationSequence}
-    \caption{Sequence diagram of the application requesting sample data after loggin in}
+    \caption[Data request using HMAC key]{Sequence diagram of the application requesting sample data after logging in}
     \label{fig:hmac-sequence}
 \end{figure}
 
@@ -1530,7 +1533,7 @@ circuit. Figure~\ref{fig:relay-circuit-diagram} is a circuit diagram of the inte
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/relay_circuit}
-    \caption{Relay Circuit Diagram~\autocite{RELAYCIRCUIT}}
+    \caption[Relay circuit diagram]{Relay circuit diagram~\autocite{RELAYCIRCUIT}}
     \label{fig:relay-circuit-diagram}
 \end{figure}
 
