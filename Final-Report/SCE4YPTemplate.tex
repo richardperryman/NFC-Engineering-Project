@@ -48,9 +48,9 @@
 \begin{document}
 \title{SYSC4907 Project: \\ Sensor-Based Access Control System}
 \author{
-    Craig Shorrocks,
     Jessica Morris,
-    Richard Perryman
+    Richard Perryman,
+    Craig Shorrocks
 }
 
 \copyrightfalse % do not produce a separate copyright page
@@ -69,7 +69,7 @@
 
 \prefacesection{Abstract}
 
-This report describes a Sensor-Based Access Control System (SBACS). The main purpose of this system is to digitize 
+This report describes a Sensor-Based Access Control System (SBACS). The main purpose of this system is to digitise 
 physical means of access, such as keys, and storing them in the cloud. This makes the keys more secure, transferable, 
 and convenient. Included in this report are descriptions of various use cases for the SBACS.
 
@@ -477,24 +477,32 @@ memory, processing power, or electricity to perform its task.
 
 \subsection{Raspberry Pi} \label{raspberry-pi}
 
-%TODO: Having the 5 USD looks a little odd
-
 The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
 design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
-level. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
-used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over five million 
-units~\autocite{RPISALES}, with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
+level~\autocite{RPISTART}. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, 
+and it is now often used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has 
+sold over five million units~\autocite{RPISALES}, with models ranging from the US\$5 Raspberry Pi Zero, to the US\$35 
+Raspberry Pi 3 Model B.
+
+The Raspberry Pi has various features which make it useful for small computing projects~\autocite{RPIFEATURES}. In 
+particular, it has 40 general-purpose IO pins, which can be used to read or write digital values. They are useful for 
+driving digital sensors, such as light sensors, or digital devices, such as LEDs. Additional features of the Raspberry 
+Pi include a camera interface, for connecting a Camera module, and a micro SD card slot, where the operating system and 
+files are stored. 
 
 %---------------------------------------------------------------------------------
 
 \subsection{Arduino} \label{arduino}
 
-% TODO: Cite this
 The Arduino platform is used for building electronics projects. Arduino consists of the hardware component, a 
-microcontroller, and a Integrated Development Environment. The platform's popularity stems from its low difficulty, as 
-only a USB cable is required to program the board. Some varieties of microcontroller require a separate piece of 
-hardware, called a programmer, to run. Arduino can be used to accomplish a variety of small tasks, from driving a PIN 
-button matrix, to reading temperature sensors, to running motors.
+single-board microcontroller, and a Integrated Development Environment for writing Arduino code~\ref{WHATISARDUINO}. 
+The Arduino platform is easy to use, as unlike other microcontrollers, the Arduino SBM only requires a USB cable to 
+program. Some varieties of microcontroller require a separate piece of hardware, called a programmer, to load programs 
+~\ref{MCUPROGRAMMER}.
+
+The Arduino SBM can be used to accomplish a variety of small tasks, from driving a PIN button matrix, to reading 
+temperature sensors, to running motors. For these reasons, the Arduino platform was useful for driving the various 
+sensors used in this project.
 
 %=================================================================================
 
@@ -651,7 +659,7 @@ Customers purchasing the services for the SBACS would save any technical work as
 The service provider would be able to manage the databases, servers and any customer complaints or feedback. Providers
 would also take care of sharing end user identities, which would even further increase how much time end users could save,
 as they would only be required to set up one account with the service provider instead of one account per company.
-This incentivizes companies to make use of a service provider, as it makes the resulting system more attractive to
+This incentivises companies to make use of a service provider, as it makes the resulting system more attractive to
 potential customers as well as reducing the overall cost of setting up the system.
 
 %=================================================================================
@@ -1329,12 +1337,25 @@ table, and the LED enclosure covered most of the PN532, so that only the antenna
 connecting the PN532 to the Feather, giving the unit a cleaner look, and protecting the NFC module from tampering.
 
 Figure~\ref{fig:end-unit-inside} is a photograph taken of the inside of the end unit, with the drawer removed to reveal 
-the hardware layout.
+the hardware layout. The outside of the unit is shown in Figures~\ref{fig:end-unit-outside} 
+and~\ref{fig:end-unit-leds}, with Figure~\ref{fig:end-unit-leds} focusing on the status indication LEDs.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/end_unit_inside}
-    \caption{Inside of the end unit demonstration}
+    \caption{Inside view of the end unit demonstration}
     \label{fig:end-unit-inside}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/end_unit_outside}
+    \caption{Outside view of the end unit demonstration}
+    \label{fig:end-unit-outside}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/end_unit_leds}
+    \caption{Outside view of the end unit demonstration, focused on the LEDs and NFC module}
+    \label{fig:end-unit-leds}
 \end{figure}
 
 %=================================================================================
@@ -1490,8 +1511,8 @@ implementation of a lock control circuit. One of the Raspberry Pi's GPIO pins is
 TIP120 NPN transistor, which allows the transistor to act as a electronic switch controlled by the Pi. The ground 
 input of the solenoid lock is connected to the collector terminal, while the +12V input is connected to a diode which 
 connects to the collector terminal. Finally, the emitter terminal is connected to a ground rail. The diode is in place 
-to prevent any damage to the system when the solenoid is turned on, as solenoids will produce what is known as a
-``kickback current" to oppose a change in current. % TODO: cite this
+to prevent any damage to the system when the solenoid is turned on, as solenoids will produce a voltage spike known as 
+``flyback", which occurs when the current to the solenoid experiences a sudden change~\autocite{KICKBACK}.
 
 When the base is set to "off" by the Raspberry Pi, the collector-emitter voltage $V_{CE}$ will be 0, putting the 
 transistor in the cut-off state, which does not allow current to flow from emitter to collector.
@@ -1608,8 +1629,7 @@ with the port. The most notable methods in this class are receivePacket() and se
 classes. Refer to Figure~\ref{hardware-class-group3} for more details.
 
 \begin{figure}
-    \centering
-    \includegraphics{Diagrams/Hardware-Diagrams/hardware_class_group3}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_class_group3}
     \caption{Hardware abstraction classes}
     \label{fig:hardware-class-group3}
 \end{figure}
@@ -1621,9 +1641,8 @@ the main class is the Debug class, which is used for printing debug messages to 
 See section~\ref{debug} for more detailed information on the Debug class.
 
 \begin{figure}
-    \centering
-    \includegraphics{Diagrams/Hardware-Diagrams/hardware_class_group4}
-    \caption{Hardware abstraction classes}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_class_group4}
+    \caption{Hardware top-level classes}
     \label{fig:hardware-class-group4}
 \end{figure}
 
@@ -1654,8 +1673,9 @@ simple enough that the Boundary and Controller functionality was implemented in 
 addition, the Entity class generated by the AuthenticationModule class was the EncodedPacket class, instead of a 
 ``Authenticator" as it was named in Figure~\ref{fig:modules-ecb}.
 
-% TODO: Write a short paragraph explaining why I put this sequence chart here
-Figure~\ref{fig:hardware-interaction-sequence}
+Figure~\ref{fig:hardware-interaction-sequence} shows the sequences of events from a user interacting with an 
+authentication module, to transmission to the core process, to sending an access request to the server. This sequence 
+uses the NFC module for example, but can apply to any other module.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_interaction_sequence}
@@ -1711,8 +1731,14 @@ The PIN module is a simpler module than the NFC module. It uses a 12-button matr
 specify the row of the button, and three output pins to specify the column. As pictured in 
 Figure~\ref{fig:pin-module-wiring}, the matrix output pins are wired directly to seven input pins on the Arduino.
 
-The Keypad library provided by the Arduino IDE performs all of the functions needed to map row/column inputs to 
-characters, as well as key debouncing. 
+The keypad matrix has seven output pins, four row pins and three column pins. When a button is pressed, it activates 
+the corresponding row line and column line, which the Arduino can read to determine the coordinates of the button the 
+keypad. The Keypad library included with the Arduino IDE maps the PIN pad to a 2-dimensional array, and handles mapping 
+the row/column inputs to a character. In addition to this, the Keypad library handles key debouncing.
+
+Since the Arduino has a built-in digital pin for LED debugging, a red LED was added as a status indication when 
+entering a PIN. This LED would turn on when the PIN module is accepting input from the user, and would blink when 
+sending the user's inputted PIN to the core process.
 
 \begin{figure}
     \centering
@@ -1720,6 +1746,11 @@ characters, as well as key debouncing.
     \caption{PIN module wiring diagram}
     \label{fig:pin-module-wiring}
 \end{figure}
+
+The PIN module accepts input from every button, except for the asterisk button. Users enter their PIN using the 
+numerical buttons on keypad matrix, and then press the pound ('\#') button to confirm their entry and send it to the 
+Pi. A five-second timer starts after each button press, so that if a user abandons entering their PIN, then that 
+partial PIN will be de-buffered after five seconds.
 
 \subsection{Serial Communication Protocol} \label{serial-communication-protocol}
 
