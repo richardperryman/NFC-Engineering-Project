@@ -24,6 +24,8 @@
 \sisetup{per-mode=fraction}%
 \sisetup{scientific-notation=false}%
 \usepackage{bytefield}
+\usepackage{longtable}
+\usepackage{listings}
 
 % Taken from http://tex.stackexchange.com/a/235312
 % Prevents floats from being placed outside of (sub)(sub)sections
@@ -108,7 +110,7 @@ which was displayed at the Systems and Computer Engineering poster fair.
                     
 \prefacesection{List of Abbreviations}
     
-\begin{tabular}[t]{l@{\hspace*{2cm}}l}
+\begin{longtable}[t]{l@{\hspace*{2cm}}l}
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
@@ -128,9 +130,13 @@ which was displayed at the Systems and Computer Engineering poster fair.
 	IDE & Integrated Development Environment \\
     IO & Input/Output \\
 	IP & Internet Protocol \\
+    IRQ & Interrupt Request \\
 	ISO & International Organization for Standardization \\
     JSON & JavaScript Object Notation \\
+    LAN & Local Area Network \\
     LED & Light-Emitting Diode \\
+    MISO & Master In, Slave Out \\
+    MOSI & Master Out, Slave In \\
     MVC & Model-View-Controller \\
     NFC & Near Field Communication \\
 	NPM & Node Package Manager \\
@@ -139,17 +145,25 @@ which was displayed at the Systems and Computer Engineering poster fair.
 	RAM & Random-Access Memory \\
 	REST & Representational State Transfer \\
     RFC & Request for Comments \\
+    RTP & Real-time Transport Protocol \\
+    RTSP & Real Time Streaming Protocol \\
     SBACS & Sensor-Based Access Control System \\
 	SBC & Single-Board Computer \\
 	SBM & Single-Board Microcontroller \\
+    SCK & Serial Clock \\
 	SHA & Secure Hash Algorithms \\
 	SPA & Single Page Application \\
+    SPI & Serial Peripheral Interface \\
+    SSEL & Slave Select \\
 	SSL & Secure Socket Layer \\
 	TFTP & Trivial File Transfer Protocol \\
+    UART & Universal Asynchronous Receiver/Transfer \\
     URL & Uniform Resource Locator \\
+    UML & Unified Modeling Language \\
 	USB & Universal Serial Bus \\
+    USD & United States Dollars \\
 	XML & Extensible Markup Language \\
-\end{tabular}
+\end{longtable}
 
 %=================================================================================
 
@@ -239,9 +253,6 @@ Chapter~\ref{testing-and-bug-fixes} provides details on testing of the system, a
 were discovered and fixed while developing the system.
 Chapter~\ref{conclusions} will provide a summary of the report and the work that was performed on the project.
 It will also detail any areas for improvement or extension of the project.
-
-
-
 
 %=================================================================================
 
@@ -457,7 +468,7 @@ A single-board computer, or SBC, incorporates all of the elements necessary for 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
 (SBMs) have the same intent, to incorporate all of the elements needed to support a microcontroller onto a single
 circuit board. The main distinction between SBCs and SBMs is the same as that between computers and microcontrollers.
-A microcontroller is designed specifically for one  purpose, such as powering an alarm clock. Whereas a
+A microcontroller is designed specifically for one purpose, such as powering an alarm clock. Whereas a
 computer is a general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware 
 features to support the more intense computing needs of a user. As such, it does not require a significant amount of
 memory, processing power, or electricity to perform its task.
@@ -473,13 +484,17 @@ design, it was intended to be a learning tool to introduce computer science to s
 level. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, and it is now often 
 used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has sold over five million 
 units~\autocite{RPISALES}, with models ranging from the 5 USD Raspberry Pi Zero, to the 35 USD Raspberry Pi 3 Model B.
-% One more paragraph here
 
 %---------------------------------------------------------------------------------
 
 \subsection{Arduino} \label{arduino}
 
-
+% TODO: Cite this
+The Arduino platform is used for building electronics projects. Arduino consists of the hardware component, a 
+microcontroller, and a Integrated Development Environment. The platform's popularity stems from its low difficulty, as 
+only a USB cable is required to program the board. Some varieties of microcontroller require a separate piece of 
+hardware, called a programmer, to run. Arduino can be used to accomplish a variety of small tasks, from driving a PIN 
+button matrix, to reading temperature sensors, to running motors.
 
 %=================================================================================
 
@@ -939,18 +954,22 @@ communications in section~\ref{protocol}.
 
 \section{Lock Hardware} \label{lock-hardware}
 
+The locking hardware consists of three major components: the lock control circuit, the lock control software, and the 
+authentication modules. The control of the lock is kept separate from the access components, as one of the requirements 
+of the SBACS is to provide modular solutions to different access control requirements.
+
 %---------------------------------------------------------------------------------
 
 \subsection{Lock Control Circuit Design} \label{lock-control-circuit-design}
 
-Design of the lock control circuit, the core of the system, began by determining its requirements:
+Design of the lock control circuit, the core of the system, began by determining the requirements:
 \begin{itemize}
     \item There should be LEDs to indicate the status of the system, and to notify the user of the results of their 
-    access attempt
-    \item There must be an electrically-powered lock, and a means to digitally alter its status
+    access attempt;
+    \item There must be an electrically-powered lock, and a means to digitally alter its status;
     \item The core must run a process where all authentication data will be passed, and this process must communicate 
-    to the server over the internet
-    \item The core must have USB ports, to support having modules send authentication data to the core
+    to the server over the internet;
+    \item The core must have USB ports, to support having modules send authentication data to the core.
 \end{itemize}
 
 Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout. Note that the specific 
@@ -977,28 +996,34 @@ Since USB is widely used and simple to implement, USB was chosen as the means to
 Continuing on with dividing the various responsibilities of the lock control software into subclasses, two more emerge 
 from the remaining requirements: one class to poll the authentication modules, which will take advantage of the 
 hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
-{fig:hardware-block} is a block diagram of the initial design architecture of the lock software.
+{fig:hardware-block} is a block diagram of the initial design architecture of the lock software, including the 
+potential design patterns that the classes should use.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_lock_control_class}
-    \caption{Hardware Block Diagram}
-    \label{fig:hardware-lock-control-class}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_lock_control_block}
+    \caption{Lock control software block diagram}
+    \label{fig:hardware-lock-control-block}
 \end{figure}
+
+The primary goal of the design is to render the central logic, contained in the main class of the program, as simple as 
+possible. By abstracting the various components of the systems to adapters and facades, the main class would not need 
+to be aware of the specific hardware implementations of the LEDs, or the authentication modules. In addition to its 
+simplicity, this design is also easier to test, as unit tests could be written for the classes that do not rely on 
+hardware-fired events.
 
 %---------------------------------------------------------------------------------
 
 \subsection{Authentication Modules} \label{authentication-modules}
 
-To meet the requirement of having a modular framework that supports multiple authentication methods, modules that 
-perform the gathering of authentication data can be attached to the system, to increase the authentication options. As 
-a result, multiple design patterns emerged immediately in the design of the software for the modules. Interfacing with 
-the system core would be the same across all authentication modules, so only the method used to gather authentication 
-data is unique to each module. Two design patterns can be extracted from this statement: an Adapter pattern, where the 
-Adaptee provides the interfaces necessary for communicating with the core, and a Template method for handling the 
-authentication data. The Adapter can simply implement the Template method, as well as add any other functionality 
-necessary for the means of authentication. Figure~\ref{fig:modules-start} is a basic class diagram of how these 
-patterns would be implemented. The AuthenticationModule class is the Adaptee. Adapters like the SpecificModule class 
-implement the getData() method to complete the sendData() template method.
+Authentication modules for the SBACS can come in many forms, so the software for the modules needed to be written with 
+a general structure. Multiple design patterns emerged immediately in the design of the software for the modules. 
+Interfacing with the system core would be the same across all authentication modules, so only the method used to gather 
+authentication data is unique to each module. Two design patterns can be extracted from this statement: an Adapter 
+pattern, where the Adaptee provides the interfaces necessary for communicating with the core, and a Template method for 
+handling the authentication data. The Adapter can simply implement the Template method, as well as add any other 
+functionality necessary for the means of authentication. Figure~\ref{fig:modules-start} is a basic class diagram of how 
+these patterns would be implemented. The AuthenticationModule class is the Adaptee. Adapters like the SpecificModule 
+class implement the getData() method to complete the sendData() template method.
 
 \begin{figure}
     \centering
@@ -1287,10 +1312,30 @@ a password with the given password for the User.
 
 %=================================================================================
 
-% For the physical thing - not sure if this should be here since Michel et al did basically all of this ;)
-\section{Lock Demonstration} \label{lock-demonstration}
+\section{Poster Fair Demonstration} \label{poster-fair-demonstration}
 
-This chapter will be about the design and construction of the demo unit used at the poster fair
+% TODO: Maybe this should be in the implementation chapter instead?
+
+An end unit demonstration was prepared for the Systems and Computer Engineering poster fair. Since all of the SBACS 
+hardware was prepared for then, all that remained was to find a storage container to lock using the SBACS. The 
+container selected for the demonstration was a wooden bedside table with a drawer.
+
+Firstly, to reveal the hardware component of the SBACS, the wood behind the drawer was removed, and replaced with a 
+plexiglass panel. The drawer was shortened by two inches, in order to accommodate the SBACS hardware, which was affixed 
+to the rear of the unit. The Raspberry Pi was attached to the plexiglass in the corner of the unit, and a hole was cut 
+in that side of the unit to make the USB and Ethernet ports accessible. An cube-shaped enclosure was designed to have 
+through-holes for the LEDs, as well as to protect the PN532 NFC shield. The PN532 was screwed to the top of the end 
+table, and the LED enclosure covered most of the PN532, so that only the antenna was revealed. This hid the wires 
+connecting the PN532 to the Feather, giving the unit a cleaner look, and protecting the NFC module from tampering.
+
+Figure~\ref{fig:end-unit-inside} is a photograph taken of the inside of the end unit, with the drawer removed to reveal 
+the hardware layout.
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/end_unit_inside}
+    \caption{Inside of the end unit demonstration}
+    \label{fig:end-unit-inside}
+\end{figure}
 
 %=================================================================================
 
@@ -1428,8 +1473,6 @@ operating at 12V.
 
 \subsection{Lock Control Circuit} \label{lock-control-circuit}
 
-%TODO: Lots of acronymns, not in list at top
-
 The next design problem to consider was the means to control the status of the electric lock. The simplest locks 
 available, solenoid locks and electric strike locks, do not include any control mechanisms. They are either powered on, 
 to disengage the lock, or powered off and locked. Therefore, it was necessary to implement a circuit to control the
@@ -1486,7 +1529,7 @@ The armature's position is controlled by K1. When the relay is powered off, the 
 terminal and COM terminal are connected. When the relay is powered on, the armature is attracted by K1 to switch to 
 conecting the NO and COM terminals.
 
-The final layout for the lock control circuit is demonstrated in figure ~\ref{fig:lock-control-circuit-diagram}. The 
+The final layout for the lock control circuit is demonstrated in Figure ~\ref{fig:lock-control-circuit-diagram}. The 
 12V terminal of the solenoid lock is connected to the NO terminal of the relay, while the 12V terminal of the DC power 
 supply is connected to the COMM terminal. When the IN signal from the Raspberry Pi is low, the 12V terminal of the lock 
 is disconnected from the power supply, so the lock is powered off and locked. When the IN signal is high, the 12V 
@@ -1494,34 +1537,56 @@ connection is made, powering on and unlocking the lock.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_lock_control}
-    \caption{Lock Control Circuit}
+    \caption{Lock control circuit}
     \label{fig:lock-control-circuit-diagram}
 \end{figure}
 
 \subsection{Lock Control Software} \label{lock-control-software}
 
-The lock control software was written in C++. C++ was selected primarily because the software for the authentication 
-modules could only be written in C++, and using the same language as the modules would allow the core process to share 
-classes with the modules. The second major reason for selecting C++ was that it was an object-oriented language, so the 
-design patterns mentioned in section~\ref{lock-control-software-design} could be implemented as described.
+The lock control software, running on the Raspberry Pi, was written in C++. C++ was selected primarily because the 
+software for the authentication modules could only be written in C++, and using the same language as the modules would 
+allow the core process to share classes with the modules. The second major reason for selecting C++ was that it was an 
+object-oriented language, so the design patterns mentioned in section~\ref{lock-control-software-design} could be 
+implemented as described.
 
-% TODO: Describe the overall behavior of the lock software
+When the system is first run, it performs a series of self-checking steps. First, it verifies that it has internet 
+access and can reach the SBACS cloud server. If the connectivity check is successful, it then checks each of the USB 
+port devices to verify if the device is a SBACS authentication module. If at least one authentication module is 
+connected, then the system enters a polling loop. It will poll the authentication modules to check for data, and when 
+there is data available, collect it into an access request and send that request to the server. If the server response 
+code is OK, then the lock is disengaged for three seconds. This setup sequence is demonstrated with the specific 
+function implementations in Figure~\ref{fig:hardware-startup-sequence}.
 
-% TODO: Put the class diagram in the appendix
-% TODO: Make some sectioned-off class diagrams for here
-The classes are divided into four categories describing their use.
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_startup_sequence}
+    \caption{Hardware start up sequence diagram}
+    \label{fig:hardware-startup-sequence}
+\end{figure}
+
+The final implementation of the lock control hardware did not deviate significantly from the design. The major change 
+between the initial design and the final design is the removal of the VideoStream class, which was not necessary for 
+the end unit. The full class diagram of the lock control software, Figure~\ref{fig:hardware-classes-full}, is available 
+in Appendix~\ref{appendix:diagrams}. The classes are divided into four categories describing their use:
 
 Firstly, the Entity classes used for communication are the Packet and its subclasses, and the AuthenticationToken 
-class. The Packet classes are used for communication between authentication modules and the main process. The code for 
+class. These classes are represented in UML in the class diagram, Figure~\ref{fig:hardware-class-group1}.
+The Packet classes are used for communication between authentication modules and the main process. The code for 
 these classes is shared with the authentication module's source code. EncodedPacket objects are used when one device 
 has a byte buffer to send to another over USB. DecodedPacket objects are used to translate a stream of bytes received 
 over USB into a byte buffer containing only relevant data. Packets are described in more detail in the 
 Section~\ref{serial-communication-protocol}, which describes the protocol communicating over USB. AuthenticationToken 
 objects are created by the main process to internally represent a complete authentication token that has been received 
 from a authentication module. Because some modules have raw bytes as data and others may use ASCII strings, methods are 
-available to represent AuthenticationTokens either way.
+available to represent AuthenticationTokens as either structure.
 
-The second grouping of classes performs communication using the aforementioned Entity classes. The AuthenticationModule 
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_class_group1}
+    \caption{Hardware entity classes}
+    \label{fig:hardware-class-group1}
+\end{figure}
+
+The second grouping of classes performs communication using the aforementioned Entity classes, pictured in 
+Figure~\ref{hardware-class-group-2}. The AuthenticationModule 
 class is an abstraction of the authentication modules connected to the Raspberry Pi. This class associates the module's 
 string identifer with a reference to the serial line of the module, and keeps a reference to an AuthenticationToken if 
 one was received. The ServerConnection class is used for communicating with the web server. To accomplish this, this 
@@ -1529,13 +1594,38 @@ class uses the libcurl C library. With libcurl, all of the work done to execute 
 library, so the ServerConnection is only responsible for preparing the request, including setting the headers, and 
 generating the request body.
 
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/hardware_class_group2}
+    \caption{Hardware communication classes}
+    \label{fig:hardware-class-group2}
+\end{figure}
+
 The third grouping of classes provides abstractions of various hardware components. The GPIOPin class is used for 
 controlling the GPIO pins of the Raspberry Pi, which for this project only needed to be set as output and be written 
 high or low. The Serial class represents a USB port on the Raspberry Pi, and provides the mechanisms needed to interact 
 with the port. The most notable methods in this class are receivePacket() and sendPacket(), which use the Packet 
-classes.
+classes. Refer to Figure~\ref{hardware-class-group3} for more details.
 
-Finally, to perform all of the actions outlined previously, using all of these classes, is the main level.
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/hardware_class_group3}
+    \caption{Hardware abstraction classes}
+    \label{fig:hardware-class-group3}
+\end{figure}
+
+Finally, to define all of the behaviour of the lock control software is the main class, which deserves a category of 
+its own. The main class is the mediator between the various AuthenticationModule objects, the ServerConnection, and the 
+GPIOPins. Its various functions are pictured in the class diagram, Figure~\ref{fig:hardware-class-group4}. Grouped with 
+the main class is the Debug class, which is used for printing debug messages to the console when testing the system. 
+See section~\ref{debug} for more detailed information on the Debug class.
+
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/hardware_class_group4}
+    \caption{Hardware abstraction classes}
+    \label{fig:hardware-class-group4}
+\end{figure}
 
 \subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
@@ -1564,6 +1654,15 @@ simple enough that the Boundary and Controller functionality was implemented in 
 addition, the Entity class generated by the AuthenticationModule class was the EncodedPacket class, instead of a 
 ``Authenticator" as it was named in Figure~\ref{fig:modules-ecb}.
 
+% TODO: Write a short paragraph explaining why I put this sequence chart here
+Figure~\ref{fig:hardware-interaction-sequence}
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_interaction_sequence}
+    \caption{Hardware access attempt sequence diagram}
+    \label{fig:hardware-interaction-sequence}
+\end{figure}
+
 \subsubsection{NFC Module} \label{nfc-modules}
 
 The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses a Adafruit 
@@ -1577,12 +1676,13 @@ PN532's 3V logic. The wiring of the NFC module hardware is shown in Figure~\ref{
     \caption{NFC module wiring diagram}
     \label{fig:nfc-module-wiring}
 \end{figure}
-%TODO: UART and IRQ are not explained?? Are MISO and others needed in top list???
-The PN532 shield is run in Serial Peripheral Interface (SPI) mode by wiring the SEL0 pins ``off" and the SEL1 pins 
-``on". This interface designates the PN532 as a slave device for the Feather, the master device. SPI was selected over 
-the other interfaces because of its ease of implementation for both hardware and software. It requires only five pins on 
-the Feather, and no additional hardware to communicate. Additionally, it is the only mode that supports software 
-polling, as the UART and IRQ modes are for asynchronous communication and require interrupt handlers.
+
+The PN532 shield has three modes of operation, specified by the SEL0 and SEL1 pins on the left side of the shield. 
+These are Serial Peripheral Interface (SPI), Universal Asynchronous Receiver/Transfer (UART), and Interrupt Request 
+Line (IRQ). SPI was selected as the mode of operation, as it was simple to implement in software, and required only five 
+pins to communicate with the Feather.  Additionally, it is the only mode that supports software polling, as the UART 
+and IRQ modes are for asynchronous communication and require interrupt handlers. The PN532 shield is run in Serial 
+Peripheral Interface (SPI) mode by wiring the SEL0 pins ``off" and the SEL1 pins ``on".
 
 To support the synchronous data communication, the serial clock (SCK) signal is sent from the Feather to the PN532 over 
 the blue wire in Figure~\ref{fig:nfc-module}. This ensures that the Feather and the PN532 are operating at the same 
@@ -1595,9 +1695,8 @@ SSEL signal when it is interacting with the PN532, such as for polling.
 For the software, the NFC module used the SeeedStudio PN532 library, as the Adafruit PN532 library did not support 
 communication with Android devices. Figure~\ref{fig:nfc-module-class} demonstrates the class diagram for the NFC 
 module. Note that the module overrides the startup() method from AuthenticationModule, as the PN532 must also be set 
-up, with an error packet sent during startup() if there is an issue with it.
-
-% TODO: Reference NFC protocol section here
+up, with an ERROR packet sent during startup() if there is an issue with it. For more information on how the NFC module 
+interacts with Android devices, refer to section~\ref{protocol}.
 
 \begin{figure}
     \centering
@@ -1621,7 +1720,6 @@ characters, as well as key debouncing.
     \caption{PIN module wiring diagram}
     \label{fig:pin-module-wiring}
 \end{figure}
-
 
 \subsection{Serial Communication Protocol} \label{serial-communication-protocol}
 
@@ -1697,7 +1795,9 @@ the data in sequence. Figure~\ref{fig:ack-packet} demonstrates the format of ACK
 An authentication module sends the token data to the Raspberry Pi using DATA packets. DATA packets are the only packets 
 of variable length, with the DATA field ranging from 1 byte to 255 bytes long. Like ACK packets, the block number field 
 denotes the block number of the data. The format of DATA packets is depicted Figure~\ref{fig:data-packet}, but warrants 
-further explanation.
+further explanation. Figure~\ref{fig:hardware-exchange-msc} details the correct sequence of messages when an 
+authentication module sends data to the Raspberry Pi. In this Figure, the NFC module is sending a 256-byte NFC 
+authenticator.
 
 \begin{figure}
     \centering
@@ -1748,6 +1848,13 @@ packets, the DATA packet buffer size was chosen as 255 bytes to match the worst 
 This way, data that has been chunked for processing in COBS can be inserted into a packet without further 
 transformations.
 
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/hardware_exchange_msc}
+    \caption{Hardware data transmission message sequence chart}
+    \label{fig:hardware-exchange-msc}
+\end{figure}
+
 Before it is possible to initiate data transfers with authentication modules, the modules must first receive a SETUP 
 packet from the Pi. This ensures that the modules will not attempt to gather authentication tokens before the core of 
 the lock hardware system is ready. The SETUP packet is a 6-byte packet which does not use the block number field from 
@@ -1757,7 +1864,8 @@ packets is demonstrated in Figure~\ref{fig:setup-packet}.
 Once a module has received a SETUP packet, it will respond with a DATA packet containing a string identifier for the 
 module. Similarly to SETUP, the block number for this specific DATA packet does not matter and can be set to an 
 arbitrary 2-byte value. The Raspberry Pi must acknowledge the identifier DATA packet with an ACK number matching what 
-was provided.
+was provided. Figure~\ref{fig:hardware-setup-msc} is a message sequence chart demonstrating the message sequence when 
+the NFC module is set up.
 
 \begin{figure}
     \centering
@@ -1776,10 +1884,17 @@ was provided.
     \label{fig:setup-packet}
 \end{figure}
 
-% TODO: reference debugging section
+\begin{figure}
+    \centering
+    \includegraphics{Diagrams/Hardware-Diagrams/hardware_setup_msc}
+    \caption{Hardware setup message sequence chart}
+    \label{fig:hardware-setup-msc}
+\end{figure}
+
 The final type of packet defined in this protocol is the ERROR packet. These packets will be discussed in more detail 
-in section. The format of ERROR packets is given in Figure~\ref{fig:error-packet}; note that in the case of ERROR 
-packets, the block number field from the packet header is used to specify an error code.
+in section~\ref{issues-with-serial-communcation}, as their primary purpose is for debugging. The format of ERROR 
+packets is given in Figure~\ref{fig:error-packet}. Note that in the case of ERROR packets, the block number field from 
+the packet header is used to specify an error code.
 
 \begin{figure}
     \centering
@@ -1798,7 +1913,36 @@ packets, the block number field from the packet header is used to specify an err
     \label{fig:error-packet}
 \end{figure}
 
-% TODO: Make some sequence diagrams for this section
+\subsection{Video Stream} \label{video-stream}
+
+Implementing the video stream was simple when using a Raspberry Pi. After attaching a Raspberry Pi Camera Module to the 
+camera input on the Pi, the video stream is started by typing the following command into a terminal:
+
+\begin{lstlisting}
+raspivid -o - -t 0 -hf -w 640 -h 480 -fps 25 | cvlc 
+stream:///dev/stdin --sout '\#rtp{sdp=rtsp://:8554}'
+ :demux=h264
+\end{lstlisting}
+
+This command runs two programs. Firstly, it starts the ``raspivid" program with the following settings:
+\begin{itemize}
+\item ``-o -" specifies to output the video to the terminal,
+\item ``-t 0" runs the stream with no timeout,
+\item ``-hf" flips the image horizontally,
+\item ``-w 640 -h 480 -fps 25" sets the video output to 640*480 resolution, at 25 frames per second.
+\end{itemize}
+
+The output of raspivid, the video stream, is then piped into another program, ``cvlc". The cvlc program is used to 
+convert the stream from raspivid into a RTP stream, viewable over the RTSP protocol. The ``stream:///dev/stdin" 
+parameter designates the terminal as the input for the stream. The ``--sout '\#rtp{sdp=rtsp://:8554}'"" argument specifies 
+that the stream output will be over RTSP, using port 8554. Finally, the video compression standard is designated as 
+H.264 using the argument ``:demux=h264"". H.264 was selected because it is one of the most commonly used formats for 
+the compression and distribution of video content~\autocite{H264}.
+
+In order to avoid passing the threshold for the amount of ``free" activity allowed on the Amazon Web Server, the video 
+stream was streamed over LAN instead of through the server. This required a client to be aware of the lock's IP 
+address, and the port being used for streaming. An implementation of the video stream that would have better fit a 
+real-world scenario would have been to provide it only on client demand, and stream through the secure server.
 
 %=================================================================================
 
@@ -1956,15 +2100,6 @@ length did not have a meaningful effect on performance up to the suitably large 
 
 \chapter{Testing and Bug Fixes} \label{testing-and-bug-fixes}
 
-% Not really sure what to go with here
-Points to mention in this chapter:
-\begin{itemize}
-    \item Our biggest bug - issues with sending bytes "in the raw" using JSON
-    \item Limitation on the number of bytes in NFC data exchanges using the PN532 shield
-    \item The many struggles of serial communication (e.g. the Serial Monitor in the Arduino IDE, certain input flags 
-    on a port would be enabled by default on some machines but not others)
-\end{itemize}
-
 \section{Testing} \label{testing}
 
 \subsection{Server Testing} \label{server-testing}
@@ -2004,6 +2139,13 @@ supports breakpoints as well as simple stepping instructions, which make finding
 Another application of these features was in the regression tests themselves, where certain invisible values, such as
 the HMAC key received from the login controller on the server, could be checked without modifying the application.
 
+\subsection{Hardware Testing} \label{hardware-testing}
+
+Due to the hardware-driven nature of the lock control software, it was not possible to implement an automated method 
+for testing the lock hardware. The only classes that were hardware-independent were EncodedPacket, DecodedPacket, and 
+AuthenticationToken. Some simple automated tests were written to ensure that data was correctly encoded when 
+constructing an EncodedPacket, and correctly decoded when constructing a DecodedPacket.
+
 \section{Debugging} \label{sec:debugging}
 
 \subsection{Hardware Debugging}
@@ -2017,10 +2159,10 @@ was running, the SBACS process could not. Since the Arduino IDE did not provide 
 the Serial Monitor, the SBACS program would need to add the Serial Monitor's functionality to compensate for the device 
 file issue.
 
-This was accomplished by adding a "debug" option to the SBACS process code. The Debug class was added, which defined a 
+This was accomplished by adding a ``debug" option to the SBACS process code. The Debug class was added, which defined a 
 DEBUG\_LOG() function. This function would print messages to the command line, on the condition that a global variable 
 ``DEBUG" was defined. If the global variable was not defined, DEBUG\_LOG() would do nothing. The DEBUG variable would be 
-defined if the makefile was run with the "debug" option.
+defined if the project was built using the ``debug" option in the makefile.
 
 This proved to be a more versatile method to debug than using the Serial Monitor, as more information could be 
 displayed, and in more formats. Bytes sent or received could be printed as hexadecimal arrays, as strings, or decimal 
@@ -2035,6 +2177,8 @@ had been resolved by the end of the project.
     \caption{Hardware debug logging}
     \label{fig:hardware-debug-logging}
 \end{figure}
+
+In addition to the Debug class, various types of ERROR packets were defined
 
 \section{Bugs} \label{bugs}
 
@@ -2140,17 +2284,15 @@ a faster process of deployment to the server.
 
 %=================================================================================
 
-\chapter{Calculations} \label{appendix:calculations}
-
-A.1 Power dissipated by a resistor in LED circuit
-
-Each GPIO pin on the Raspberry Pi uses 3.3V logic, and allows a maximum current draw of 16 mA. A typical red LED is 
-rated for 1.8V to 2.2V, with 20mA current draw~\autocite{REDLED}.
-
 %---------------------------------------------------------------------------------
 
 \chapter{Diagrams} \label{appendix:diagrams}
 
+\begin{figure}
+    \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_classes_full}
+    \caption{Lock control software full class diagram}
+    \label{fig:hardware-classes-full}
+\end{figure}
 
 \end{document}
 
