@@ -57,13 +57,13 @@
 }
 
 \copyrightfalse % do not produce a separate copyright page
-            % otherwise use \copyrighttrue
-%    \figurespagefalse % do not produce a separate figures page
-%    \tablespagefalse  % do not produce a separate tables page
+% otherwise use \copyrighttrue
+% \figurespagefalse % do not produce a separate figures page
+% \tablespagefalse % do not produce a separate tables page
 
 % Here you insert the stuff that comes before the preface
 % Each preface section is contained in a \prefacesection and starts on a
-% new page.  These are numbered using Roman numerals.
+% new page. These are numbered using Roman numerals.
 % If there are no such pages, do not remove the \beforepreface command
 % since it creates the title page.
 \beforepreface
@@ -87,7 +87,7 @@ as desired.
 
 \prefacesection{Acknowledgements}
 
-While this report outlines the efforts we have made, this project would not have been possible without the the kind 
+While this report outlines the efforts we have made, this project would not have been possible without the kind 
 support and help of many individuals. We would like to extend our sincere thanks to everyone who assisted us with this 
 project.
 
@@ -108,36 +108,35 @@ which was displayed at the Systems and Computer Engineering poster fair.
 
 % For some reason, these seem to require that you run latex twice?
 
-\prefaceTOC   % to print the Table of Contents
-\listoffigures   % to print the List of Figures
-\listoftables   % to print the List of Tables
+\prefaceTOC % to print the Table of Contents
+\listoffigures % to print the List of Figures
+\listoftables % to print the List of Tables
 
 %=================================================================================
-                    
 \prefacesection{List of Abbreviations}
 
 \begin{longtable}[t]{l@{\hspace*{2cm}}l}
     AID & Application Identifier \\
     APDU & Application Protocol Data Unit \\
     API & Application Programming Interface \\
-	ASCII & American Standard Code for Information Interchange \\
-	AWS & Amazon Web Services \\
+    ASCII & American Standard Code for Information Interchange \\
+    AWS & Amazon Web Services \\
     COBS & Consistent Overhead Byte Stuffing \\
     CPU & Central Processing Unit \\
-	DC & Direct Current \\
-	EM & Electromagnetic \\
-	FSM & Finite State Machine \\
-	GPIO & General-Purpose Input/Output \\
+    DC & Direct Current \\
+    EM & Electromagnetic \\
+    FSM & Finite State Machine \\
+    GPIO & General-Purpose Input/Output \\
     HMAC & Keyed-Hash Message Authentication Code \\
     HTML & Hypertext Markup Language \\
     HTTP & Hypertext Transfer Protocol \\
-	HTTPS & Hypertext Transfer Protocol Secure \\
+    HTTPS & Hypertext Transfer Protocol Secure \\
     I2C & Inter-Integrated Circuit \\
-	IDE & Integrated Development Environment \\
+    IDE & Integrated Development Environment \\
     IO & Input/Output \\
-	IP & Internet Protocol \\
+    IP & Internet Protocol \\
     IRQ & Interrupt Request \\
-	ISO & International Organization for Standardization \\
+    ISO & International Organization for Standardization \\
     JSON & JavaScript Object Notation \\
     LAN & Local Area Network \\
     LED & Light-Emitting Diode \\
@@ -145,36 +144,35 @@ which was displayed at the Systems and Computer Engineering poster fair.
     MOSI & Master Out, Slave In \\
     MVC & Model-View-Controller \\
     NFC & Near Field Communication \\
-	NPM & Node Package Manager \\
+    NPM & Node Package Manager \\
     OS & Operating System \\
-	PIN & Personal Identification Number \\
-	RAM & Random-Access Memory \\
-	REST & Representational State Transfer \\
+    PIN & Personal Identification Number \\
+    RAM & Random-Access Memory \\
+    REST & Representational State Transfer \\
     RFC & Request for Comments \\
     RTP & Real-time Transport Protocol \\
     RTSP & Real Time Streaming Protocol \\
     SBACS & Sensor-Based Access Control System \\
-	SBC & Single-Board Computer \\
-	SBM & Single-Board Microcontroller \\
+    SBC & Single-Board Computer \\
+    SBM & Single-Board Microcontroller \\
     SCK & Serial Clock \\
-	SHA & Secure Hash Algorithms \\
-	SPA & Single Page Application \\
+    SHA & Secure Hash Algorithms \\
+    SPA & Single Page Application \\
     SPI & Serial Peripheral Interface \\
     SSEL & Slave Select \\
-	SSL & Secure Socket Layer \\
-	TFTP & Trivial File Transfer Protocol \\
+    SSL & Secure Socket Layer \\
+    TFTP & Trivial File Transfer Protocol \\
     UART & Universal Asynchronous Receiver/Transfer \\
     URL & Uniform Resource Locator \\
     UML & Unified Modeling Language \\
-	USB & Universal Serial Bus \\
+    USB & Universal Serial Bus \\
     USD & United States Dollars \\
-	XML & Extensible Markup Language \\
+    XML & Extensible Markup Language \\
 \end{longtable}
 
 %=================================================================================
 
 \endpreface
-    
 %=================================================================================
 
 % Fixes table count
@@ -184,12 +182,12 @@ which was displayed at the Systems and Computer Engineering poster fair.
 
 \chapter{Introduction} \label{introduction}
 
-%Give an introduction to your project.  This might include:
+%Give an introduction to your project. This might include:
 %\begin{itemize}
-%  \item Motivation for your project
-%  \item Problem you are trying to solve
-%  \item Scope of your project
-%  \item Organization of your report
+% \item Motivation for your project
+% \item Problem you are trying to solve
+% \item Scope of your project
+% \item Organization of your report
 %\end{itemize}
 %You should tune this appropriately for what best suits your project.
 
@@ -290,11 +288,11 @@ were enforced to mitigate safety risks when handling the electrical components:
 \section{Engineering Professionalism} \label{engineering-professionalism}
 
 %\begin{itemize}
-%    \item Teammates were respectful towards one another
-%    \item Referencing other peoples' works
-%    \item Acknowledging help from others
-%    \item Considered diverse viewpoints in developing the project
-%    \item Considered the ethical ramifications of handling personal information and other secure data
+% \item Teammates were respectful towards one another
+% \item Referencing other peoples' works
+% \item Acknowledging help from others
+% \item Considered diverse viewpoints in developing the project
+% \item Considered the ethical ramifications of handling personal information and other secure data
 %\end{itemize}
 
 Engineering is a profession, so professionalism must be maintained when performing engineering projects. In our project
@@ -320,7 +318,7 @@ we have received, in order to give credit where it is due.
 % TODO: Cite Agile methodology
 
 Due to the project's complexity, we decided that project management was a necessary tool to facilitate 
-the success of the project. We used Github to manage various issues and tasks, as well as for a central 
+the success of the project. We used GitHub to manage various issues and tasks, as well as for a central 
 version-controlled repository~\autocite{GITHUB}. We held weekly meetings to follow the Agile development methodology, doing one-week 
 sprints. In these meetings, we demonstrated to each other and our supervisors our progress during the sprint. In our 
 project proposal, we planned a timeline that we used to gauge our overall progress. When we fell behind on our planned 
@@ -349,24 +347,24 @@ This section will summarise the contributions each team member made to the proje
 
 Jessica's contributions:
 \begin{itemize}
-\item Designed lock circuit, lock control software, and authentication modules
-\item Implemented lock circuit, lock control software, and authentication modules
-\item Collaborated on the design of the NFC protocol
+    \item Designed lock circuit, lock control software, and authentication modules
+    \item Implemented lock circuit, lock control software, and authentication modules
+    \item Collaborated on the design of the NFC protocol
 \end{itemize}
 
 Richard's contributions:
 \begin{itemize}
-\item Designed the Android application
-\item Implemented Android application
-\item Collaborated on the design of the NFC protocol
-\item Collaborated on HMAC design and implementation
+    \item Designed the Android application
+    \item Implemented Android application
+    \item Collaborated on the design of the NFC protocol
+    \item Collaborated on HMAC design and implementation
 \end{itemize}
 
 Craig's contributions:
 \begin{itemize}
-\item Designed web server and database
-\item Implemented web server and database
-\item Collaborated on HMAC design and implementation
+    \item Designed web server and database
+    \item Implemented web server and database
+    \item Collaborated on HMAC design and implementation
 \end{itemize}
 
 As a group, we collaborated on system integration, and integration testing.
@@ -377,29 +375,29 @@ As a group, we collaborated on system integration, and integration testing.
 
 Jessica's contributions:
 \begin{itemize}
-\item Section 3.1, 3.4
-\item Section 5.4, 5.6
-\item Section 6.2
-\item Section 7.1.3
-\item Section 7.2.1
-\item Appendix A
+    \item Section 3.1, 3.4
+    \item Section 5.4, 5.6
+    \item Section 6.2
+    \item Section 7.1.3
+    \item Section 7.2.1
+    \item Appendix A
 \end{itemize}
 
 Richard's contributions:
 \begin{itemize}
-\item Section 3.3
-\item Section 5.1, 5.2, 5.3
-\item Section 6.1
-\item Section 7.1.2
-\item Section 7.2.3
+    \item Section 3.3
+    \item Section 5.1, 5.2, 5.3
+    \item Section 6.1
+    \item Section 7.1.2
+    \item Section 7.2.3
 \end{itemize}
 
 Craig's contributions:
 \begin{itemize}
-\item Section 3.2
-\item Section 5.1.1, 5.5
-\item Section 6.3
-\item Section 7.1.3, 7.2.3
+    \item Section 3.2
+    \item Section 5.1.1, 5.5
+    \item Section 6.3
+    \item Section 7.1.3, 7.2.3
 \end{itemize}
 
 All members collaborated on sections 1, 2, 4, and 8.
@@ -430,7 +428,7 @@ Brief data such as contact information, URLs, or credentials may be written to a
 tag~\autocite{NFCFORUMWHATIS}, and read by any NFC-enabled mobile device. These mobile devices can also be used to
 replace credit cards in contactless exchanges. In fact, NFC payments may be more secure than payment with a card, as
 each point in the transaction requires the device and the reader to exchange an encrypted password, and the transaction
- must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
+must be approved by the device's user before the device sends payment information~\autocite{NFCPAYMENT}.
 
 Because of the close range required for an exchange, NFC has inherent protections against attackers. An NFC exchange
 can only be reliably eavesdropped from a distance of approximately 10 metres or less if the interaction is between two 
@@ -458,7 +456,7 @@ the demand is higher, it will dynamically be provided with more resources.
 
 The three main principles of network security are confidentiality, message integrity, end-point authentication, and
 operational security~\autocite{NETWORKTEXTBOOK}. Confidential networks ensure that only the sender and receiver can
-understand the the contents of a message. A message's integrity is protected by a network if the contents of the message
+understand the contents of a message. A message's integrity is protected by a network if the contents of the message
 cannot be modified by either a malicious attacker or by accident. Networks enable end-point authentication by providing
 mechanisms by which the sender and receiver can confirm the identity of the other party. Operational security deals with
 the ability for organisations to protect their host machines from attackers on the internet.
@@ -472,7 +470,7 @@ know of the other key, then it is called a public key cryptography.
 
 Message integrity can be handled in many ways, but the goal is always to verify the sender's identity, and to verify
 that the message has not been changed~\autocite{NETWORKTEXTBOOK}. Two common ways of providing message integrity are
-through message authentication codes and digital signitures. Message authentication codes are redundant information
+through message authentication codes and digital signatures. Message authentication codes are redundant information
 added to a message after being generated using a shared secret value. The sender and receiver must share the secret in
 advance and follow the same procedure to calculate the code. Then the receiver can check that their calculated value
 matches the value sent by the sender. Digital signatures are primarily handled by certification authorities. The
@@ -494,8 +492,8 @@ A single-board computer, or SBC, incorporates all of the elements necessary for 
 computer on a single circuit board: a microprocessor, memory, IO, and other functions. Single-board microcontrollers
 (SBMs) have the same intent: to incorporate all of the elements needed to support a microcontroller onto a single
 circuit board. The main distinction between SBCs and SBMs is the same as that between computers and microcontrollers.
-A microcontroller is designed specifically for one purpose, such as powering an alarm clock.  As such, it does not 
-require a significant amount of memory, processing power, or electricity to perform its task. Whereas acomputer is a 
+A microcontroller is designed specifically for one purpose, such as powering an alarm clock. As such, it does not 
+require a significant amount of memory, processing power, or electricity to perform its task. Whereas a computer is a 
 general-purpose computing device, and has more memory, a stronger CPU, and other improved hardware features to support 
 the more intense computing needs of a user. Therefore, SBCs use more energy and are less specific than SBMs.
 
@@ -504,7 +502,7 @@ the more intense computing needs of a user. Therefore, SBCs use more energy and 
 \subsection{Raspberry Pi} \label{raspberry-pi}
 
 The Raspberry Pi is a credit-card-sized, single-board computer developed by the Raspberry Pi Foundation. In its initial 
-design, it was intended to be a learning tool to introduce computer science to students at the pre-university  
+design, it was intended to be a learning tool to introduce computer science to students at the pre-university 
 level~\autocite{RPISTART}. However, its reasonable price gave it increased appeal among hobby electronics enthusiasts, 
 and it is now often used for robotics projects, media streaming, IoT projects, and more. Today, the Raspberry Pi has 
 sold over five million units~\autocite{RPISALES}, with models ranging from the US\$5 Raspberry Pi Zero, to the US\$35 
@@ -702,10 +700,10 @@ As with all systems, some of the design was changed during implementation, which
 
 The requirements of our system from the use cases described in chapter~\ref{business-use-cases} lead us to a simple
 outline for the entire system. The main component of the system would be the cloud server, which would store information
- regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
- data from the user, and securely send that data to the server for verification. Since handling electronic security can
- be difficult to do manually, having an application that handles sending and retrieving data would greatly help users interact
- with the system.
+regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
+data from the user, and securely send that data to the server for verification. Since handling electronic security can
+be difficult to do manually, having an application that handles sending and retrieving data would greatly help users interact
+with the system.
 
 % Not sure if this belongs here
 One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
@@ -724,7 +722,7 @@ container's contents.
 \subsection{Architectural Patterns} \label{architectural-patterns}
 
 % TODO: Reference for layer: http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf
-	% The reference is a book, need page 9 (page '1' of the book content)
+% The reference is a book, need page 9 (page '1' of the book content)
 
 The architecture of our system is a Centralized Client-Server pattern ~\autocite{CLIENTSERVERARCH}, as can be seen 
 in the model diagram in Figure~\ref{fig:architecture-sbacs}. The client components of
@@ -852,8 +850,8 @@ To work around this, the hardware connected to the NFC shield maintains a buffer
 reliably transferred, so managing this buffer is the main consideration of our protocol. The hardware first 
 fills in the mandatory fields, like the AID. The hardware computes the space remaining in the APDU for data, and 
 adds that value as the length field of the APDU, which it then
-sends to the Android device. Then, the Android application responds with the minimum of that much data,  and all of the
-remaining data that it has to send. Once the hardware receives an amonut of data less than the potential maximum, it
+sends to the Android device. Then, the Android application responds with the minimum of that much data, and all of the
+remaining data that it has to send. Once the hardware receives an amount of data less than the potential maximum, it
 deactivates the connection. In the event that the data from the Android application fits exactly into the last message
 that would be sent, the protocol still works, as the application will then respond with zero data bytes. This process
 is visualised as a message sequence chart in figure~\ref{fig:nfc-protocol-msc}, as well as state machines in figures~\ref
@@ -917,7 +915,7 @@ never communicate, this follows the Model-View-Adapter pattern. The difference c
 
 Android applications themselves should follow the patterns set out by the standards~\autocite{ANDROIDSTANDARD}. Activity classes represent the
 pages that contain the various views and controllers that users can interact with. We decided on a design where the user
-first encouters a login Activity, which prompts them to either sign up or log in. Once the user has logged in, we
+first encounters a login Activity, which prompts them to either sign up or log in. Once the user has logged in, we
 provide a hub Activity which leads to the various other Activities in the application. These other Activities show the
 various data related to the user, such as their authenticators and identities.
 
@@ -944,7 +942,7 @@ This polling was implemented simply in the application using a service which run
 device. This service regularly hits the server at a particular endpoint designed for handling these notifications. Since
 many users may be using the application at once, it was important to consider the performance of the endpoint's code.
 The endpoint returns information valuable to the application for display in the notification. The notifications make use
-of an Android notification's ability to launch an Acticity with an Intent to take the user to the appropriate Activity
+of an Android notification's ability to launch an Activity with an Intent to take the user to the appropriate Activity
 associated with the notification.
 
 The overall design of the polling sequence can be seen in figure~\ref{fig:notfication-sequence}. Some simplifications
@@ -998,12 +996,12 @@ of the SBACS is to provide modular solutions to different access control require
 
 Design of the lock control circuit, the core of the system, began by determining the requirements:
 \begin{itemize}
-    \item There should be LEDs to indicate the status of the system, and to notify the user of the results of their 
-    access attempt;
-    \item There must be an electrically-powered lock, and a means to digitally alter its status;
-    \item The core must run a process where all authentication data will be passed, and this process must communicate 
-    to the server over the internet;
-    \item The core must have USB ports, to support having modules send authentication data to the core.
+\item There should be LEDs to indicate the status of the system, and to notify the user of the results of their 
+access attempt;
+\item There must be an electrically-powered lock, and a means to digitally alter its status;
+\item The core must run a process where all authentication data will be passed, and this process must communicate 
+to the server over the internet;
+\item The core must have USB ports, to support having modules send authentication data to the core.
 \end{itemize}
 
 Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout. Note that the specific 
@@ -1123,7 +1121,7 @@ security configuration details to protect the web server and our data. We chose 
 because of the variety of services that were offered that provide everything we needed to
 effectively host our web server for this project.
 
-\subsection{Representational State Transer} \label{representational-state-transer}
+\subsection{Representational State Transfer} \label{representational-state-transfer}
 
 The Representational State Transfer (REST) architectural style ~\autocite{RESTARCHSTYLE} was chosen to be used
 for our web server. The main principle of REST that we adhered to is the idea of a stateless
@@ -1305,7 +1303,7 @@ project we have ensured the use of HTTPS wherever it is necessary to protect our
 % Patterns to discuss include: Front Controller, Facade (sign-up)
 
 In order to handle incoming requests to the server, we use a Front Controller pattern. In this pattern,
-all request to the server are handled by a single contoller, the Front Controller, and the requests
+all request to the server are handled by a single controller, the Front Controller, and the requests
 are sent to the appropriate controller to be handled~\autocite{FRONTCONTROLLER}. As can be seen in
 Figure~\ref{fig:front-controller},
 the requests will all go to the FrontController. This controller will determine, based on the path and
@@ -1354,6 +1352,8 @@ An end unit demonstration was prepared for the Systems and Computer Engineering 
 hardware was prepared for then, all that remained was to find a storage container to lock using the SBACS. The 
 container selected for the demonstration was a wooden bedside table with a drawer.
 
+%Apparently Plexiglas is a trademark? Not sure if ok like this
+
 Firstly, to reveal the hardware component of the SBACS, the wood behind the drawer was removed, and replaced with a 
 plexiglass panel. The drawer was shortened by two inches, in order to accommodate the SBACS hardware, which was affixed 
 to the rear of the unit. The Raspberry Pi was attached to the plexiglass in the corner of the unit, and a hole was cut 
@@ -1398,7 +1398,7 @@ up SBACS.
 \section{Android Application Development} \label{android-application-development}
 
 The Android application was developed using Android Studio~\autocite{ANDROIDSTUDIO} exclusively, and is primarily composed of Java classes, XML
-documents, and gradle build files. Android studio was selected since it seemed to be the natural tool for writing an
+documents, and Gradle build files. Android studio was selected since it seemed to be the natural tool for writing an
 Android application, and didn't have any negatives with respect to our requirements. Gradle~\autocite{GRADLE} was chosen as the build
 tool as it is naturally integrated with Android studio.
 
@@ -1502,7 +1502,7 @@ single-board computer, given that it would fulfil all of the requirements for th
 
 Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. This 
 would lower the cost of the hardware, as digital-only boards tend to be cheaper than analog-capable boards. While 
-the single-board microcontrollers considered had optional addons which could add Wifi or Ethernet capabilities, they 
+the single-board microcontrollers considered had optional add-ons which could add Wi-Fi or Ethernet capabilities, they 
 would not have been a sufficient solution to run the core process, as they were lacking a sufficient number of USB 
 ports, and the overhead for implementing the core would have been too high. Because the microcontrollers do not run an 
 operating system, essential primitive operations such as file opening, checking device attributes, and reading/writing
@@ -1510,7 +1510,7 @@ to devices would not be available. For these reasons, a single-board microcontro
 process for the lock control circuit.
 
 A Raspberry Pi was ultimately selected as the computer to run the core process. The Pi 3 Model B has four USB ports, 
-built-in Wifi capability, runs Linux, and has forty pins for general-purpose IO (GPIO). These hardware features made the
+built-in Wi-Fi capability, runs Linux, and has forty pins for general-purpose IO (GPIO). These hardware features made the
 Raspberry Pi the best out-of-the-box solution to run the core process. The GPIO pins provided the digital outputs for 
 driving the status LEDs and the lock. Interfacing with serial devices is simple to implement using Linux, as the devices 
 are represented as files, and can be read from and written to like files.
@@ -1574,7 +1574,7 @@ saturation mode, so current will flow through solenoid K1. Diode D2 protects the
 voltage of solenoid K1. The mechanical switch, or armature, is indicated by the dashed line connected to solenoid K1. 
 The armature's position is controlled by K1. When the relay is powered off, the armature is positioned so that the NC 
 terminal and COM terminal are connected. When the relay is powered on, the armature is attracted by K1 to switch to 
-conecting the NO and COM terminals.
+connecting the NO and COM terminals.
 
 The final layout for the lock control circuit is demonstrated in Figure ~\ref{fig:lock-control-circuit-diagram}. The 
 12V terminal of the solenoid lock is connected to the NO terminal of the relay, while the 12V terminal of the DC power 
@@ -1635,7 +1635,7 @@ available to represent AuthenticationTokens as either structure.
 The second grouping of classes performs communication using the aforementioned Entity classes, pictured in 
 Figure~\ref{hardware-class-group-2}. The AuthenticationModule 
 class is an abstraction of the authentication modules connected to the Raspberry Pi. This class associates the module's 
-string identifer with a reference to the serial line of the module, and keeps a reference to an AuthenticationToken if 
+string identifier with a reference to the serial line of the module, and keeps a reference to an AuthenticationToken if 
 one was received. The ServerConnection class is used for communicating with the web server. To accomplish this, this 
 class uses the libcurl C library. With libcurl, all of the work done to execute a HTTP request is handled by the 
 library, so the ServerConnection is only responsible for preparing the request, including setting the headers, and 
@@ -1711,7 +1711,7 @@ uses the NFC module for example, but can apply to any other module.
 
 \subsubsection{NFC Module} \label{nfc-modules}
 
-The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses a Adafruit 
+The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses an Adafruit 
 PN532 NFC shield to read NFC data from an Android phone. This model of NFC shield was selected because it was the only 
 one available to be purchased in Ottawa that supported NFC communication with Android phones. The PN532 is driven by a 
 Adafruit Feather 32u4 single-board microcontroller. The Feather was selected because of it uses 3V logic, matching the 
@@ -1726,7 +1726,7 @@ PN532's 3V logic. The wiring of the NFC module hardware is shown in Figure~\ref{
 The PN532 shield has three modes of operation, specified by the SEL0 and SEL1 pins on the left side of the shield. 
 These are Serial Peripheral Interface (SPI), Universal Asynchronous Receiver/Transfer (UART), and Interrupt Request 
 Line (IRQ). SPI was selected as the mode of operation, as it was simple to implement in software, and required only five 
-pins to communicate with the Feather.  Additionally, it is the only mode that supports software polling, as the UART 
+pins to communicate with the Feather. Additionally, it is the only mode that supports software polling, as the UART 
 and IRQ modes are for asynchronous communication and require interrupt handlers. The PN532 shield is run in Serial 
 Peripheral Interface (SPI) mode by wiring the SEL0 pins ``off" and the SEL1 pins ``on".
 
@@ -1805,7 +1805,7 @@ opcode, and a block number. The opcode field defines which of the five listed ty
 the block number field's use varies depending on the packet type. All packets end with the packet flag.
 
 REQUEST packets are sent by authentication modules to the Raspberry Pi, to notify the Pi that a full authentication 
-token has been buffered by the module, and is ready to send.  The format of a REQUEST packet is shown in 
+token has been buffered by the module, and is ready to send. The format of a REQUEST packet is shown in 
 Figure~\ref{fig:request-packet}. For REQUEST packets, the block number field denotes the number of DATA packets that 
 the module will send. This allows the Pi to allocate a data buffer to match the size of the authentication token, 
 instead of an arbitrarily large buffer, which is wasteful for smaller modules such as the PIN module.
@@ -1813,15 +1813,15 @@ instead of an arbitrarily large buffer, which is wasteful for smaller modules su
 \begin{figure}
     \centering
     \begin{bytefield}[bitwidth=3em]{6}
-    \bitheader{0-5} \\
-    \bitbox{1}{FLAG} &
-    \bitbox{2}{REQUEST} &
-    \bitbox{2}{BLOCK} &
-    \bitbox{1}{FLAG} \\
-    \bitbox{1}{0x7E} &
-    \bitbox{2}{0x00 0x01} &
-    \bitbox{2}{} &
-    \bitbox{1}{0x7E}
+        \bitheader{0-5} \\
+        \bitbox{1}{FLAG} &
+        \bitbox{2}{REQUEST} &
+        \bitbox{2}{BLOCK} &
+        \bitbox{1}{FLAG} \\
+        \bitbox{1}{0x7E} &
+        \bitbox{2}{0x00 0x01} &
+        \bitbox{2}{} &
+        \bitbox{1}{0x7E}
     \end{bytefield}
     \caption{Serial REQUEST packet format}
     \label{fig:request-packet}
@@ -1835,15 +1835,15 @@ the data in sequence. Figure~\ref{fig:ack-packet} demonstrates the format of ACK
 \begin{figure}
     \centering
     \begin{bytefield}[bitwidth=3em]{6}
-    \bitheader{0-5} \\
-    \bitbox{1}{FLAG} &
-    \bitbox{2}{ACK} &
-    \bitbox{2}{BLOCK} &
-    \bitbox{1}{FLAG} \\
-    \bitbox{1}{0x7E} &
-    \bitbox{2}{0x00 0x02} &
-    \bitbox{2}{} &
-    \bitbox{1}{0x7E}
+        \bitheader{0-5} \\
+        \bitbox{1}{FLAG} &
+        \bitbox{2}{ACK} &
+        \bitbox{2}{BLOCK} &
+        \bitbox{1}{FLAG} \\
+        \bitbox{1}{0x7E} &
+        \bitbox{2}{0x00 0x02} &
+        \bitbox{2}{} &
+        \bitbox{1}{0x7E}
     \end{bytefield}
     \caption{Serial ACK packet format}
     \label{fig:ack-packet}
@@ -1859,31 +1859,31 @@ authenticator.
 \begin{figure}
     \centering
     \begin{bytefield}[bitwidth=3em]{8}
-    \bitheader{0-5} \\
-    \bitbox{1}{FLAG} &
-    \bitbox{2}{ACK} &
-    \bitbox{2}{BLOCK} &
-    \bitbox{4}{DATA} &
-    \bitbox{1}{FLAG} \\
-    \bitbox{1}{0x7E} &
-    \bitbox{2}{0x00 0x02} &
-    \bitbox{2}{} &
-    \bitbox{4}{ 1 to 255 bytes } &
-    \bitbox{1}{0x7E}
+        \bitheader{0-5} \\
+        \bitbox{1}{FLAG} &
+        \bitbox{2}{ACK} &
+        \bitbox{2}{BLOCK} &
+        \bitbox{4}{DATA} &
+        \bitbox{1}{FLAG} \\
+        \bitbox{1}{0x7E} &
+        \bitbox{2}{0x00 0x02} &
+        \bitbox{2}{} &
+        \bitbox{4}{ 1 to 255 bytes } &
+        \bitbox{1}{0x7E}
     \end{bytefield}
     \caption{Serial DATA packet format}
     \label{fig:data-packet}
 \end{figure}
 
 As mentioned earlier in this section, the authentication module divides its buffer into 254-byte blocks, but the 
-DATA packets can can contain up to 255 bytes. This difference is due to the need to encode the data bytes before they
+DATA packets can contain up to 255 bytes. This difference is due to the need to encode the data bytes before they
 are sent over USB. If the packet flag (0x7E) occurs in the data, then the packet will be cut short when it is received by 
 the Raspberry Pi. To remedy this, the data block is encoded using the Consistent Overhead Byte Stuffing (COBS) algorithm.
 
-COBS eliminates occurences of the packet flag in the data by transforming them into pointers~\autocite{COBS}. Appended 
-to the start of the data is a byte, whose value denotes the index of the next occurence of the packet flag, relative to 
+COBS eliminates occurrences of the packet flag in the data by transforming them into pointers~\autocite{COBS}. Appended 
+to the start of the data is a byte, whose value denotes the index of the next occurrence of the packet flag, relative to 
 that byte. If the next instance is not the terminal byte, then it will be transformed into a relative index of the next 
-occurence of the packet flag. This process of replacing the packet flag with relative indices is repeated until the 
+occurrence of the packet flag. This process of replacing the packet flag with relative indices is repeated until the 
 terminal byte. Finally, the data is terminated with the packet flag. Table~\ref{tab:cobs-encoding} shows a few sample 
 inputs from SBACS hardware interactions, encoded using COBS.
 
@@ -1906,10 +1906,10 @@ This way, data that has been chunked for processing in COBS can be inserted into
 transformations.
 
 \begin{figure}
-    \centering
-    \includegraphics{Diagrams/Hardware-Diagrams/hardware_exchange_msc}
-    \caption{Hardware data transmission message sequence chart}
-    \label{fig:hardware-exchange-msc}
+\centering
+\includegraphics{Diagrams/Hardware-Diagrams/hardware_exchange_msc}
+\caption{Hardware data transmission message sequence chart}
+\label{fig:hardware-exchange-msc}
 \end{figure}
 
 Before it is possible to initiate data transfers with authentication modules, the modules must first receive a SETUP 
@@ -1927,15 +1927,15 @@ the NFC module is set up.
 \begin{figure}
     \centering
     \begin{bytefield}[bitwidth=3em]{6}
-    \bitheader{0-5} \\
-    \bitbox{1}{FLAG} &
-    \bitbox{2}{SETUP} &
-    \bitbox{2}{BLOCK} &
-    \bitbox{1}{FLAG} \\
-    \bitbox{1}{0x7E} &
-    \bitbox{2}{0x11 0x11} &
-    \bitbox{2}{x x} &
-    \bitbox{1}{0x7E}
+        \bitheader{0-5} \\
+        \bitbox{1}{FLAG} &
+        \bitbox{2}{SETUP} &
+        \bitbox{2}{BLOCK} &
+        \bitbox{1}{FLAG} \\
+        \bitbox{1}{0x7E} &
+        \bitbox{2}{0x11 0x11} &
+        \bitbox{2}{x x} &
+        \bitbox{1}{0x7E}
     \end{bytefield}
     \caption{Serial SETUP packet format}
     \label{fig:setup-packet}
@@ -1956,15 +1956,15 @@ the packet header is used to specify an error code.
 \begin{figure}
     \centering
     \begin{bytefield}[bitwidth=3em]{6}
-    \bitheader{0-5} \\
-    \bitbox{1}{FLAG} &
-    \bitbox{2}{ERROR} &
-    \bitbox{2}{CODE} &
-    \bitbox{1}{FLAG} \\
-    \bitbox{1}{0x7E} &
-    \bitbox{2}{0xFF 0xFF} &
-    \bitbox{2}{} &
-    \bitbox{1}{0x7E}
+        \bitheader{0-5} \\
+        \bitbox{1}{FLAG} &
+        \bitbox{2}{ERROR} &
+        \bitbox{2}{CODE} &
+        \bitbox{1}{FLAG} \\
+        \bitbox{1}{0x7E} &
+        \bitbox{2}{0xFF 0xFF} &
+        \bitbox{2}{} &
+        \bitbox{1}{0x7E}
     \end{bytefield}
     \caption{Serial ERROR packet format}
     \label{fig:error-packet}
@@ -1978,15 +1978,15 @@ camera input on the Pi, the video stream is started by typing the following comm
 \begin{lstlisting}
 raspivid -o - -t 0 -hf -w 640 -h 480 -fps 25 | cvlc 
 stream:///dev/stdin --sout '\#rtp{sdp=rtsp://:8554}'
- :demux=h264
+:demux=h264
 \end{lstlisting}
 
 This command runs two programs. Firstly, it starts the ``raspivid" program with the following settings:
 \begin{itemize}
-\item ``-o -" specifies to output the video to the terminal,
-\item ``-t 0" runs the stream with no timeout,
-\item ``-hf" flips the image horizontally,
-\item ``-w 640 -h 480 -fps 25" sets the video output to 640*480 resolution, at 25 frames per second.
+    \item ``-o -" specifies to output the video to the terminal,
+    \item ``-t 0" runs the stream with no timeout,
+    \item ``-hf" flips the image horizontally,
+    \item ``-w 640 -h 480 -fps 25" sets the video output to 640*480 resolution, at 25 frames per second.
 \end{itemize}
 
 The output of raspivid, the video stream, is then piped into another program, ``cvlc". The cvlc program is used to 
@@ -2112,45 +2112,45 @@ suffering without meaningfully benefitting security. We measured the time taken 
 function using the algorithm we chose, SHA256, given different numbers of iterations, which is summarised in table~\ref
 {tab:sha256-performance}. We found that ten thousand iterations worked well, as roughly a tenth of a second did not
 dramatically impact user experience, while also ensuring that brute forcing was too inefficient. We then considered the
-salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows,  we found that the salt
+salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows, we found that the salt
 length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
 
 % Todo: run tests more than once and report min/max/avg?
 
 \begin{table}[!h]
-	\centering
-	\begin{tabular}{| r | r |}
-		\hline
-		Iterations & Response Time (ms) \\ \hline
-		1 & 2 \\ \hline
-		10 & 2 \\ \hline
-		100 & 2 \\ \hline
-		1000 & 15 \\ \hline
-		10000 & 130 \\ \hline
-		100000 & 1308 \\ \hline
-		1000000 & 12777 \\ \hline
-	\end{tabular}
-	\caption{Time taken to perform SHA256 password based key derivation vs. iterations}
-	\label{tab:sha256-performance}
+    \centering
+    \begin{tabular}{| r | r |}
+        \hline
+        Iterations & Response Time (ms) \\ \hline
+        1 & 2 \\ \hline
+        10 & 2 \\ \hline
+        100 & 2 \\ \hline
+        1000 & 15 \\ \hline
+        10000 & 130 \\ \hline
+        100000 & 1308 \\ \hline
+        1000000 & 12777 \\ \hline
+    \end{tabular}
+    \caption{Time taken to perform SHA256 password based key derivation vs. iterations}
+    \label{tab:sha256-performance}
 \end{table}
 
 \begin{table}[!h]
-	\centering
-	\begin{tabular}{| r | r |}
-		\hline
-		Salt Length & Response Time (ms) \\ \hline
-		1 & 1188 \\ \hline
-		2 & 1249 \\ \hline
-		4 & 1206 \\ \hline
-		8 & 1214 \\ \hline
-		16 & 1200 \\ \hline
-		32 & 1191 \\ \hline
-		64 & 1178 \\ \hline
-		128 & 1173 \\ \hline
-		256 & 1216 \\ \hline
-	\end{tabular}
-	\caption{Time taken to perform SHA256 password based key derivation vs. salt length, with 10000 iterations}
-	\label{tab:sha256-salt-performance}
+    \centering
+    \begin{tabular}{| r | r |}
+        \hline
+        Salt Length & Response Time (ms) \\ \hline
+        1 & 1188 \\ \hline
+        2 & 1249 \\ \hline
+        4 & 1206 \\ \hline
+        8 & 1214 \\ \hline
+        16 & 1200 \\ \hline
+        32 & 1191 \\ \hline
+        64 & 1178 \\ \hline
+        128 & 1173 \\ \hline
+        256 & 1216 \\ \hline
+    \end{tabular}
+    \caption{Time taken to perform SHA256 password based key derivation vs. salt length, with 10000 iterations}
+    \label{tab:sha256-salt-performance}
 \end{table}
 
 %=================================================================================
@@ -2297,7 +2297,7 @@ SHA256.
 
 \chapter{Conclusions} \label{conclusions}
 
-The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, resuable, and
+The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, reusable, and
 easier to recover than physical locks are. The current implementation of the system can be used to maintain a simple
 business use case, such as the online order secure pickup use case described in section~\ref
 {online-order-secure-pickup}. Locks and users can be added to the system, and registrations can be made between them.
@@ -2330,12 +2330,12 @@ and the server, but the gain in simplifying the hardware would outweigh those co
 An alternative solution that has been discovered recently by the group is continuous integration and continuous
 delivery for the cloud server component of the system. This technique was not used, as we did not know enough about
 it, but could have been used to quickly perform more testing and automatically deploy code that works to the server.
-Continous integration would allow our server code to be tested automatically every time we commit a new version to our
+Continuous integration would allow our server code to be tested automatically every time we commit a new version to our
 version control system. In the case where all the tests pass, the code could then be automatically deployed to the
 server using continuous deployment. These two techniques used together could allow for faster discovery of bugs, and
 a faster process of deployment to the server.
 
-%=================================================================================   
+%================================================================================= 
 
 \addcontentsline{toc}{chapter}{Bibliography} % Need this so it appears in the ToC
 \printbibliography
@@ -2357,4 +2357,3 @@ a faster process of deployment to the server.
 \end{figure}
 
 \end{document}
-
