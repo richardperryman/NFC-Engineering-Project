@@ -1683,6 +1683,14 @@ See section~\ref{debug} for more detailed information on the Debug class.
     \label{fig:hardware-class-group4}
 \end{figure}
 
+Due to the number of .cpp files that resulted from this design, a makefile was written to automate the compiling and 
+linking of all of the classes. The makefile has four options for building the lock control software. Firstly, a ``make" 
+with no arguments will compile and link all of the previously mentioned classes, outputting a single executable file. A 
+``make debug" performs the same actions, but defines the DEBUG global variable to enable debug messages to be printed 
+to the terminal when the lock control software is executed. Using ``make test" compiles the Packet classes and a unit 
+test for them, and then runs the test. Finally, ``make clean" simply removes any executable files and intermediate 
+object files that may have been left over from an unsuccessful compile.
+
 \subsection{Authentication Module Implementations} \label{authentication-modules-implementations}
 
 The authentication modules in this project were powered by Arduino IDE-compatible microcontrollers. Because the 
@@ -2210,13 +2218,20 @@ the HMAC key received from the login controller on the server, could be checked 
 \subsection{Hardware Testing} \label{hardware-testing}
 
 Due to the hardware-driven nature of the lock control software, it was not possible to implement an automated method 
-for testing the lock hardware. The only classes that were hardware-independent were EncodedPacket, DecodedPacket, and 
+for testing the most of the software. The only classes that were hardware-independent were EncodedPacket, DecodedPacket, and 
 AuthenticationToken. Some simple automated tests were written to ensure that data was correctly encoded when 
-constructing an EncodedPacket, and correctly decoded when constructing a DecodedPacket.
+constructing an EncodedPacket, and correctly decoded when constructing a DecodedPacket. These tests were incorporated 
+into the makefile, and could be run by building the lock control software with the command ``make test".
 
-\section{Debugging} \label{sec:debugging}
+To test the lock control software's responses to serial data, an Arduino was programmed to send hard-coded data packets. 
+For example, the Arduino could repeatedly transmit an empty SETUP packet. End-to-end tests could only be performed 
+manually, but as there were only three cases to test, this was not an issue. The three end-to-end test cases were to 
+test an authenticator that would result in access denied, test one authenticator which would grant access, and test two 
+authenticators that combine to grant access.
 
-\subsection{Hardware Debugging}
+\section{Bugs} \label{bugs}
+
+\subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
 
 Due to the limitations of the Arduino IDE, debugging the various components of the lock hardware was not a simple task. 
 In particular, the largest limitation was that there was no way to control the execution of a program running on a 
@@ -2246,12 +2261,14 @@ had been resolved by the end of the project.
     \label{fig:hardware-debug-logging}
 \end{figure}
 
-In addition to the Debug class, various types of ERROR packets were defined
-
-\section{Bugs} \label{bugs}
-
-\subsection{Issues with Serial Communication} \label{issues-with-serial-communcation}
-
+In addition to the Debug class, the ERROR packet from the Serial Communication Protocol was used by the authentication 
+modules to notify the core process of any issues encountered, either with the module itself, or when receiving serial 
+data. The three major errors that the authentication modules could encounter were issues during setup, receiving a 
+packet with an incorrect opcode, and errors decoding the received packet. Setup errors would be due to an issue with 
+the authentication module, such as a wire being disconnected, preventing the module from setting up properly. Opcode 
+and decoding errors were indicative of a problem with the serial connection between the module and Raspberry Pi. One 
+case where this occurred was due to a faulty USB cable, while in another it was due to the Raspberry Pi's serial port 
+being incorrectly configured.
 
 \subsection{Issues with String Encodings} \label{issues-with-string-encodings}
 % More than just server issue, but problem was on server
