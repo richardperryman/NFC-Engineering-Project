@@ -16,7 +16,7 @@ encryptedAuth : function(secret, salt) {
 
 hmacDigest : function(secret, message) {
 	return crypto.createHmac(hashAlgorithm, secret).update(message).digest();
-}
+},
 
 getSalt : function () {
 	return generateSalt();
