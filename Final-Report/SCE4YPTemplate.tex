@@ -810,7 +810,7 @@ the communication with the external NFC terminal. Later, applications can query 
 the transaction, as well as other data. Devices which use host-based card emulation use a software implementation of
 secure elements. Since host-based card emulation is done through software, it will run on Android devices running
 version 4.4 or greater~\autocite{ANDROIDHCE}, which represents over 99\% of all Android devices currently in use. The
-differences between secure elements and emulators can be seen in figures~\ref{fig:android-secure-element} and \ref
+differences between secure elements and emulators can be seen in Figures~\ref{fig:android-secure-element} and \ref
 {fig:android-host-based}.
 
 \begin{figure}[!h]
@@ -858,7 +858,7 @@ sends to the Android device. Then, the Android application responds with the min
 remaining data that it has to send. Once the hardware receives an amount of data less than the potential maximum, it
 deactivates the connection. In the event that the data from the Android application fits exactly into the last message
 that would be sent, the protocol still works, as the application will then respond with zero data bytes. This process
-is visualised as a message sequence chart in figure~\ref{fig:nfc-protocol-msc}, as well as state machines in figures~\ref
+is visualised as a message sequence chart in Figure~\ref{fig:nfc-protocol-msc}, as well as state machines in Figures~\ref
 {fig:nfc-protocol-fsm-hw} and \ref{fig:nfc-protocol-fsm-app}.
 
 %todo: make smaller?
@@ -898,7 +898,7 @@ architectural pattern. This pattern separates the underlying data (model) from t
 the components that the user interacts with (controller). Android provides APIs to support MVC. Model objects can be
 simple objects, but view objects can subclass the View class or its more specific subclasses, and the controller
 objects can subclass the Adapter class or its subclasses. More precisely, since the View objects and the Model objects
-never communicate, this follows the Model-View-Adapter pattern. The difference can be seen in figures~\ref{fig:MVC} and
+never communicate, this follows the Model-View-Adapter pattern. The difference can be seen in Figures~\ref{fig:MVC} and
 \ref{fig:MVA}.
 
 %TODO change to MVP? - Probably not going to do this, too much work
@@ -951,13 +951,13 @@ The endpoint returns information valuable to the application for display in the 
 of an Android notification's ability to launch an Activity with an Intent to take the user to the appropriate Activity
 associated with the notification.
 
-The overall design of the polling sequence can be seen in figure~\ref{fig:notfication-sequence}. Some simplifications
+The overall design of the polling sequence can be seen in Figure~\ref{fig:notfication-sequence}. Some simplifications
 have been made to the diagram to preserve its readability. The main simplification is the Notification that is created
 by the service. In order to preserve security as well as to improve the user's experience there is only ever one SBACS
 notification in existence at a time on a given device. This way when a user logs out, another user cannot see their
 notifications. In addition, the user will not be inundated with a large number of notifications when, for example, they
 join a company which makes extensive use of SBACS locks. Therefore, when the service receives new notifications, in the
-opt block of figure~\ref{fig:notfication-sequence}, it first checks if there is an existing Notification. If there is,
+opt block of Figure~\ref{fig:notfication-sequence}, it first checks if there is an existing Notification. If there is,
 instead of creating a new Notification it updates the current one. Also, Notifications can be cleared by the user
 visiting the appropriate page of the application that would show the new information, or by the user interacting with
 the notification through their Android device's operating system.
@@ -1425,7 +1425,7 @@ Response.Listener class provides methods to handle HTTP responses. Since these c
 methods, anonymous classes were used in all cases. Further, we decided that handling the parsing should be done as
 safely as possible, so all responses were first parsed simply as Strings. Then, the response was attempted to be parsed
 as a JSON object of the type expected from the server. If that parsing failed, the message was instead considered an
-error, and handled from there. A high level example is shown in figure~\ref{fig:login-volley} in the particular case of
+error, and handled from there. A high level example is shown in Figure~\ref{fig:login-volley} in the particular case of
 logging in to the application. Note that in this figure, the getBody call that the StringRequest performs is actually
 asynchronous. This shows how much the operations in Volley are performed asynchronously on the fly, and if these were
 to take too long, the message would be sent by the RequestQueue before the StringRequest finished. In this case, this
@@ -1461,7 +1461,7 @@ heavily discouraged as any minor error could result in a security breach, and we
 any intellectual property issues of using a third party library. In addition, the number of iterations and the length of
 the resulting key had to be synchronised between the server and the application to ensure the values match.
 
-A simplified demonstration of this process is shown in figure~\ref{fig:hmac-sequence}. This figure shows what the
+A simplified demonstration of this process is shown in Figure~\ref{fig:hmac-sequence}. This figure shows what the
 application does when a user requests the information related to all the locks that they have a registration for.
 Several steps, such as the Volley RequestQueue, have been abstracted out for the purpose of simplifying the message
 of the diagram. For more details about volley, see section~\ref{server-interfacing}. For more information on how the
@@ -1506,7 +1506,7 @@ and the authentication modules.
 
 Selecting the device to run the core process was the first step in implementing the lock control circuit. A 
 single-board microcontroller was the first option considered, as it had the potential to be lower in cost than a 
-single-board computer, given that it would fulfil all of the requirements for the core circuit.
+single-board computer, given that it would fulfill all of the requirements for the core circuit.
 
 Since driving the LEDs and the electrical lock only requires digital output, no analog pins would be necessary. This 
 would lower the cost of the hardware, as digital-only boards tend to be cheaper than analog-capable boards. While 
@@ -2130,10 +2130,10 @@ waiting and more time processing information.
 
 In addition, the calculations done to ensure security had to be measured to ensure that the response time was not
 suffering without meaningfully benefitting security. We measured the time taken by the password-based key derivation
-function using the algorithm we chose, SHA256, given different numbers of iterations, which is summarised in table~\ref
+function using the algorithm we chose, SHA256, given different numbers of iterations, which is summarised in Table~\ref
 {tab:sha256-performance}. We found that ten thousand iterations worked well, as roughly a tenth of a second did not
 dramatically impact user experience, while also ensuring that brute forcing was too inefficient. We then considered the
-salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows, we found that the salt
+salt length being used in the algorithm, but as Table~\ref{tab:sha256-salt-performance} shows, we found that the salt
 length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
 
 \begin{table}[!h]
