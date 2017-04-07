@@ -623,7 +623,7 @@ customer that the package will no longer be available to be picked up, and alter
 also lead to an expiry of the customer's registration to the box, so they will no longer be able to open the box.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/central-mail-use-case-diagram-v2}
     \caption{Central mail package pickup use case diagram}
     \label{fig:central-mail-use-case-diagram}
 \end{figure}
@@ -663,7 +663,7 @@ period. All of the attempted authentications could also be logged and made avail
 reliable paper trail.
 
 \begin{figure}
-    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram}
+    \includegraphics[width=\textwidth]{Diagrams/Use-Case-Diagrams/long-term-storage-pickup-use-case-diagram-v2}
     \caption{Long term storage use case diagram}
     \label{fig:long-term-storage-pickup-use-case-diagram}
 \end{figure}
@@ -1088,7 +1088,6 @@ Authenticator is an abstraction of the authentication data, which would be sent 
     \label{fig:modules-ecb}
 \end{figure}
 
-%TODO: Was the 'refer to pinout' supposed to be resolved in some way?
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
 single-board microcontroller, such as a Arduino, which would be deemed a ``communication board." This communication board
 would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
@@ -1549,12 +1548,17 @@ connects to the collector terminal. Finally, the emitter terminal is connected t
 to prevent any damage to the system when the solenoid is turned on, as solenoids will produce a voltage spike known as 
 ``flyback", which occurs when the current to the solenoid experiences a sudden change~\autocite{KICKBACK}.
 
-When the base is set to "off" by the Raspberry Pi, the collector-emitter voltage $V_{CE}$ will be 0, putting the 
-transistor in the cut-off state, which does not allow current to flow from emitter to collector.
+When the base is set to off by the Raspberry Pi, the base-emitter voltage $V_{BE}$ will be 0 as the base and emitter 
+terminals are at 0 V, putting the 
+transistor in the cut-off state. In this state, the transistor does not allow current to flow from collector to emitter.
+When the Raspberry Pi turns the base on, $V_{BE} = 3V$, as the base voltage is now 3V. Since the TIP120 requires 
+$V_{BE} = 2.5V$ for saturation mode, this means that effectively, the switch is turned on and current may flow from 
+collector to emitter.
 
 One of the issues with the transistor and diode circuit was that there were concerns that a heat dissipation mechanism 
 would be required to safely operate the transistor. The TIP120 transistor can safely dissipate a maximum power of 2 
-Watts~\autocite{TIP120}, and can reach a maximum operating temperature of 150 degrees Celsius. Adding a fan to the 
+Watts~\autocite{TIP120}, and can reach a maximum operating temperature of 150 degrees Celsius. Preliminary calculations 
+showed that power dissipated by the TIP120 would likely reach or exceed 2W. Adding a fan to the 
 system could have removed this risk, but at the expense of compromising the overall security of the hardware. The lock 
 control circuit, in a real-world scenario, should be kept enclosed and hidden away to prevent break-ins. Adding a fan 
 would compromise both of those points.
