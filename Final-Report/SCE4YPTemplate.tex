@@ -454,6 +454,8 @@ the demand is higher, it will dynamically be provided with more resources.
 
 \section{Security} \label{security}
 
+%TODO: Says three principles, then lists four
+
 The three main principles of network security are confidentiality, message integrity, end-point authentication, and
 operational security~\autocite{NETWORKTEXTBOOK}. Confidential networks ensure that only the sender and receiver can
 understand the contents of a message. A message's integrity is protected by a network if the contents of the message
@@ -536,6 +538,8 @@ Design for our system began with considering use cases that could be handled by 
 designing features that would be useful to the majority of targeted users. These use cases would also provide benefit to demonstrating our system, in that stepping
 through a sample use case would show the value of the system to people without them requiring a strong technical
 background.
+
+%TODO: benefit from digitising keys?
 
 We primarily focused on the four use cases that follow. These were outlined in our initial proposal and have remained
 largely unchanged since then. They draw inspiration from situations that we either encountered ourselves or found
@@ -698,6 +702,8 @@ As with all systems, some of the design was changed during implementation, which
 
 \section{Overall System Analysis} \label{overall-system-analysis}
 
+%TODO: Is it led instead of lead here? I'm actually not sure so I won't change it
+
 The requirements of our system from the use cases described in chapter~\ref{business-use-cases} lead us to a simple
 outline for the entire system. The main component of the system would be the cloud server, which would store information
 regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
@@ -706,6 +712,7 @@ be difficult to do manually, having an application that handles sending and retr
 with the system.
 
 % Not sure if this belongs here
+%TODO: Then these authenticators instead of these then?
 One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
 reason, the idea of a key was split into two parts: an authenticator, and an identity. Users would be able to create
 many authenticators, which are data like passwords, or PINs. These then could be combined into an identity, which
@@ -720,9 +727,6 @@ container's contents.
 % Add picture of database stuff?
 
 \subsection{Architectural Patterns} \label{architectural-patterns}
-
-% TODO: Reference for layer: http://www.oreilly.com/programming/free/files/software-architecture-patterns.pdf
-% The reference is a book, need page 9 (page '1' of the book content)
 
 The architecture of our system is a Centralized Client-Server pattern ~\autocite{CLIENTSERVERARCH}, as can be seen 
 in the model diagram in Figure~\ref{fig:architecture-sbacs}. The client components of
@@ -928,6 +932,8 @@ correctly load the information from that user when displaying the data Activitie
 
 \subsection{Notifications} \label{notifications}
 
+%TODO: 'too great a cost' does it need to be 'too great of a cost'?
+
 The design for the notifications that would inform end users of information such as their newly available registration
 with a particular lock was based partly on decreasing the load on the server. If we had designed the notification system to
 be handled by the server, we would have needed the server to maintain a large amount of state information. In order to
@@ -1025,6 +1031,8 @@ classes for the lock control software: one for the abstraction of the LEDs, one 
 circuit, and one for the abstraction of the hardware interface used for communicating with the authentication modules. 
 Since USB is widely used and simple to implement, USB was chosen as the means to connect the modules.
 
+
+%TODO: I think the ref here is to the wrong diagram?
 Continuing on with dividing the various responsibilities of the lock control software into subclasses, two more emerge 
 from the remaining requirements: one class to poll the authentication modules, which will take advantage of the 
 hardware abstraction of the hardware interface, and one class to handle server communication. Figure~\ref
@@ -1080,6 +1088,7 @@ Authenticator is an abstraction of the authentication data, which would be sent 
     \label{fig:modules-ecb}
 \end{figure}
 
+%TODO: Was the 'refer to pinout' supposed to be resolved in some way?
 In the planning stages of the project, it was intended that the authentication modules would communicate with a central 
 single-board microcontroller, such as a Arduino, which would be deemed a ``communication board." This communication board
 would be responsible for receiving data from the authentication modules, and for error detection and error correction, 
@@ -1138,9 +1147,11 @@ then determines based on the identifiers the appropriate handler of the request.
 
 \subsection{JavaScript Object Notation} \label{javascript-object-notation}
 
+%TODO: Somebody please help with the double quotes in this paragraph if not correct yet
+
 In order to send information between the client and the server, a standard format for
 representing the data is necessary. We have chosen to use JavaScript Object Notation (JSON) to
-serve this purpose. ""JSON is a lightweight, text-based, language-independent data interchange
+serve this purpose. ''JSON is a lightweight, text-based, language-independent data interchange
 format" ~\autocite{JSONREF}. JSON provides an easy way of transferring data that is flexible and has support
 from many programming languages, making it a very good choice for our project, where
 different components will be using different technologies and built in different languages. It is
