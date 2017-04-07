@@ -2134,41 +2134,40 @@ dramatically impact user experience, while also ensuring that brute forcing was 
 salt length being used in the algorithm, but as table~\ref{tab:sha256-salt-performance} shows, we found that the salt
 length did not have a meaningful effect on performance up to the suitably large length of 256 bytes.
 
-% Todo: run tests more than once and report min/max/avg?
-
 \begin{table}[!h]
     \centering
-    \begin{tabular}{| r | r |}
+    \begin{tabular}{| r | r | r | r |}
         \hline
-        Iterations & Response Time (ms) \\ \hline
-        1 & 2 \\ \hline
-        10 & 2 \\ \hline
-        100 & 2 \\ \hline
-        1000 & 15 \\ \hline
-        10000 & 130 \\ \hline
-        100000 & 1308 \\ \hline
-        1000000 & 12777 \\ \hline
+        Iterations & \multicolumn{3}{|c|}{Response Time (ms)} \\ \cline{2-4}
+        & Minimum & Maximum & Average \\ \hline
+        1 & 0.0383 &  1.382 & 0.0846 \\ \hline
+        10 & 0.1566 & 1.9394 & 0.6024 \\ \hline
+        100 & 1.2889 & 1.6009 & 1.4046 \\ \hline
+        1000 & 11.0507 & 18.6680 & 14.0463 \\ \hline
+        10000 & 110.9232 & 144.0115 & 119.2796 \\ \hline
+        100000 & 1158.3401 & 1868.6968 & 1245.5582 \\ \hline
     \end{tabular}
-    \caption{Time taken to perform SHA256 password based key derivation vs. iterations}
+    \caption[Timing pbkdf2 on SHA256 varying number of iterations]{Time taken to perform SHA256 password based key derivation vs. iterations over 100 trials}
     \label{tab:sha256-performance}
 \end{table}
 
 \begin{table}[!h]
     \centering
-    \begin{tabular}{| r | r |}
+    \begin{tabular}{| r | r | r | r |}
         \hline
-        Salt Length & Response Time (ms) \\ \hline
-        1 & 1188 \\ \hline
-        2 & 1249 \\ \hline
-        4 & 1206 \\ \hline
-        8 & 1214 \\ \hline
-        16 & 1200 \\ \hline
-        32 & 1191 \\ \hline
-        64 & 1178 \\ \hline
-        128 & 1173 \\ \hline
-        256 & 1216 \\ \hline
+        Salt Length & \multicolumn{3}{|c|}{Response Time (ms)} \\ \cline{2-4}
+        & Minimum & Maximum & Average \\ \hline
+        1 & 111 & 151 & 121 \\ \hline
+        2 & 111 & 160 & 122 \\ \hline
+        4 & 111 & 151 & 123 \\ \hline
+        8 & 111 & 148 & 122 \\ \hline
+        16 & 110 & 151 & 124  \\ \hline
+        32 & 110 & 150 & 122 \\ \hline
+        64 & 111 & 156 & 123 \\ \hline
+        128 & 110 & 175 & 124 \\ \hline
+        256 & 111 & 152 & 123 \\ \hline
     \end{tabular}
-    \caption{Time taken to perform SHA256 password based key derivation vs. salt length, with 10000 iterations}
+    \caption[Timing pbkdf2 on SHA256 varying salt length]{Time taken to perform SHA256 password based key derivation vs. salt length, with 10000 iterations over 100 trials}
     \label{tab:sha256-salt-performance}
 \end{table}
 
