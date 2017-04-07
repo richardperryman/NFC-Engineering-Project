@@ -400,7 +400,7 @@ Craig's contributions:
     \item Section 7.1.3, 7.2.3
 \end{itemize}
 
-All members collaborated on sections 1, 2, 4, and 8.
+All members collaborated on Sections 1, 2, 4, and 8.
 
 %=================================================================================
 
@@ -638,7 +638,7 @@ to provide additional services for specific storage spaces. The system will also
 tasks that the company will need to provide.
 
 The system, using its multiple step authentication, would allow the company to advertise greater security. Along with
-similar methods to those described in the use cases in sections \ref{online-order-secure-pickup}, and
+similar methods to those described in the use cases in Sections \ref{online-order-secure-pickup}, and
 \ref{central-mail-package-pickup}, the system could be configured to require biometrics, such
 as fingerprints or facial recognition, as a form of authentication. By combining these metrics, the system would greatly
 reduce the potential for attack by strengthening the potential failure points of the identification process.
@@ -973,7 +973,7 @@ the notification through their Android device's operating system.
 
 \subsection{NFC Handler} \label{nfc-handler}
 
-Recall from section~\ref{mobile-devices}, the NFC communication method that we decided on used host-based card emulation. Android provides
+Recall from Section~\ref{mobile-devices}, the NFC communication method that we decided on used host-based card emulation. Android provides
 an API to accomplish these communications, through the HostApduService class~\autocite{ANDROIDAPDU}. This class provides a framework for
 creating a service which runs in the background on the Android device. The service handles setting up and closing NFC
 communications, while also providing overrideable methods to determine what data should be sent based on the incoming
@@ -984,7 +984,7 @@ the service with the correct key information for a user's NFC authenticator. Thi
 contain the user's secret key value. Since passive NFC communications are difficult to eavesdrop on, this was thought to be
 a safe method of conveying the secret key to the lock without requiring too much data to be sent over the slow NFC
 physical links. This passing of information of course was also configured to follow the protocol designed above for NFC
-communications in section~\ref{protocol}.
+communications in Section~\ref{protocol}.
 
 %=================================================================================
 
@@ -1011,7 +1011,7 @@ to the server over the internet;
 \end{itemize}
 
 Figure~\ref{fig:hardware-block} is a block diagram of the first draft of the core layout. Note that the specific 
-electrical elements used in each block are discussed in section~\ref{section:lock-control-circuit-implementation}.
+electrical elements used in each block are discussed in Section~\ref{section:lock-control-circuit-implementation}.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_block}
@@ -1168,7 +1168,7 @@ of Buffer.
 \subsection{Node.js} \label{node.js}
 
 Amazon Web Services allows for web
-servers written in many languages, leaving the choice of language to the user (as discussed in section \ref{amazon-web-services}).
+servers written in many languages, leaving the choice of language to the user (as discussed in Section~\ref{amazon-web-services}).
 In our case we
 decided to use Node.js to write our server code. This language was chosen because it is able to
 run on multiple operating systems and does not require more than one tool for effective development.
@@ -1201,7 +1201,7 @@ home page, along with the page rendered by a web browser.
 
 \subsection{JQuery} \label{jquery}
 
-The structure and content of the web interface are statically defined using HTML (as discussed in section \ref{html}), but this will not
+The structure and content of the web interface are statically defined using HTML (as discussed in Section~\ref{html}), but this will not
 be an interactive web page without the use of JavaScript. JavaScript allows for functionality to be
 added to certain actions performed by the user while interacting with the web page. In this project,
 we use JavaScript to dynamically modify the content of the web page and retrieve additional
@@ -1464,8 +1464,8 @@ the resulting key had to be synchronised between the server and the application 
 A simplified demonstration of this process is shown in Figure~\ref{fig:hmac-sequence}. This figure shows what the
 application does when a user requests the information related to all the locks that they have a registration for.
 Several steps, such as the Volley RequestQueue, have been abstracted out for the purpose of simplifying the message
-of the diagram. For more details about volley, see section~\ref{server-interfacing}. For more information on how the
-server handles HMAC, see section~\ref{authentication-for-server-api}.
+of the diagram. For more details about volley, see Section~\ref{server-interfacing}. For more information on how the
+server handles HMAC, see Section~\ref{authentication-for-server-api}.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/App-Diagrams/HMACAuthenticationSequence}
@@ -1476,7 +1476,7 @@ server handles HMAC, see section~\ref{authentication-for-server-api}.
 Sometime after this was implemented, an update to the Android operating system resulted in the algorithm used for key
 derivation to no longer be supported. Since this occurred at a time near to a project deliverable, we felt that the
 fastest way to correct the problem was to change the algorithm used to rely on SHA1 instead, and then later to use
-SHA256 again but with a different algorithm. This is further explained and explored in section~\ref
+SHA256 again but with a different algorithm. This is further explained and explored in Section~\ref
 {issues-with-string-encodings}.
 
 %---------------------------------------------------------------------------------
@@ -1490,7 +1490,7 @@ entity classes whose only real role was to contain data.
 
 Each kind of data that was of interest to the user was given its own Activity, which is similar to the notion of a page
 in a web application. These Activities were all primarily composed of a ListView object, which displays a list of data.
-This list was configured with an Adapter class which extends the general ArrayAdapter<T> class. These adapters were
+This list was configured with an Adapter class which extends the general ArrayAdapter\textless T\textgreater ~ class. These adapters were
 used to convert the model classes into a view. The adapter classes were composed of an XML file which described the
 layout of the view, as well as a Java class which provided the methods by which the data could be used to fill in the
 layout.
@@ -1606,7 +1606,7 @@ connection is made, powering on and unlocking the lock.
 The lock control software, running on the Raspberry Pi, was written in C++. C++ was selected primarily because the 
 software for the authentication modules could only be written in C++, and using the same language as the modules would 
 allow the core process to share classes with the modules. The second major reason for selecting C++ was that it was an 
-object-oriented language, so the design patterns mentioned in section~\ref{lock-control-software-design} could be 
+object-oriented language, so the design patterns mentioned in Section~\ref{lock-control-software-design} could be 
 implemented as described.
 
 When the system is first run, it performs a series of self-checking steps. First, it verifies that it has internet 
@@ -1677,7 +1677,7 @@ Finally, to define all of the behaviour of the lock control software is the main
 its own. The main class is the mediator between the various AuthenticationModule objects, the ServerConnection, and the 
 GPIOPins. Its various functions are pictured in the class diagram, Figure~\ref{fig:hardware-class-group4}. Grouped with 
 the main class is the Debug class, which is used for printing debug messages to the console when testing the system. 
-See section~\ref{issues-with-serial-communcation} for more detailed information on the Debug class.
+See Section~\ref{issues-with-serial-communcation} for more detailed information on the Debug class.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_class_group4}
@@ -1717,7 +1717,7 @@ or sent over the serial line into appropriate variations of the Packet object.
 One notable change from the Entity-Controller-Boundary design from Figure~\ref{fig:modules-ecb} was that separate 
 objects for the Module-Specific Data Handler and the Module Controller were not necessary, as the modules' software was 
 simple enough that the Boundary and Controller functionality was implemented in the AuthenticationModule class. In 
-addition, the Entity class generated by the AuthenticationModule class was the EncodedPacket class, instead of a 
+addition, the Entity class generated by the AuthenticationModule class was the EncodedPacket class, instead of an 
 ``Authenticator" as it was named in Figure~\ref{fig:modules-ecb}.
 
 Figure~\ref{fig:hardware-interaction-sequence} shows the sequences of events from a user interacting with an 
@@ -1735,7 +1735,7 @@ uses the NFC module for example, but can apply to any other module.
 The module that was the primary focus of this project's proof-of-concept was the NFC module. The module uses an Adafruit 
 PN532 NFC shield to read NFC data from an Android phone. This model of NFC shield was selected because it was the only 
 one available to be purchased in Ottawa that supported NFC communication with Android phones. The PN532 is driven by a 
-Adafruit Feather 32u4 single-board microcontroller. The Feather was selected because of it uses 3V logic, matching the 
+Adafruit Feather 32u4 single-board microcontroller. The Feather was selected because it uses 3V logic, matching the 
 PN532's 3V logic. The wiring of the NFC module hardware is shown in Figure~\ref{fig:nfc-module-wiring}.
 
 \begin{figure}
@@ -1763,7 +1763,7 @@ For the software, the NFC module used the SeeedStudio PN532 library, as the Adaf
 communication with Android devices. Figure~\ref{fig:nfc-module-class} demonstrates the class diagram for the NFC 
 module. Note that the module overrides the startup() method from AuthenticationModule, as the PN532 must also be set 
 up, with an ERROR packet sent during startup() if there is an issue with it. For more information on how the NFC module 
-interacts with Android devices, refer to section~\ref{protocol}.
+interacts with Android devices, refer to Section~\ref{protocol}.
 
 \begin{figure}
     \centering
@@ -1779,7 +1779,7 @@ specify the row of the button, and three output pins to specify the column. As p
 Figure~\ref{fig:pin-module-wiring}, the matrix output pins are wired directly to seven input pins on the Arduino.
 
 The keypad matrix has seven output pins, four row pins and three column pins. When a button is pressed, it activates 
-the corresponding row line and column line, which the Arduino can read to determine the coordinates of the button the 
+the corresponding row line and column line, which the Arduino can read to determine the coordinates of the button on the 
 keypad. The Keypad library included with the Arduino IDE maps the PIN pad to a 2-dimensional array, and handles mapping 
 the row/column inputs to a character. In addition to this, the Keypad library handles key debouncing.
 
@@ -1970,7 +1970,7 @@ the NFC module is set up.
 \end{figure}
 
 The final type of packet defined in this protocol is the ERROR packet. These packets will be discussed in more detail 
-in section~\ref{issues-with-serial-communcation}, as their primary purpose is for debugging. The format of ERROR 
+in Section~\ref{issues-with-serial-communcation}, as their primary purpose is for debugging. The format of ERROR 
 packets is given in Figure~\ref{fig:error-packet}. Note that in the case of ERROR packets, the block number field from 
 the packet header is used to specify an error code.
 
@@ -2293,7 +2293,7 @@ integration phase of the project.
 
 \subsection{Issues with Encryption Algorithm Availability} \label{issues-with-encryption-algorithm-availability}
 
-This issue is discussed briefly in section~\ref{hmac}. The algorithm used by the server to compute HMAC message digests
+This issue is discussed briefly in Section~\ref{hmac}. The algorithm used by the server to compute HMAC message digests
 used the password-based key derivation function (PBKF2)~\autocite{RFC6070} run using SHA256~\autocite{RFC4634}. We chose
 SHA256 over SHA1 because SHA1 has a known method of generating collisions~\autocite{SHA1COLLISION}. However, Android
 did not specifically state that PBKF2 over SHA256 was supported on all devices~\autocite{ANDROIDKEYFACTORY}. This
@@ -2328,7 +2328,7 @@ SHA256.
 
 The SBACS provides a fairly simple method of digitising any physical lock. The digital locks are secure, reusable, and
 easier to recover than physical locks are. The current implementation of the system can be used to maintain a simple
-business use case, such as the online order secure pickup use case described in section~\ref
+business use case, such as the online order secure pickup use case described in Section~\ref
 {online-order-secure-pickup}. Locks and users can be added to the system, and registrations can be made between them.
 Then, the users can use their identities to authenticate themselves and open the locks.
 
