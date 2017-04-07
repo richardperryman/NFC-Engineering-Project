@@ -65,7 +65,8 @@ uint16_t EncodedPacket::encodeData(uint8_t* decodedData, uint16_t dataLen)
 uint16_t EncodedPacket::getSize()
 {
     // Total packet size = data length + 2 opcode bytes + 2 block number bytes + 2 flag bytes
-    return dataLen + 6;
+    if (dataLen > 0) return dataLen + 5;
+    else return 6;
 }
 
 uint16_t EncodedPacket::getBytes(uint8_t* destination)
@@ -84,7 +85,9 @@ uint16_t EncodedPacket::getBytes(uint8_t* destination)
         destination[i] = encodedData[i - offset];
     }
     
-    destination[i++] = PACKET_FLAG;
+    if (dataLen == 0) {
+        destination[i++] = PACKET_FLAG;
+    }    
     
     return i;
 }

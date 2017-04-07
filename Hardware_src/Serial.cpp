@@ -114,7 +114,6 @@ int Serial::openPort(int baudRate)
     FD_SET(serialPort, &rfd);
     timeval tv = { 0 };
     select(serialPort+1, &rfd, 0, 0, &tv);
-    //if (!FD_ISSET(serialPort, &rfd)) {
     
     return 0;
 }

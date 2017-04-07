@@ -13,15 +13,8 @@
 #include <AuthenticationModule.h>
 #include <Debug.h>
 
-// To do:
-// Read configuration file at start up (server URL, lock ID)
-
-// For QR:
-// User takes photo of code (the code is the lock ID), sends code to server
-// Server forwards user info to Pi (server is a authentication module)
-
-static uint32_t LOCK_ID;
-static std::string SERVER_URL;
+static uint32_t LOCK_ID = 0x1;
+static std::string SERVER_URL = "https://sbacs.click";
 
 static GPIOPin GREEN("2");
 static GPIOPin BLUE("3");
@@ -32,9 +25,9 @@ static const char* KILL_FILE("service.KILL");
 
 static void maintenanceLoop();
 static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConnection* connection);
-static int8_t readConfiguration(std::string filepath);
 static int8_t verifyModules(std::vector<AuthenticationModule*>* modules);
 
+//
 static void setUpLEDs()
 {
 	GREEN.exportPin();
@@ -88,52 +81,36 @@ void accessDenied()
 int main()
 {
     uint8_t status = 0;
-    std::string filepath = "/not/real/rightnow.cfg";
     std::vector<AuthenticationModule*> modules;
 
     setUpLEDs();
-    status = readConfiguration(filepath);
+
+    ServerConnection* connection = new ServerConnection(SERVER_URL);
+    connection->openConnection();
+    status = connection->verifyConnection();
     
     if (status != 0) {
-        DEBUG_LOG(CRITICAL, __FUNCTION__, "Failure to read configuration from %s", filepath.c_str());
+        DEBUG_LOG(CRITICAL, __FUNCTION__, "Cannot reach server.");
         maintenanceLoop();
     } else {
-        ServerConnection* connection = new ServerConnection(SERVER_URL);
-        connection->openConnection();
-        status = connection->verifyConnection();
+        status = verifyModules(&modules);
         
         if (status != 0) {
-            DEBUG_LOG(CRITICAL, __FUNCTION__, "Cannot reach server.");
+            DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
+            maintenanceLoop();
+        } else if (modules.size() == 0) {
+            DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
             maintenanceLoop();
         } else {
-            status = verifyModules(&modules);
-            
-            if (status != 0) {
-                DEBUG_LOG(CRITICAL, __FUNCTION__, "Error retrieving authentication modules.");
-                maintenanceLoop();
-            } else if (modules.size() == 0) {
-                DEBUG_LOG(CRITICAL, __FUNCTION__, "No authentication modules found!");
-                maintenanceLoop();
-            } else {
-                pollingLoop(&modules, connection);
-            }
+            pollingLoop(&modules, connection);
         }
-        
-        connection->closeConnection();
     }
+    
+    connection->closeConnection();
     
     teardown();
     DEBUG_LOG(INFO, __FUNCTION__, "Shut down successful.");
     return 0;
-}
-
-static int8_t readConfiguration(std::string filepath)
-{
-    LOCK_ID = 0x1;
-    //SERVER_URL = "http://sbacs.48tdba4fch.us-west-2.elasticbeanstalk.com";
-    //SERVER_URL = "127.0.0.1:3000";
-    SERVER_URL = "https://sbacs.click";
-	return 0;
 }
 
 static void maintenanceLoop()
@@ -192,19 +169,17 @@ static void pollingLoop(std::vector<AuthenticationModule*>* modules, ServerConne
             counting = false;
             counter = 50;
             tokenCount = 0;
-            
-            
         }
         
-        for (uint16_t j = 0; j < modules->size(); j++) modules->at(j)->clearToken();
+        for (uint8_t j = 0; j < modules->size(); j++) modules->at(j)->clearToken();
     }   
 }
 
 static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
 {
-    std::vector<std::string> device_paths; // Not every ACMx device is a module
+    std::vector<std::string> device_paths;
 
-    // Get all device paths on /dev/ttyACM*
+    // Get all device paths matching /dev/ttyACM*
     FILE * f = popen( "find /dev -name ttyACM*", "r" );
     if ( f == 0 ) {
         DEBUG_LOG(CRITICAL, __FUNCTION__, "Could not get device listing from /dev.");
@@ -214,6 +189,7 @@ static int8_t verifyModules(std::vector<AuthenticationModule*>* modules)
     const int BUFSIZE = 260; // 255 + 5 chars for "/dev/"
     char buf[ BUFSIZE ];
     
+    // Place file paths in the vector
     while( fgets( buf, BUFSIZE,  f ) ) {
         std::string* path= new std::string(buf);
         device_paths.push_back(path->substr(0, path->length()-1));

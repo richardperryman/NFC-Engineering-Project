@@ -1,7 +1,3 @@
-// REMOVE THE SPACES IN THE BUFFER STRING
-// WRITE A FUNCTION TO PARSE IT AND MODIFY IT
-// e.g. [3,5]
-
 #include <ServerConnection.h>
 
 #include <unistd.h>
@@ -64,6 +60,7 @@ void ServerConnection::closeConnection()
     curl_global_cleanup();
 }
 
+// Generate a random string of bytes
 static
 void generateSecret(uint8_t* buffer, uint16_t buffLen)
 {
@@ -88,6 +85,7 @@ uint16_t byteArrayToHexString(uint8_t* in, uint16_t inLen, std::string* out)
     return i+1;
 }
 
+// Process the result of an access request
 static
 int8_t processResult(CURL* session)
 {
@@ -98,36 +96,36 @@ int8_t processResult(CURL* session)
     {
         return 1;
     } else if (http_code == 200) {
-        // TODO: Make this actually process the result besides checking HTTP code
         return 0;
     } else {
         return -1;
     }
 }
 
+// 
 static
 std::string* removeSpaces(const char* json)
 {
     std::string* str = new std::string(json);
-    str->erase( remove(str->begin(), str->end(), ' '), str->end() );
+    str->erase(remove(str->begin(), str->end(), ' '), str->end() );
     return str;
 }
 
 int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<AuthenticationModule*>* modules)
 {
-    // cURL stuff
+    // cURL variables
     CURL* curly;
     CURLcode res;
     struct curl_slist *headers = NULL;
     int8_t accessResult;
     
-    // Query stuff
+    // Query variables
     std::string url = this->url + access_table_name;
     std::stringstream queryString;
     uint8_t secret[256];
     std::string lock_key;
     
-    // JSON stuff
+    // JSON variable
     json_object* json;
 
     // Initialization
@@ -137,6 +135,8 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
     generateSecret(secret, sizeof(secret));
     lock_key.reserve(sizeof(secret)*2);
     byteArrayToHexString(secret, sizeof(secret), &lock_key);
+    
+    FILE *devnull = fopen("/dev/null", "w+");
 
     // Generate HTTP header
     headers = curl_slist_append(headers, "Accept: application/json");
@@ -156,6 +156,9 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
         AuthenticationModule* module = modules->at(i);
         if (module->hasToken())
         {
+            // The nfc module entry is formatted as
+            // type: "nfc"
+            // value: "{\"type\":\"Buffer\",\"data\":[...]}" 
             if (strcmp(module->getID(), "nfc") == 0) {
                 json_object* token;
                 json_object* buffer;
@@ -176,6 +179,9 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
                 json_object_array_add(json, token);
             }
             
+            // Other modules follow the format
+            // type: "modulename"
+            // value: "value"
             else {
                 json_object* token;
 
@@ -186,9 +192,8 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
             }
         }        
     }
-
-    FILE *devnull = fopen("/dev/null", "w+");
     
+    // Set up the request headers, body, and send it
     curl_easy_setopt(curly, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curly, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curly, CURLOPT_POSTFIELDS, json_object_to_json_string(json));
@@ -209,6 +214,7 @@ int8_t ServerConnection::requestAccess(uint32_t lock_id, std::vector<Authenticat
         accessResult = processResult(curly);
     }
     
+    // Cleanup
     fclose(devnull);
     json_object_put(json);
     curl_easy_cleanup(curly);
