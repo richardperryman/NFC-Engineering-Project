@@ -1,6 +1,5 @@
 # Compiler stuff
 CC = g++
-#CC = arm-linux-gnueabi-g++
 DEBUG = -g -DDEBUG
 TEST = -DTEST
 INCLUDE = ./include
@@ -10,6 +9,8 @@ CFLAGS = -Wall -I$(INCLUDE) -std=c++11 -c
 # File stuff
 EXECUTABLE = SBACSProc.exe
 OBJECTS = main.o Packet.o DecodedPacket.o EncodedPacket.o AuthenticationToken.o GPIOPin.o Serial.o ServerConnection.o AuthenticationModule.o Debug.o
+TESTEXECUTABLE = SBACSTest.exe
+TESTOBJECTS = PacketTest.o Packet.o DecodedPacket.o EncodedPacket.o
 RM = rm -f *.o
 
 default : $(EXECUTABLE) 
@@ -17,10 +18,14 @@ default : $(EXECUTABLE)
 debug : CFLAGS += $(DEBUG)
 debug : $(EXECUTABLE)
 
-test : 
+test : $(TESTOBJECTS)
+	$(CC) $(TESTOBJECTS) -o $(TESTEXECUTABLE) $(LDFLAGS)
+	$(RM)
+	./$(TESTEXECUTABLE)
+	rm -f $(TESTEXECUTABLE)
 
 clean :
-	$(RM) *~ $(EXECUTABLE)
+	$(RM) *~ $(EXECUTABLE) $(TESTEXECUTABLE)
 
 $(EXECUTABLE) : $(OBJECTS)
 	$(CC) $(OBJECTS) -o $(EXECUTABLE) $(LDFLAGS)
@@ -38,6 +43,9 @@ DecodedPacket.o : $(INCLUDE)/DecodedPacket.h DecodedPacket.cpp $(INCLUDE)/Types.
 	
 EncodedPacket.o : $(INCLUDE)/EncodedPacket.h EncodedPacket.cpp $(INCLUDE)/Types.h $(INCLUDE)/Packet.h
 	$(CC) $(CFLAGS) EncodedPacket.cpp
+	
+PacketTest.o: PacketTest.cpp $(INCLUDE)/Types.h $(INCLUDE)/Packet.h $(INCLUDE)/EncodedPacket.h $(INCLUDE)/DecodedPacket.h
+	$(CC) $(CFLAGS) PacketTest.cpp
 	
 AuthenticationToken.o : $(INCLUDE)/AuthenticationToken.h AuthenticationToken.cpp $(INCLUDE)/Types.h
 	$(CC) $(CFLAGS) AuthenticationToken.cpp

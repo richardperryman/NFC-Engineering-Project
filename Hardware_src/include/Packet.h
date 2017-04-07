@@ -3,11 +3,7 @@
 
 #define PACKET_FLAG 0x7E
 #define MAX_ENCODED_BYTES 255
-//#ifndef ARDUINO
-#define MAX_DECODED_BYTES 253
-//#else
-//#define MAX_DECODED_BYTES 508
-//#endif
+#define MAX_DECODED_BYTES 254
 #define MAX_PACKET_SIZE (MAX_ENCODED_BYTES + 6)
 
 #include <Types.h>
