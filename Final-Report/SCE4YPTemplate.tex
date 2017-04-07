@@ -1,6 +1,3 @@
-% TODO for Richard: Capitalise Figures
-% TODO for Jess: Investigate if "design pattern" should be changed to "behavioural pattern"
-
 % Carleton University SCE 4th Year Project thesis style
 % University of Ottawa MSc thesis style -- modifications to the report style
 % modification of suthesis style of Stanford University
@@ -454,9 +451,7 @@ the demand is higher, it will dynamically be provided with more resources.
 
 \section{Security} \label{security}
 
-%TODO: Says three principles, then lists four
-
-The three main principles of network security are confidentiality, message integrity, end-point authentication, and
+The four main principles of network security are confidentiality, message integrity, end-point authentication, and
 operational security~\autocite{NETWORKTEXTBOOK}. Confidential networks ensure that only the sender and receiver can
 understand the contents of a message. A message's integrity is protected by a network if the contents of the message
 cannot be modified by either a malicious attacker or by accident. Networks enable end-point authentication by providing
@@ -539,13 +534,11 @@ designing features that would be useful to the majority of targeted users. These
 through a sample use case would show the value of the system to people without them requiring a strong technical
 background.
 
-%TODO: benefit from digitising keys?
-
 We primarily focused on the four use cases that follow. These were outlined in our initial proposal and have remained
 largely unchanged since then. They draw inspiration from situations that we either encountered ourselves or found
 through common knowledge and research. SBACS fit well into the existing online shopping infrastructure, and
 mail delivery follows a fairly similar system. Long term storage facilities also seemed as though they
-would benefit digitising keys. Once we had considered these use cases, we found that several of
+would benefit from digitising keys. Once we had considered these use cases, we found that several of
 the problems that they shared could be solved by a company which provided SBACS as a service. The following subsections
 describe these use cases in more detail and provide use-case diagrams summarising them.
 
@@ -702,9 +695,7 @@ As with all systems, some of the design was changed during implementation, which
 
 \section{Overall System Analysis} \label{overall-system-analysis}
 
-%TODO: Is it led instead of lead here? I'm actually not sure so I won't change it
-
-The requirements of our system from the use cases described in chapter~\ref{business-use-cases} lead us to a simple
+The requirements of our system from the use cases described in chapter~\ref{business-use-cases} led us to a simple
 outline for the entire system. The main component of the system would be the cloud server, which would store information
 regarding users, locks, and the relationships between them. The lock hardware would need to be able to securely accept
 data from the user, and securely send that data to the server for verification. Since handling electronic security can
@@ -712,10 +703,9 @@ be difficult to do manually, having an application that handles sending and retr
 with the system.
 
 % Not sure if this belongs here
-%TODO: Then these authenticators instead of these then?
 One of the main goals of the system was to improve the reusability of the electronic keys that are created. For this
 reason, the idea of a key was split into two parts: an authenticator, and an identity. Users would be able to create
-many authenticators, which are data like passwords, or PINs. These then could be combined into an identity, which
+many authenticators, which are data like passwords, or PINs. These authenticators can then be combined into an identity, which
 would be used to open a particular lock. This allowed making identities that reuse the same authenticator, and reusing
 identities for different locks.
 
@@ -932,16 +922,14 @@ correctly load the information from that user when displaying the data Activitie
 
 \subsection{Notifications} \label{notifications}
 
-%TODO: 'too great a cost' does it need to be 'too great of a cost'?
-
 The design for the notifications that would inform end users of information such as their newly available registration
 with a particular lock was based partly on decreasing the load on the server. If we had designed the notification system to
 be handled by the server, we would have needed the server to maintain a large amount of state information. In order to
 be able to send the notifications, the server would have to remember the IP address of each current user. This would
 require handshaking between the application and server on creating and terminating a connection, as well as when the
 application changes IP address due to roaming. Further, the server would have to queue up all of the notification
-information that a user who does not currently have a session would want. Having the server maintain all of this
-information was thought to be too great a cost. For this reason, it seemed simpler and more effective to have the
+information that a user who does not currently have a session would want. The cost of having the server maintain all of this
+information was thought to be too great. For this reason, it seemed simpler and more effective to have the
 application poll the server at a particular access point for new information.
 
 This polling was implemented simply in the application using a service which runs in the background of the Android
@@ -2378,6 +2366,8 @@ a faster process of deployment to the server.
 %---------------------------------------------------------------------------------
 
 \chapter{Diagrams} \label{appendix:diagrams}
+
+Figure~\ref{fig:hardware-classes-full} is the complete class diagram of the lock control software.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Diagrams/Hardware-Diagrams/hardware_classes_full}
