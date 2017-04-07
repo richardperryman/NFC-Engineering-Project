@@ -69,7 +69,7 @@ public class NotificationService extends Service {
                 };
                 pollQueue.add(request);
             }
-        }, 5000, 5000);
+        }, 50000, 50000);
     }
 
     private Response.Listener<String> notificationListener() {

@@ -15,6 +15,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by Richard on 2017-02-05.
@@ -46,19 +47,18 @@ public class HMACHelper {
             body.put("username", username);
             body.put("password", password);
         } catch (JSONException e) {
-            // Uhhh do something?
         }
 
         return body.toString().getBytes();
     }
 
     private static String SecretString(String body, String key){
-        // Should probably add code to force UTF-16
         SecretKeyFactory skf;
-        KeySpec spec;
+        SecretKeySpec spec;
         byte[] secret;
+        Mac mac;
         try {
-			Mac mac = Mac.getInstance("HmacSHA256");
+			mac = Mac.getInstance("HmacSHA256");
         } catch (NoSuchAlgorithmException e) {
             return "";
         }
@@ -68,8 +68,6 @@ public class HMACHelper {
         try {
             mac.init(spec);
 			secret = mac.doFinal(body.getBytes());
-        } catch (InvalidKeySpecException e) {
-            return "";
         } catch (Exception e) {
             return "";
         }
